@@ -53,7 +53,7 @@ macro_rules! vm {
 }
 fn runner() {
     let program =
-        Program::from_file(Path::new("/tmp/contract/vuln.json"), Some("main")).unwrap();
+        Program::from_file(Path::new("json/vuln.json"), Some("main")).unwrap();
     let mut cairo_runner = cairo_runner!(program);
     let mut vm = vm!();
     let hint_processor = BuiltinHintProcessor::new_empty();
