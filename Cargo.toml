@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 num-bigint = { version = "0.4", features = ["serde"] }
-cairo-rs = { path = "/home/nabih/cairo-rs" }
+cairo-rs = { git  = "https://github.com/lambdaclass/cairo-rs" }
 num-traits = "0.2"

@@ -51,39 +51,81 @@ macro_rules! vm {
         )
     }};
 }
-fn runner() {
+
+fn runner(file_path: String, func_name: String) {
     let program =
-        Program::from_file(Path::new("json/vuln.json"), Some("main")).unwrap();
+        Program::from_file(Path::new(&file_path), Some(&func_name)).unwrap();
     let mut cairo_runner = cairo_runner!(program);
     let mut vm = vm!();
     let hint_processor = BuiltinHintProcessor::new_empty();
 
     let entrypoint = program
         .identifiers
-        .get("__main__.main")
+        .get(&format!("__main__.{}", &func_name))
         .unwrap()
         .pc
         .unwrap();
 
-    //vm.accessed_addresses = Some(Vec::new());
+    //cairo_runner.initialize(&mut vm).unwrap();
     cairo_runner.initialize_function_runner(&mut vm).unwrap();
-    //cairo_runner.initialize_builtins(&mut vm).unwrap();
-    cairo_runner.initialize_segments(&mut vm, None);
+    //vm.accessed_addresses = Some(Vec::new());
+    //cairo_runner.initialize_function_runner(&mut vm).unwrap();
+    cairo_runner.initialize_builtins(&mut vm).unwrap();
+    //cairo_runner.initialize_segments(&mut vm, None);
     let _var = cairo_runner.run_from_entrypoint(
             entrypoint,
-            vec![&mayberelocatable!(0)],
+            vec![&mayberelocatable!(123456)],
             false,
             true,
             true,
             &mut vm,
             &hint_processor,
         );
+
+    let mut stdout = Vec::<u8>::new();
+    cairo_runner.write_output(&mut vm, &mut stdout).unwrap();
+    //assert_eq!(String::from_utf8(stdout), Ok(String::from("1\n17\n")));
+    println!("{:?}", stdout); 
+
+
     //write_output(&mut cairo_runner, &mut vm).unwrap();
     //cairo_runner.run_ended = true;
-    cairo_runner.end_run(true, false, &mut vm, &hint_processor);
-    cairo_runner.read_return_values(&mut vm).unwrap();
+    //cairo_runner.end_run(false, true, &mut vm, &hint_processor);
+    //cairo_runner.finalize_segments(&mut vm).unwrap();
+    println!("{:?}", cairo_runner.get_output(&mut vm).unwrap()); 
+    //cairo_runner.read_return_values(&mut vm).unwrap();
 }
 
 fn main() {
-    runner();
+
+
+/*
+%builtins output
+
+from starkware.cairo.common.serialize import serialize_word
+
+func return_10() -> (res : felt):
+    let res = 10
+    return (res)
+end
+
+func main{output_ptr : felt*}():
+    
+    let (value) = return_10()
+
+    serialize_word(value)
+
+    return ()
+end
+
+program=json/cairo_function_return_to_variable.json
+*/
+
+    // get return value
+    let args = vec![&mayberelocatable!(123456)];
+    runner("json/cairo_function_return_to_variable.json".to_string(), "return_10".to_string());
+
+    println!("======");
+    // get output_ptr
+    runner("json/cairo_function_return_to_variable.json".to_string(), "main".to_string());
 }
