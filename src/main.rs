@@ -7,6 +7,7 @@ use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
 use num_bigint::Sign;
 use std::any::Any;
+use std::env;
 mod parse_json;
 use crate::parse_json::parse_json;
 mod utils;
@@ -56,9 +57,14 @@ fn runner(file_path: &String, func_name: String, args_num: u64) {
 }
 
 fn main() {
-    let filename: String = "json/cairo_function_return_to_variable.json".to_string();
-    let functions = parse_json(&filename);
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        println!("Usage : cargo run -- <PATH>");
+        return;
+    }
+    let filename: &String = &args[1];
+    let functions = parse_json(filename);
     for function in functions {
-    runner(&filename, function.name, function.num_args);
+    runner(filename, function.name, function.num_args);
     }
 }
