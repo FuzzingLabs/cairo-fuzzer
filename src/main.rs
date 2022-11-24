@@ -6,11 +6,12 @@ use num_bigint::BigInt;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
 use num_bigint::Sign;
+use std::any::Any;
 mod parse_json;
 use crate::parse_json::parse_json;
 mod utils;
 
-fn runner(file_path: String, func_name: String) {
+fn runner(file_path: String, func_name: String, args_num: u64) {
     println!("====> Running function : {}", func_name);
     println!("");
     let program =
@@ -30,9 +31,15 @@ fn runner(file_path: String, func_name: String) {
 
     cairo_runner.initialize_builtins(&mut vm).unwrap();
     cairo_runner.initialize_segments(&mut vm, None);
+    let value = &MaybeRelocatable::from((2,0));
+    let mut args = Vec::<&dyn Any>::new();
+    args.push(value);
+    for _i in 0..args_num {
+        args.push(value);
+    }
     let _var = cairo_runner.run_from_entrypoint(
             entrypoint,
-            vec![&MaybeRelocatable::from((2,0))],
+            args,
             false,
             true,
             true,
@@ -51,6 +58,6 @@ fn runner(file_path: String, func_name: String) {
 fn main() {
     let functions = parse_json("json/vuln.json".to_string());
     for function in functions {
-    runner("json/vuln.json".to_string(), function.name);
+    runner("json/vuln.json".to_string(), function.name, function.num_args);
     }
 }
