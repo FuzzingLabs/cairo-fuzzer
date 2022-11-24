@@ -16,7 +16,7 @@ pub fn get_type_args(members : &Value) -> Vec<String> {
     return type_args;
 }
 
-pub fn parse_json(filename: String) -> Vec<Function> {
+pub fn parse_json(filename: &String) -> Vec<Function> {
     println!("====> Parsing file {}", filename);
     println!("");
     let data = fs::read_to_string(filename).expect("Unable to read file");

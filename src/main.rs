@@ -11,7 +11,7 @@ mod parse_json;
 use crate::parse_json::parse_json;
 mod utils;
 
-fn runner(file_path: String, func_name: String, args_num: u64) {
+fn runner(file_path: &String, func_name: String, args_num: u64) {
     println!("====> Running function : {}", func_name);
     println!("");
     let program =
@@ -56,8 +56,9 @@ fn runner(file_path: String, func_name: String, args_num: u64) {
 }
 
 fn main() {
-    let functions = parse_json("json/vuln.json".to_string());
+    let filename: String = "json/cairo_function_return_to_variable.json".to_string();
+    let functions = parse_json(&filename);
     for function in functions {
-    runner("json/vuln.json".to_string(), function.name, function.num_args);
+    runner(&filename, function.name, function.num_args);
     }
 }
