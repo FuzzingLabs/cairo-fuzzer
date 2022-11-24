@@ -1,7 +1,7 @@
 use serde_json::{Result, Value};
 use std::fs;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
     pub num_args: u64,

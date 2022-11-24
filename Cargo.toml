@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 num-bigint = { version = "0.4", features = ["serde"] }
-cairo-rs = { git  = "https://github.com/lambdaclass/cairo-rs" }
+cairo-rs = { git  = "https://github.com/FuzzingLabs/cairo-rs" }
 num-traits = "0.2"
 serde_json = "1.0"
+honggfuzz = "0.5.55"
+arbitrary = {version="1.1.7", features= ["derive"], optional=true, default-features=false}
