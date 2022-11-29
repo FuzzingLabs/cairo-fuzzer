@@ -11,7 +11,6 @@ use std::{env, net::SocketAddr, path::PathBuf};
 
 use clap::{self, Parser};
 use libafl::prelude::RandPrintablesGenerator;
-use libafl::prelude::SimpleEventManager;
 use libafl::prelude::SimpleMonitor;
 use libafl::{
     bolts::{
@@ -20,28 +19,21 @@ use libafl::{
         launcher::Launcher,
         rands::StdRand,
         shmem::{ShMemProvider, StdShMemProvider},
-        tuples::{tuple_list, Merge},
-        AsSlice,
+        tuples::tuple_list,
     },
-    corpus::{Corpus, InMemoryCorpus, OnDiskCorpus},
+    corpus::{InMemoryCorpus, OnDiskCorpus},
     events::EventConfig,
-    executors::{inprocess::InProcessExecutor, ExitKind, TimeoutExecutor},
-    feedback_or, feedback_or_fast,
-    feedbacks::{CrashFeedback, MaxMapFeedback, TimeFeedback, TimeoutFeedback},
+    executors::{inprocess::InProcessExecutor, ExitKind},
+    feedbacks::{CrashFeedback, MaxMapFeedback},
     fuzzer::{Fuzzer, StdFuzzer},
-    inputs::{BytesInput, HasTargetBytes},
-    monitors::{MultiMonitor, OnDiskTOMLMonitor},
-    mutators::{
-        scheduled::{havoc_mutations, tokens_mutations, StdScheduledMutator},
-        token_mutations::Tokens,
-    },
-    observers::{HitcountsMapObserver, StdMapObserver, TimeObserver},
-    schedulers::{IndexesLenTimeMinimizerScheduler, QueueScheduler},
+    inputs::BytesInput,
+    mutators::scheduled::{havoc_mutations, StdScheduledMutator},
+    observers::StdMapObserver,
+    schedulers::QueueScheduler,
     stages::mutational::StdMutationalStage,
-    state::{HasCorpus, HasMetadata, StdState},
+    state::StdState,
     Error,
 };
-use libafl_targets::{libfuzzer_initialize, libfuzzer_test_one_input, EDGES_MAP, MAX_EDGES_NUM};
 
 use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
 use cairo_rs::types::program::Program;
@@ -52,7 +44,6 @@ use num_bigint::BigInt;
 use num_bigint::Sign;
 use std::any::Any;
 use std::fs;
-use std::path::Path;
 mod parse_json;
 use crate::parse_json::parse_json;
 mod utils;
@@ -153,13 +144,6 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
 
     let mut stdout = Vec::<u8>::new();
     cairo_runner.write_output(&mut vm, &mut stdout).unwrap();
-    /*println!("write output : {:?}", stdout);
-    println!("");
-    println!(
-        "get output : {:?}",
-        cairo_runner.get_output(&mut vm).unwrap()
-    );
-    println!("");*/
 }
 
 pub fn main() {
@@ -175,12 +159,9 @@ pub fn main() {
 
     let shmem_provider = StdShMemProvider::new().expect("Failed to init shared memory");
 
-    let monitor = OnDiskTOMLMonitor::new(
-        "./fuzzer_stats.toml",
-        MultiMonitor::new(|s| println!("{}", s)),
-    );
+    let monitor = SimpleMonitor::new(|s| println!("{}", s));
 
-    let mut run_client = |state: Option<_>, mut mgr, _core_id| {
+    let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
         let observer =
             unsafe { StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len()) };
 
@@ -217,7 +198,7 @@ pub fn main() {
         let contents = fs::read_to_string(&"json/vuln.json".to_string())
             .expect("Should have been able to read the file");
         // The wrapped harness function, calling out to the LLVM-style harness
-        let mut harness = |input: &BytesInput| {
+        let mut harness = |_input: &BytesInput| {
             for function in functions.clone() {
                 signals_set(1); // set SIGNALS[1]
                 runner(&contents, function.name, function.num_args, 2);
@@ -251,7 +232,6 @@ pub fn main() {
             .expect("Error in the fuzzing loop");
         Ok(())
     };
-
 
     match Launcher::builder()
         .shmem_provider(shmem_provider)
