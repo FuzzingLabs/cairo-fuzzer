@@ -10,8 +10,8 @@ use core::time::Duration;
 use std::{env, net::SocketAddr, path::PathBuf};
 
 use clap::{self, Parser};
-use libafl::prelude::SimpleEventManager;
 use libafl::prelude::RandPrintablesGenerator;
+use libafl::prelude::SimpleEventManager;
 use libafl::prelude::SimpleMonitor;
 use libafl::{
     bolts::{
@@ -107,6 +107,14 @@ struct Opt {
     timeout: Duration,
 }
 
+/// Coverage map with explicit assignments due to the lack of instrumentation
+static mut SIGNALS: [u8; 16] = [0; 16];
+
+/// Assign a signal to the signals map
+fn signals_set(idx: usize) {
+    unsafe { SIGNALS[idx] = 1 };
+}
+
 fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
     //println!("====> Running function : {}", func_name);
     //println!("");
@@ -172,49 +180,35 @@ pub fn main() {
         MultiMonitor::new(|s| println!("{}", s)),
     );
 
-    let mut run_client = |state: Option<_>, mut restarting_mgr, _core_id| {
-        // Create an observation channel using the coverage map
-        let edges = unsafe { &mut EDGES_MAP[0..MAX_EDGES_NUM] };
-        let edges_observer = HitcountsMapObserver::new(StdMapObserver::new("edges", edges));
-
-        // Create an observation channel to keep track of the execution time
-        let time_observer = TimeObserver::new("time");
+    let mut run_client = |state: Option<_>, mut mgr, _core_id| {
+        let observer =
+            unsafe { StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len()) };
 
         // Feedback to rate the interestingness of an input
-        // This one is composed by two Feedbacks in OR
-        let mut feedback = feedback_or!(
-            // New maximization map feedback linked to the edges observer and the feedback state
-            MaxMapFeedback::new_tracking(&edges_observer, true, false),
-            // Time feedback, this one does not need a feedback state
-            TimeFeedback::new_with_observer(&time_observer)
-        );
+        let mut feedback = MaxMapFeedback::new(&observer);
 
         // A feedback to choose if an input is a solution or not
-        let mut objective = feedback_or_fast!(CrashFeedback::new(), TimeoutFeedback::new());
+        let mut objective = CrashFeedback::new();
 
-        // If not restarting, create a State from scratch
-        let mut state = state.unwrap_or_else(|| {
-            StdState::new(
-                // RNG
-                StdRand::with_seed(current_nanos()),
-                // Corpus that will be evolved, we keep it in memory for performance
-                InMemoryCorpus::new(),
-                // Corpus in which we store solutions (crashes in this example),
-                // on disk so the user can get them after stopping the fuzzer
-                OnDiskCorpus::new(&opt.output).unwrap(),
-                // States of the feedbacks.
-                // The feedbacks can report the data that should persist in the State.
-                &mut feedback,
-                // Same for objective feedbacks
-                &mut objective,
-            )
-            .unwrap()
-        });
+        // create a State from scratch
+        let mut state = StdState::new(
+            // RNG
+            StdRand::with_seed(current_nanos()),
+            // Corpus that will be evolved, we keep it in memory for performance
+            InMemoryCorpus::new(),
+            // Corpus in which we store solutions (crashes in this example),
+            // on disk so the user can get them after stopping the fuzzer
+            OnDiskCorpus::new(PathBuf::from("./crashes")).unwrap(),
+            // States of the feedbacks.
+            // The feedbacks can report the data that should persist in the State.
+            &mut feedback,
+            // Same for objective feedbacks
+            &mut objective,
+        )
+        .unwrap();
 
-        println!("Client fuzzing");
-
-        // A minimization+queue policy to get testcasess from the corpus
-        let scheduler = IndexesLenTimeMinimizerScheduler::new(QueueScheduler::new());
+        // A queue policy to get testcasess from the corpus
+        let scheduler = QueueScheduler::new();
 
         // A fuzzer with feedbacks and a corpus scheduler
         let mut fuzzer = StdFuzzer::new(scheduler, feedback, objective);
@@ -222,45 +216,42 @@ pub fn main() {
         let functions = parse_json(&"json/vuln.json".to_string());
         let contents = fs::read_to_string(&"json/vuln.json".to_string())
             .expect("Should have been able to read the file");
-
-        // The wrapped harness function
+        // The wrapped harness function, calling out to the LLVM-style harness
         let mut harness = |input: &BytesInput| {
-            println!("{:?}", input);
             for function in functions.clone() {
+                signals_set(1); // set SIGNALS[1]
                 runner(&contents, function.name, function.num_args, 2);
+                signals_set(2); // set SIGNALS[2]
             }
             ExitKind::Ok
         };
 
-        // Create the executor for an in-process function with one observer for edge coverage and one for the execution time
-        let mut executor = TimeoutExecutor::new(
-            InProcessExecutor::new(
-                &mut harness,
-                tuple_list!(edges_observer, time_observer),
-                &mut fuzzer,
-                &mut state,
-                &mut restarting_mgr,
-            )?,
-            // 10 seconds timeout
-            opt.timeout,
-        );
+        // Create the executor for an in-process function with just one observer
+        let mut executor = InProcessExecutor::new(
+            &mut harness,
+            tuple_list!(observer),
+            &mut fuzzer,
+            &mut state,
+            &mut mgr,
+        )?;
 
-        // In case the corpus is empty (on first run), reset
+        // Generator of printable bytearrays of max size 32
         let mut generator = RandPrintablesGenerator::new(32);
-            state
-        .generate_initial_inputs(&mut fuzzer, &mut executor, &mut generator, &mut restarting_mgr, 8)
-        .expect("Failed to generate the initial corpus");
-            /*state
-                .load_initial_inputs(&mut fuzzer, &mut executor, &mut restarting_mgr, &opt.input)
-                .unwrap_or_else(|_| panic!("Failed to load initial corpus at {:?}", &opt.input));
-            println!("We imported {} inputs from disk.", state.corpus().count());*/
 
-        // Setup a basic mutator with a mutational stage
+        // Generate 8 initial inputs
+        state
+            .generate_initial_inputs(&mut fuzzer, &mut executor, &mut generator, &mut mgr, 8)
+            .expect("Failed to generate the initial corpus");
+
+        // Setup a mutational stage with a basic bytes mutator
         let mutator = StdScheduledMutator::new(havoc_mutations());
         let mut stages = tuple_list!(StdMutationalStage::new(mutator));
-        fuzzer.fuzz_loop(&mut stages, &mut executor, &mut state, &mut restarting_mgr)?;
+        fuzzer
+            .fuzz_loop(&mut stages, &mut executor, &mut state, &mut mgr)
+            .expect("Error in the fuzzing loop");
         Ok(())
     };
+
 
     match Launcher::builder()
         .shmem_provider(shmem_provider)
@@ -270,7 +261,7 @@ pub fn main() {
         .cores(&cores)
         .broker_port(broker_port)
         .remote_broker_addr(opt.remote_broker_addr)
-        //.stdout_file(Some("/dev/null"))
+        .stdout_file(Some("/dev/null"))
         .build()
         .launch()
     {

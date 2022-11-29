@@ -37,3 +37,9 @@ name = "fuzzer"
 path = "src/main.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "basic-fuzzer"
+path = "src/basic_fuzzer_multithread.rs"
+test = false
+doc = false
