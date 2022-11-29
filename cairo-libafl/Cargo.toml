@@ -1,0 +1,39 @@
+[package]
+name = "cairo-libafl"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libafl = { path = "../LibAFL/libafl/", features = ["std", "derive", "llmp_compression", "introspection"]}
+libafl_targets = { path = "../LibAFL/libafl_targets/", features = ["sancov_pcguard_hitcounts", "libfuzzer"] }
+num-bigint = { version = "0.4", features = ["serde"] }
+cairo-rs = { git  = "https://github.com/FuzzingLabs/cairo-rs" }
+num-traits = "0.2"
+serde_json = "1.0"
+arbitrary = {version="1.1.7", features= ["derive"], optional=true, default-features=false}
+clap = { version = "4.0", features = ["derive"] }
+mimalloc = { version = "*", default-features = false }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true
+codegen-units = 1
+opt-level = 3
+debug = true
+
+[[bin]]
+name = "baby"
+path = "src/basic_main.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzzer"
+path = "src/main.rs"
+test = false
+doc = false
