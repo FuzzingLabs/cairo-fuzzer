@@ -7,11 +7,12 @@ use mimalloc::MiMalloc;
 static GLOBAL: MiMalloc = MiMalloc;
 
 use core::time::Duration;
+use std::collections::hash_map::Iter;
 use std::{env, path::PathBuf};
 
 use clap::{self, Parser};
-use libafl::prelude::RandPrintablesGenerator;
 use libafl::prelude::MultiMonitor;
+use libafl::prelude::RandPrintablesGenerator;
 use libafl::{
     bolts::{
         core_affinity::Cores,
@@ -55,7 +56,6 @@ fn timeout_from_millis_str(time: &str) -> Result<Duration, Error> {
 #[derive(Debug, Parser)]
 struct Opt {
     #[arg(
-        short,
         long,
         value_parser = Cores::from_cmdline,
         help = "Spawn a client in each of the provided cores. Broker runs in the 0th core. 'all' to select all available cores. 'none' to run a client without binding to any core. eg: '1,2-4,6' selects the cores 1,2,3,4,6.",
@@ -63,11 +63,10 @@ struct Opt {
     )]
     cores: Cores,
 
-    #[arg(short, long, help = "Set an initial corpus directory", name = "INPUT")]
+    #[arg(long, help = "Set an initial corpus directory", name = "INPUT")]
     input: Vec<PathBuf>,
 
     #[arg(
-        short,
         long,
         help = "Set the output directory, default is ./out",
         name = "OUTPUT",
@@ -75,16 +74,19 @@ struct Opt {
     )]
     output: PathBuf,
 
-    #[arg(
-        long,
-        help = "Set the artefact of the contract",
-        name = "CONTRACT",
-    )]
+    #[arg(long, help = "Set the artefact of the contract", name = "CONTRACT")]
     contract: PathBuf,
 
     #[arg(
+        long,
+        help = "Set the artefact of the contract",
+        name = "ITERATION",
+        default_value = "-1"
+    )]
+    iteration: i64,
+
+    #[arg(
         value_parser = timeout_from_millis_str,
-        short,
         long,
         help = "Set the exeucution timeout in milliseconds, default is 10000",
         name = "TIMEOUT",
@@ -145,7 +147,13 @@ pub fn main() {
     let opt = Opt::parse();
 
     let cores = opt.cores;
-    let contract = opt.contract.to_str().expect("Fuzzer needs path to contract");
+    let contract = opt
+        .contract
+        .to_str()
+        .expect("Fuzzer needs path to contract");
+    let iter = opt.iteration;
+
+    println!("Number of iter : {}", iter);
     println!(
         "Workdir: {:?}",
         env::current_dir().unwrap().to_string_lossy().to_string()
@@ -155,8 +163,8 @@ pub fn main() {
 
     let monitor = MultiMonitor::new(|s| println!("{}", s));
     let functions = parse_json(&contract.to_string());
-    let contents = fs::read_to_string(&contract.to_string())
-        .expect("Should have been able to read the file");
+    let contents =
+        fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
         let observer =
             unsafe { StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len()) };
@@ -220,9 +228,21 @@ pub fn main() {
         // Setup a mutational stage with a basic bytes mutator
         let mutator = StdScheduledMutator::new(havoc_mutations());
         let mut stages = tuple_list!(StdMutationalStage::new(mutator));
-        fuzzer
-            .fuzz_loop(&mut stages, &mut executor, &mut state, &mut mgr)
-            .expect("Error in the fuzzing loop");
+        if iter == -1 {
+            fuzzer
+                .fuzz_loop(&mut stages, &mut executor, &mut state, &mut mgr)
+                .expect("Error in the fuzzing loop");
+        } else {
+            fuzzer
+                .fuzz_loop_for(
+                    &mut stages,
+                    &mut executor,
+                    &mut state,
+                    &mut mgr,
+                    iter as u64,
+                )
+                .expect("Error in the fuzzing loop");
+        }
         Ok(())
     };
 
