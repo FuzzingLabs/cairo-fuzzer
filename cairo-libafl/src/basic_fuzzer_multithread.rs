@@ -7,11 +7,11 @@ use mimalloc::MiMalloc;
 static GLOBAL: MiMalloc = MiMalloc;
 
 use core::time::Duration;
-use std::{env, net::SocketAddr, path::PathBuf};
+use std::{env, path::PathBuf};
 
 use clap::{self, Parser};
 use libafl::prelude::RandPrintablesGenerator;
-use libafl::prelude::SimpleMonitor;
+use libafl::prelude::MultiMonitor;
 use libafl::{
     bolts::{
         core_affinity::Cores,
@@ -62,18 +62,6 @@ struct Opt {
         name = "CORES"
     )]
     cores: Cores,
-
-    #[arg(
-        short = 'p',
-        long,
-        help = "Choose the broker TCP port, default is 1337",
-        name = "PORT",
-        default_value = "1337"
-    )]
-    broker_port: u16,
-
-    #[arg(short = 'a', long, help = "Specify a remote broker", name = "REMOTE")]
-    remote_broker_addr: Option<SocketAddr>,
 
     #[arg(short, long, help = "Set an initial corpus directory", name = "INPUT")]
     input: Vec<PathBuf>,
@@ -149,7 +137,6 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
 pub fn main() {
     let opt = Opt::parse();
 
-    let broker_port = opt.broker_port;
     let cores = opt.cores;
 
     println!(
@@ -159,8 +146,10 @@ pub fn main() {
 
     let shmem_provider = StdShMemProvider::new().expect("Failed to init shared memory");
 
-    let monitor = SimpleMonitor::new(|s| println!("{}", s));
-
+    let monitor = MultiMonitor::new(|s| println!("{}", s));
+    let functions = parse_json(&"json/vuln.json".to_string());
+    let contents = fs::read_to_string(&"json/vuln.json".to_string())
+        .expect("Should have been able to read the file");
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
         let observer =
             unsafe { StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len()) };
@@ -194,10 +183,7 @@ pub fn main() {
         // A fuzzer with feedbacks and a corpus scheduler
         let mut fuzzer = StdFuzzer::new(scheduler, feedback, objective);
 
-        let functions = parse_json(&"json/vuln.json".to_string());
-        let contents = fs::read_to_string(&"json/vuln.json".to_string())
-            .expect("Should have been able to read the file");
-        // The wrapped harness function, calling out to the LLVM-style harness
+        // The wrapped harness function
         let mut harness = |_input: &BytesInput| {
             for function in functions.clone() {
                 signals_set(1); // set SIGNALS[1]
@@ -239,8 +225,6 @@ pub fn main() {
         .monitor(monitor)
         .run_client(&mut run_client)
         .cores(&cores)
-        .broker_port(broker_port)
-        .remote_broker_addr(opt.remote_broker_addr)
         .stdout_file(Some("/dev/null"))
         .build()
         .launch()
