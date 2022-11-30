@@ -76,6 +76,13 @@ struct Opt {
     output: PathBuf,
 
     #[arg(
+        long,
+        help = "Set the artefact of the contract",
+        name = "CONTRACT",
+    )]
+    contract: PathBuf,
+
+    #[arg(
         value_parser = timeout_from_millis_str,
         short,
         long,
@@ -138,7 +145,7 @@ pub fn main() {
     let opt = Opt::parse();
 
     let cores = opt.cores;
-
+    let contract = opt.contract.to_str().expect("Fuzzer needs path to contract");
     println!(
         "Workdir: {:?}",
         env::current_dir().unwrap().to_string_lossy().to_string()
@@ -147,8 +154,8 @@ pub fn main() {
     let shmem_provider = StdShMemProvider::new().expect("Failed to init shared memory");
 
     let monitor = MultiMonitor::new(|s| println!("{}", s));
-    let functions = parse_json(&"json/vuln.json".to_string());
-    let contents = fs::read_to_string(&"json/vuln.json".to_string())
+    let functions = parse_json(&contract.to_string());
+    let contents = fs::read_to_string(&contract.to_string())
         .expect("Should have been able to read the file");
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
         let observer =
