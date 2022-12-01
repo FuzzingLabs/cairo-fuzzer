@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-libafl = { path = "../LibAFL/libafl/", features = ["std", "derive", "llmp_compression", "introspection"]}
-libafl_targets = { path = "../LibAFL/libafl_targets/", features = ["sancov_pcguard_hitcounts", "libfuzzer"] }
+libafl = "*"
+libafl_targets = "*"
 num-bigint = { version = "0.4", features = ["serde"] }
 cairo-rs = { git  = "https://github.com/FuzzingLabs/cairo-rs" }
 num-traits = "0.2"
