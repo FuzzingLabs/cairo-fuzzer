@@ -34,6 +34,7 @@ macro_rules! vm {
         VirtualMachine::new(
             BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
             false,
+            Vec::new(),
         )
     }};
 
@@ -41,15 +42,7 @@ macro_rules! vm {
         VirtualMachine::new(
             BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
             $use_trace,
+            Vec::new(),
         )
     }};
-}
-#[macro_export]
-macro_rules! unwrap_or_return {
-    ( $e:expr ) => {
-        match $e {
-            Some(x) => x,
-            None(_) => return,
-        }
-    }
 }
