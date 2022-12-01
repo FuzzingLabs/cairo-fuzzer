@@ -33,7 +33,7 @@ macro_rules! vm {
     () => {{
         VirtualMachine::new(
             BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
-            false,
+            true,
             Vec::new(),
         )
     }};

@@ -8,7 +8,7 @@ pub struct Function {
     pub type_args: Vec<String>,
 }
 
-pub fn get_type_args(members : &Value) -> Vec<String> {
+pub fn get_type_args(members: &Value) -> Vec<String> {
     let mut type_args = Vec::<String>::new();
     for (_key, value) in members.as_object().unwrap() {
         type_args.push(value["cairo_type"].to_string());
@@ -29,7 +29,8 @@ pub fn parse_json(filename: &String) -> Vec<Function> {
                 let new_function = Function {
                     name: key.split(".").last().unwrap().to_string(),
                     num_args: identifiers[format!("{}.Args", key)]["size"]
-                        .as_u64().unwrap(),
+                        .as_u64()
+                        .unwrap(),
                     type_args: get_type_args(&identifiers[format!("{}.Args", key)]["members"]),
                 };
                 functions.push(new_function);
