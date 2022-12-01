@@ -17,8 +17,6 @@ pub fn get_type_args(members: &Value) -> Vec<String> {
 }
 
 pub fn parse_json(filename: &String) -> Vec<Function> {
-    //println!("====> Parsing file {}", filename);
-    //println!("");
     let data = fs::read_to_string(filename).expect("Unable to read file");
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let identifiers = &data["identifiers"];
@@ -37,6 +35,5 @@ pub fn parse_json(filename: &String) -> Vec<Function> {
             }
         }
     }
-    //println!("{:?}", functions);
     return functions;
 }

@@ -27,19 +27,7 @@ opt-level = 3
 debug = true
 
 [[bin]]
-name = "baby"
-path = "src/basic_main.rs"
-test = false
-doc = false
-
-[[bin]]
-name = "fuzzer"
+name = "cairo-fuzzer"
 path = "src/main.rs"
-test = false
-doc = false
-
-[[bin]]
-name = "basic-fuzzer"
-path = "src/basic_fuzzer_multithread.rs"
 test = false
 doc = false
