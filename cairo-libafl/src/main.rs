@@ -9,7 +9,6 @@ use clap::Parser;
 use utils::parse_json::parse_json;
 use cairo_vm::cairo_runner::runner;
 use std::{fs, path::PathBuf};
-use libafl::prelude::MultiMonitor;
 use libafl::prelude::SimpleMonitor;
 use libafl::prelude::RandPrintablesGenerator;
 use libafl::{
@@ -97,7 +96,7 @@ pub fn main() {
         let mut harness = |_input: &BytesInput| {
             for function in functions.clone() {
                 signals_set(1); // set SIGNALS[1]
-                runner(&contents, function.name, function.num_args, 0)
+                runner(&contents, function.name, function.num_args, 0);
                 //signals_set(2); // set SIGNALS[2]
             }
             ExitKind::Ok

@@ -6,18 +6,17 @@ use cairo_rs::vm::vm_core::VirtualMachine;
 use num_bigint::BigInt;
 use num_bigint::Sign;
 use std::any::Any;
-use std::error::Error;
-use crate::cairo_runner;
-use crate::vm;
-use crate::mayberelocatable;
-use crate::bigint;
 
 pub fn runner(json: &String, func_name: String, args_num: u64, data: isize){
     println!("\n====> Running function : {}", func_name);
     println!("");
     let program = Program::from_string(json, Some(&func_name)).unwrap();
-    let mut cairo_runner = cairo_runner!(program);
-    let mut vm = vm!();
+    let mut cairo_runner = CairoRunner::new(&program, "all", false).unwrap();
+    let mut vm = VirtualMachine::new(
+        BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
+        true,
+        Vec::new(),
+    );
     let hint_processor = BuiltinHintProcessor::new_empty();
 
     let entrypoint = match program
@@ -35,12 +34,12 @@ pub fn runner(json: &String, func_name: String, args_num: u64, data: isize){
 
     //println!("vm segment => {:?}", vm.segments);
     let mut args = Vec::<&dyn Any>::new();
-    let value_zero = &mayberelocatable!(entrypoint); // entry point selector => ne sert a rien
+    let value_zero = &MaybeRelocatable::from(Into::<BigInt>::into(entrypoint)); // entry point selector => ne sert a rien
     let value_one = &MaybeRelocatable::from((2,0)); // output_ptr => 
     args.push(value_zero);
     args.push(value_one);
-    let value_divide = &mayberelocatable!(data);
-    for i in 0..args_num {
+    let value_divide = &MaybeRelocatable::from(Into::<BigInt>::into(data));
+    for _i in 0..args_num {
         args.push(value_divide);
     }
 
@@ -69,6 +68,8 @@ pub fn runner(json: &String, func_name: String, args_num: u64, data: isize){
         return }
         ,
         Err(e) => {
+            //let trace = vm.trace.as_ref().unwrap();
+            //println!("{:?}", trace);
             println!("{:?}",e);
             panic!("{:?}", e);
         }

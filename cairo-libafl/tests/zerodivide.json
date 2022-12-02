@@ -157,8 +157,7 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 5,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
@@ -178,12 +177,12 @@
                             "parent_location": [
                                 {
                                     "end_col": 25,
-                                    "end_line": 8,
+                                    "end_line": 7,
                                     "input_file": {
                                         "filename": "zerodivide.cairo"
                                     },
                                     "start_col": 5,
-                                    "start_line": 8
+                                    "start_line": 7
                                 },
                                 "While trying to retrieve the implicit argument 'output_ptr' in:"
                             ],
@@ -210,31 +209,30 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 5,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 21,
-                    "end_line": 7,
+                    "end_line": 6,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "parent_location": [
                         {
                             "end_col": 24,
-                            "end_line": 8,
+                            "end_line": 7,
                             "input_file": {
                                 "filename": "zerodivide.cairo"
                             },
                             "start_col": 20,
-                            "start_line": 8
+                            "start_line": 7
                         },
                         "While expanding the reference 'test' in:"
                     ],
                     "start_col": 16,
-                    "start_line": 7
+                    "start_line": 6
                 }
             },
             "6": {
@@ -251,19 +249,18 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 5,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 25,
-                    "end_line": 8,
+                    "end_line": 7,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 5,
-                    "start_line": 8
+                    "start_line": 7
                 }
             },
             "8": {
@@ -279,15 +276,15 @@
                     "reference_ids": {
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
-                        "__main__.divide_imp.output_ptr": 8,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.output_ptr": 7,
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 17,
-                    "end_line": 6,
+                    "end_line": 8,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
@@ -304,7 +301,7 @@
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 6
+                    "start_line": 8
                 }
             },
             "10": {
@@ -321,9 +318,9 @@
                         "__main__.divide_imp.__temp0": 9,
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
-                        "__main__.divide_imp.output_ptr": 8,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.output_ptr": 7,
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
@@ -336,7 +333,7 @@
                     "parent_location": [
                         {
                             "end_col": 25,
-                            "end_line": 8,
+                            "end_line": 7,
                             "input_file": {
                                 "filename": "zerodivide.cairo"
                             },
@@ -365,7 +362,7 @@
                                 "While expanding the reference 'output_ptr' in:"
                             ],
                             "start_col": 5,
-                            "start_line": 8
+                            "start_line": 7
                         },
                         "While trying to update the implicit return value 'output_ptr' in:"
                     ],
@@ -387,15 +384,15 @@
                         "__main__.divide_imp.__temp0": 9,
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
-                        "__main__.divide_imp.output_ptr": 8,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.output_ptr": 7,
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 19,
-                    "end_line": 6,
+                    "end_line": 8,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
@@ -412,7 +409,7 @@
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 6
+                    "start_line": 8
                 }
             },
             "12": {
@@ -429,9 +426,9 @@
                         "__main__.divide_imp.__temp0": 9,
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
-                        "__main__.divide_imp.output_ptr": 8,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.output_ptr": 7,
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
@@ -460,14 +457,14 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 10,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 17,
-                    "end_line": 6,
+                    "end_line": 8,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
@@ -484,7 +481,7 @@
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 6
+                    "start_line": 8
                 }
             },
             "16": {
@@ -503,8 +500,8 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 10,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
@@ -570,14 +567,14 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 10,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 19,
-                    "end_line": 6,
+                    "end_line": 8,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
@@ -594,7 +591,7 @@
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 6
+                    "start_line": 8
                 }
             },
             "18": {
@@ -613,8 +610,8 @@
                         "__main__.divide_imp.a": 3,
                         "__main__.divide_imp.b": 4,
                         "__main__.divide_imp.output_ptr": 10,
-                        "__main__.divide_imp.res": 6,
-                        "__main__.divide_imp.test": 7
+                        "__main__.divide_imp.res": 8,
+                        "__main__.divide_imp.test": 6
                     }
                 },
                 "hints": [],
@@ -640,30 +637,30 @@
                     },
                     "reference_ids": {
                         "__main__.divide.a": 12,
-                        "__main__.divide.res": 13
+                        "__main__.divide.res": 16
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 17,
-                    "end_line": 14,
+                    "end_line": 17,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "parent_location": [
                         {
                             "end_col": 20,
-                            "end_line": 15,
+                            "end_line": 18,
                             "input_file": {
                                 "filename": "zerodivide.cairo"
                             },
                             "start_col": 17,
-                            "start_line": 15
+                            "start_line": 18
                         },
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 14
+                    "start_line": 17
                 }
             },
             "21": {
@@ -677,32 +674,32 @@
                         "offset": 1
                     },
                     "reference_ids": {
-                        "__main__.divide.__temp2": 14,
+                        "__main__.divide.__temp2": 17,
                         "__main__.divide.a": 12,
-                        "__main__.divide.res": 13
+                        "__main__.divide.res": 16
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 19,
-                    "end_line": 14,
+                    "end_line": 17,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "parent_location": [
                         {
                             "end_col": 20,
-                            "end_line": 15,
+                            "end_line": 18,
                             "input_file": {
                                 "filename": "zerodivide.cairo"
                             },
                             "start_col": 17,
-                            "start_line": 15
+                            "start_line": 18
                         },
                         "While expanding the reference 'res' in:"
                     ],
                     "start_col": 15,
-                    "start_line": 14
+                    "start_line": 17
                 }
             },
             "22": {
@@ -716,20 +713,20 @@
                         "offset": 2
                     },
                     "reference_ids": {
-                        "__main__.divide.__temp2": 14,
+                        "__main__.divide.__temp2": 17,
                         "__main__.divide.a": 12,
-                        "__main__.divide.res": 13
+                        "__main__.divide.res": 16
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 22,
-                    "end_line": 15,
+                    "end_line": 18,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 5,
-                    "start_line": 15
+                    "start_line": 18
                 }
             },
             "23": {
@@ -743,18 +740,18 @@
                         "offset": 0
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 15
+                        "__main__.main.output_ptr": 18
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 27,
-                    "end_line": 20,
+                    "end_line": 23,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 26,
-                    "start_line": 20
+                    "start_line": 23
                 }
             },
             "25": {
@@ -768,18 +765,18 @@
                         "offset": 1
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 15
+                        "__main__.main.output_ptr": 18
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 28,
-                    "end_line": 20,
+                    "end_line": 23,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 19,
-                    "start_line": 20
+                    "start_line": 23
                 }
             },
             "27": {
@@ -793,14 +790,14 @@
                         "offset": 5
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 15,
-                        "__main__.main.value": 16
+                        "__main__.main.output_ptr": 18,
+                        "__main__.main.value": 19
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 29,
-                    "end_line": 18,
+                    "end_line": 21,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
@@ -814,12 +811,12 @@
                             "parent_location": [
                                 {
                                     "end_col": 26,
-                                    "end_line": 22,
+                                    "end_line": 25,
                                     "input_file": {
                                         "filename": "zerodivide.cairo"
                                     },
                                     "start_col": 5,
-                                    "start_line": 22
+                                    "start_line": 25
                                 },
                                 "While trying to retrieve the implicit argument 'output_ptr' in:"
                             ],
@@ -829,7 +826,7 @@
                         "While expanding the reference 'output_ptr' in:"
                     ],
                     "start_col": 11,
-                    "start_line": 18
+                    "start_line": 21
                 }
             },
             "28": {
@@ -843,31 +840,31 @@
                         "offset": 6
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 15,
-                        "__main__.main.value": 16
+                        "__main__.main.output_ptr": 18,
+                        "__main__.main.value": 19
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 15,
-                    "end_line": 20,
+                    "end_line": 23,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "parent_location": [
                         {
                             "end_col": 25,
-                            "end_line": 22,
+                            "end_line": 25,
                             "input_file": {
                                 "filename": "zerodivide.cairo"
                             },
                             "start_col": 20,
-                            "start_line": 22
+                            "start_line": 25
                         },
                         "While expanding the reference 'value' in:"
                     ],
                     "start_col": 10,
-                    "start_line": 20
+                    "start_line": 23
                 }
             },
             "29": {
@@ -881,19 +878,19 @@
                         "offset": 7
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 15,
-                        "__main__.main.value": 16
+                        "__main__.main.output_ptr": 18,
+                        "__main__.main.value": 19
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 26,
-                    "end_line": 22,
+                    "end_line": 25,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 5,
-                    "start_line": 22
+                    "start_line": 25
                 }
             },
             "31": {
@@ -907,19 +904,19 @@
                         "offset": 10
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 17,
-                        "__main__.main.value": 16
+                        "__main__.main.output_ptr": 20,
+                        "__main__.main.value": 19
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 15,
-                    "end_line": 24,
+                    "end_line": 27,
                     "input_file": {
                         "filename": "zerodivide.cairo"
                     },
                     "start_col": 5,
-                    "start_line": 24
+                    "start_line": 27
                 }
             }
         }
@@ -990,6 +987,30 @@
             "cairo_type": "felt",
             "full_name": "__main__.divide.res",
             "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 19,
+                    "value": "cast(5, felt)"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 19,
+                    "value": "cast(1206167596222043737899107594365023368541035738443865566657697352045290673497, felt)"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 19,
+                    "value": "cast(2, felt)"
+                },
                 {
                     "ap_tracking_data": {
                         "group": 2,
@@ -1138,9 +1159,9 @@
                 {
                     "ap_tracking_data": {
                         "group": 1,
-                        "offset": 0
+                        "offset": 5
                     },
-                    "pc": 4,
+                    "pc": 8,
                     "value": "cast(10 / [fp + (-4)], felt)"
                 }
             ],
@@ -1365,14 +1386,6 @@
                     "offset": 0
                 },
                 "pc": 4,
-                "value": "cast(10 / [fp + (-4)], felt)"
-            },
-            {
-                "ap_tracking_data": {
-                    "group": 1,
-                    "offset": 0
-                },
-                "pc": 4,
                 "value": "cast([fp + (-4)] + [fp + (-3)], felt)"
             },
             {
@@ -1382,6 +1395,14 @@
                 },
                 "pc": 8,
                 "value": "[cast(ap + (-1), felt**)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 1,
+                    "offset": 5
+                },
+                "pc": 8,
+                "value": "cast(10 / [fp + (-4)], felt)"
             },
             {
                 "ap_tracking_data": {
@@ -1414,6 +1435,30 @@
                 },
                 "pc": 19,
                 "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 19,
+                "value": "cast(5, felt)"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 19,
+                "value": "cast(1206167596222043737899107594365023368541035738443865566657697352045290673497, felt)"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 19,
+                "value": "cast(2, felt)"
             },
             {
                 "ap_tracking_data": {

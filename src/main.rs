@@ -19,8 +19,12 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
     println!("\n====> Running function : {}", func_name);
     println!("");
     let program = Program::from_string(json, Some(&func_name)).unwrap();
-    let mut cairo_runner = cairo_runner!(program);
-    let mut vm = vm!();
+    let mut cairo_runner = CairoRunner::new(&program, "all", false).unwrap();
+    let mut vm = VirtualMachine::new(
+        BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
+        true,
+        Vec::new(),
+    );
     let hint_processor = BuiltinHintProcessor::new_empty();
 
     let entrypoint = match program
@@ -30,7 +34,7 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
         .pc
     {
         Some(value) => value,
-        None => return,
+        None => return ,
     };
 
     cairo_runner.initialize_builtins(&mut vm).unwrap();
@@ -38,16 +42,16 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
 
     //println!("vm segment => {:?}", vm.segments);
     let mut args = Vec::<&dyn Any>::new();
-    let value_zero = &mayberelocatable!(entrypoint); // entry point selector => ne sert a rien
+    let value_zero = &MaybeRelocatable::from(Into::<BigInt>::into(entrypoint)); // entry point selector => ne sert a rien
     let value_one = &MaybeRelocatable::from((2,0)); // output_ptr => 
     args.push(value_zero);
     args.push(value_one);
-    let value_divide = &mayberelocatable!(0);
-    for i in 0..args_num {
+    let value_divide = &MaybeRelocatable::from(Into::<BigInt>::into(5));
+    for _i in 0..args_num {
         args.push(value_divide);
     }
 
-    println!("args_num here ==> {}", args_num);
+    //println!("args_num here ==> {}", args_num);
     match cairo_runner.run_from_entrypoint(
         entrypoint,
         args,
@@ -60,7 +64,7 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
         Ok(()) => {
             let mut stdout = Vec::<u8>::new();
         cairo_runner.write_output(&mut vm, &mut stdout).unwrap();
-        let trace = vm.trace.as_ref().unwrap();
+        let trace = vm.get_trace().unwrap();
         println!("trace : {:?}", trace);
         println!("write output : {:?}", stdout);
         println!("");
@@ -68,9 +72,15 @@ fn runner(json: &String, func_name: String, args_num: u64, data: isize) {
             "get output : {:?}",
             cairo_runner.get_output(&mut vm).unwrap()
         );
-        println!("");}
+        println!("");
+        return }
         ,
-        Err(e) => println!("{:?}", e),
+        Err(e) => {
+            //let trace = vm.trace.as_ref().unwrap();
+            //println!("{:?}", trace);
+            println!("{:?}",e);
+            panic!("{:?}", e);
+        }
     }
 }
 
@@ -102,7 +112,7 @@ fn main() {
     let functions = parse_json(filename);
     let contents = fs::read_to_string(filename).expect("could not read contract artefact");
     for function in functions {
-    runner(&contents, function.name, function.num_args, 0);
+    runner(&contents, function.name, function.num_args, 5);
     }
 }
 
