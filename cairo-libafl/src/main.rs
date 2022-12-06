@@ -35,21 +35,20 @@ use libafl::{
     state::StdState,
     Error,
 };
-use std::str;
 use std::{fs, path::PathBuf};
 use utils::parse_json::parse_json;
 
 /// Coverage map with explicit assignments due to the lack of instrumentation
-//static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
-//static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
-static mut SIGNALS: [usize; 1000000] = [0; 1000000];
+static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
+static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
+//static mut SIGNALS: [usize; 1000000] = [0; 1000000];
 
 
 /// Assign a signal to the signals map
-fn signals_set(sig: usize/*fp: usize, pc: usize*/) {
-    //unsafe { SIGNALS_FP[fp] = 1 };
-    //unsafe { SIGNALS_PC[pc] = 1 };
-    unsafe { SIGNALS[sig] = 1 };
+fn signals_set(fp: usize, pc: usize) {
+    unsafe { SIGNALS_FP[fp] = 1 };
+    unsafe { SIGNALS_PC[pc] = 1 };
+    //unsafe { SIGNALS[sig] = 1 };
 }
 
 pub fn debug_input(buf: &[u8]) {
@@ -106,21 +105,21 @@ pub fn main() {
     };
 
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
-        /*let observer_fp = unsafe {
+        let observer_fp = unsafe {
             StdMapObserver::new_from_ptr("signals_fp", SIGNALS_FP.as_mut_ptr(), SIGNALS_FP.len())
         };
 
         let observer_pc = unsafe {
             StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len())
-        };*/
-        let observer = unsafe {
-            StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len())
         };
-        /*let mut feedback = feedback_or!(
+        //let observer = unsafe {
+        //    StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len())
+        //};
+        let mut feedback = feedback_or!(
             MaxMapFeedback::new(&observer_pc),
             MaxMapFeedback::new(&observer_fp)
-        );*/
-        let mut feedback = MaxMapFeedback::new(&observer);
+        );
+        //let mut feedback = MaxMapFeedback::new(&observer);
         // A feedback to choose if an input is a solution or not
         let mut objective = CrashFeedback::new();
 
@@ -150,11 +149,11 @@ pub fn main() {
             let target = input.target_bytes();
             let buf = target.as_slice();
             if !buf.is_empty() && buf.len() == 11 {
-                debug_input(buf);
+                //debug_input(buf);
                 match runner(&contents, function.name.clone(), input) {
                     Ok(traces) => {
                         for trace in traces.unwrap() {
-                            signals_set(trace.0.offset * 1000 + trace.1.offset);
+                            signals_set(trace.0.offset, trace.1.offset);
                             //dprintln!("Setting signals! {} {}",trace.0.offset, trace.1.offset);
                         }
                     }
@@ -169,8 +168,8 @@ pub fn main() {
         // Create the executor for an in-process function with just one observer
         let mut executor = InProcessExecutor::new(
             &mut harness,
-            //tuple_list!(observer_fp, observer_pc),
-            tuple_list!(observer),
+            tuple_list!(observer_fp, observer_pc),
+            //tuple_list!(observer),
             &mut fuzzer,
             &mut state,
             &mut mgr,
@@ -187,19 +186,20 @@ pub fn main() {
         // Setup a mutational stage with a basic bytes mutator
         let mutator = StdScheduledMutator::new(tuple_list!(BitFlipMutator::new()));
         let mut stages = tuple_list!(StdMutationalStage::new(mutator));
-        if iter == -1 {
+        if let Some(iters) = iter {
+            println!("Running {} iter", {iters});
             fuzzer
-                .fuzz_loop(&mut stages, &mut executor, &mut state, &mut mgr)
-                .expect("Error in the fuzzing loop");
+            .fuzz_loop_for(
+                &mut stages,
+                &mut executor,
+                &mut state,
+                &mut mgr,
+                iters,
+            )
+            .expect("Error in the fuzzing loop");
         } else {
             fuzzer
-                .fuzz_loop_for(
-                    &mut stages,
-                    &mut executor,
-                    &mut state,
-                    &mut mgr,
-                    iter as u64,
-                )
+                .fuzz_loop(&mut stages, &mut executor, &mut state, &mut mgr)
                 .expect("Error in the fuzzing loop");
         }
         Ok(())
