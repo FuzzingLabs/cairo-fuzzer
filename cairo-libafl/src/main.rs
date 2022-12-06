@@ -10,6 +10,7 @@ mod utils;
 use cairo_vm::cairo_runner::runner;
 use clap::Parser;
 mod input_generator;
+use debug_print::debug_println as dprintln;
 use input_generator::generator::MyRandPrintablesGenerator;
 use libafl::prelude::SimpleMonitor;
 use libafl::prelude::*;
@@ -27,28 +28,59 @@ use libafl::{
     feedbacks::{CrashFeedback, MaxMapFeedback},
     fuzzer::{Fuzzer, StdFuzzer},
     inputs::BytesInput,
-    mutators::scheduled::{StdScheduledMutator},
+    mutators::scheduled::StdScheduledMutator,
     observers::StdMapObserver,
     schedulers::QueueScheduler,
     stages::mutational::StdMutationalStage,
     state::StdState,
     Error,
 };
+use std::str;
 use std::{fs, path::PathBuf};
 use utils::parse_json::parse_json;
 
-use debug_print::{
-    debug_println as dprintln,
-};
-
 /// Coverage map with explicit assignments due to the lack of instrumentation
-static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
-static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
+//static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
+//static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
+static mut SIGNALS: [usize; 1000000] = [0; 1000000];
+
 
 /// Assign a signal to the signals map
-fn signals_set(fp: usize, pc: usize) {
-    unsafe { SIGNALS_FP[fp] = 1 };
-    unsafe { SIGNALS_PC[pc] = 1 };
+fn signals_set(sig: usize/*fp: usize, pc: usize*/) {
+    //unsafe { SIGNALS_FP[fp] = 1 };
+    //unsafe { SIGNALS_PC[pc] = 1 };
+    unsafe { SIGNALS[sig] = 1 };
+}
+
+pub fn debug_input(buf: &[u8]) {
+    dprintln!("----");
+    if buf[0] as char == 'f' {
+        dprintln!("f");
+
+        if buf[1] as char == 'u' {
+            dprintln!("u");
+
+            if buf[2] as char == 'z' {
+                dprintln!("z");
+
+                if buf[3] as char == 'z' {
+                    dprintln!("z");
+
+                    if buf[4] as char == 'i' {
+                        dprintln!("i");
+
+                        if buf[5] as char == 'n' {
+                            dprintln!("n");
+
+                            if buf[6] as char == 'g' {
+                                dprintln!("g");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 pub fn main() {
@@ -74,18 +106,21 @@ pub fn main() {
     };
 
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
+        /*let observer_fp = unsafe {
+            StdMapObserver::new_from_ptr("signals_fp", SIGNALS_FP.as_mut_ptr(), SIGNALS_FP.len())
+        };
 
-        let observer_fp =
-        unsafe { StdMapObserver::new_from_ptr("signals_fp", SIGNALS_FP.as_mut_ptr(), SIGNALS_FP.len()) };
-
-        let observer_pc =
-        unsafe { StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len()) };
-
-
-        let mut feedback =feedback_or!(
+        let observer_pc = unsafe {
+            StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len())
+        };*/
+        let observer = unsafe {
+            StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len())
+        };
+        /*let mut feedback = feedback_or!(
             MaxMapFeedback::new(&observer_pc),
             MaxMapFeedback::new(&observer_fp)
-        );
+        );*/
+        let mut feedback = MaxMapFeedback::new(&observer);
         // A feedback to choose if an input is a solution or not
         let mut objective = CrashFeedback::new();
 
@@ -115,11 +150,12 @@ pub fn main() {
             let target = input.target_bytes();
             let buf = target.as_slice();
             if !buf.is_empty() && buf.len() == 11 {
+                debug_input(buf);
                 match runner(&contents, function.name.clone(), input) {
                     Ok(traces) => {
                         for trace in traces.unwrap() {
-                            signals_set(trace.0.offset, trace.1.offset);
-                            dprintln!("Setting signals! {} {}",trace.0.offset, trace.1.offset);
+                            signals_set(trace.0.offset * 1000 + trace.1.offset);
+                            //dprintln!("Setting signals! {} {}",trace.0.offset, trace.1.offset);
                         }
                     }
                     Err(_e) => (),
@@ -133,7 +169,8 @@ pub fn main() {
         // Create the executor for an in-process function with just one observer
         let mut executor = InProcessExecutor::new(
             &mut harness,
-            tuple_list!(observer_fp, observer_pc),
+            //tuple_list!(observer_fp, observer_pc),
+            tuple_list!(observer),
             &mut fuzzer,
             &mut state,
             &mut mgr,
@@ -174,7 +211,7 @@ pub fn main() {
         .monitor(monitor)
         .run_client(&mut run_client)
         .cores(&cores)
-        .stdout_file(Some("/dev/null"))
+        //.stdout_file(Some("/dev/null"))
         .build()
         .launch()
     {

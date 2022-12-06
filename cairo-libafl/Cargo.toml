@@ -9,7 +9,7 @@ edition = "2021"
 libafl = "*"
 libafl_targets = "*"
 num-bigint = { version = "0.4", features = ["serde"] }
-cairo-rs = { git="https://github.com/raefko/cairo-rs/" }
+cairo-rs = { git="https://github.com/raefko/cairo-rs/", rev="8e06bf1179643a25e7590551745b38723d2b11b9"}
 num-traits = "0.2"
 serde_json = "1.0"
 arbitrary = {version="1.1.7", features= ["derive"], optional=true, default-features=false}

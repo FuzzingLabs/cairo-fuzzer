@@ -19,7 +19,3 @@ Add --release to hide them
 cargo run --release -- --cores all --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
 ```
 
-Add --debug to show them
-```sh
-cargo run --debug -- --cores all --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
-```
