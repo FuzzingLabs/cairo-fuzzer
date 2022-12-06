@@ -1,16 +1,20 @@
+use cairo_rs::types::relocatable::Relocatable;
+use libafl::prelude::AsSlice;
+use libafl::prelude::HasTargetBytes;
 use mimalloc::MiMalloc;
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 mod args;
 use args::Opt;
-mod utils;
 mod cairo_vm;
-use clap::Parser;
-use utils::parse_json::parse_json;
+mod utils;
 use cairo_vm::cairo_runner::runner;
-use std::{fs, path::PathBuf};
+use clap::Parser;
+mod input_generator;
+use input_generator::generator::MyRandPrintablesGenerator;
+use libafl::prelude::HavocMutationsType;
 use libafl::prelude::SimpleMonitor;
-use libafl::prelude::RandPrintablesGenerator;
+use libafl::prelude::*;
 use libafl::{
     bolts::{
         current_nanos,
@@ -32,39 +36,62 @@ use libafl::{
     state::StdState,
     Error,
 };
-
-
+use libafl_targets::{CmpLogObserver, CMPLOG_MAP, EDGES_MAP, MAX_EDGES_NUM};
+use std::{fs, path::PathBuf};
+use utils::parse_json::parse_json;
 /// Coverage map with explicit assignments due to the lack of instrumentation
-static mut SIGNALS: [u8; 16] = [0; 16];
+//static mut SIGNALS: [u8; 100] = [0; 100];
+//#[derive(SliceIndex)]
+//static mut SIGNALS: [(usize, usize); 100] = [(0, 0); 100];
 
 /// Assign a signal to the signals map
-fn signals_set(idx: usize) {
-    unsafe { SIGNALS[idx] = 1 };
-}
+//fn signals_set(fp_off: usize, pc_off: usize) {
+//    unsafe { SIGNALS[(fp_off, pc_off)] = 1 };
+//}
 
 pub fn main() {
     let opt = Opt::parse();
-
     let cores = opt.cores;
     let contract = opt
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
     let iter = opt.iteration;
+    let function_name = opt.function;
 
     let shmem_provider = StdShMemProvider::new().expect("Failed to init shared memory");
-
     let monitor = SimpleMonitor::new(|s| println!("{}", s));
-    
-    let functions = parse_json(&contract.to_string());
     let contents =
         fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
+    let function = match parse_json(&contents, &function_name) {
+        Some(func) => func,
+        None => {
+            println!("Could not find the function {}", function_name);
+            return;
+        }
+    };
+
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
-        let observer =
-            unsafe { StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len()) };
+        let edges = unsafe { &mut EDGES_MAP[0..MAX_EDGES_NUM] };
+        let edges_observer = StdMapObserver::new("edges", edges);
+
+        // Create an observation channel to keep track of the execution time
+        let time_observer = TimeObserver::new("time");
+
+        let cmplog = unsafe { &mut CMPLOG_MAP };
+        let cmplog_observer = CmpLogObserver::new("cmplog", cmplog, true);
+
+        //let observer = ListObserver::new("cov", unsafe { &mut COVERAGE });
 
         // Feedback to rate the interestingness of an input
-        let mut feedback = MaxMapFeedback::new(&observer);
+        //let mut feedback = ListFeedback::new_with_observer(&observer);
+
+        let mut feedback = feedback_or!(
+            // New maximization map feedback linked to the edges observer and the feedback state
+            MaxMapFeedback::new_tracking(&edges_observer, true, false),
+            // Time feedback, this one does not need a feedback state
+            TimeFeedback::new_with_observer(&time_observer)
+        );
 
         // A feedback to choose if an input is a solution or not
         let mut objective = CrashFeedback::new();
@@ -86,18 +113,36 @@ pub fn main() {
         )
         .unwrap();
 
-        // A queue policy to get testcasess from the corpus
+        // A queue policy to get testcases from the corpus
         let scheduler = QueueScheduler::new();
 
         // A fuzzer with feedbacks and a corpus scheduler
         let mut fuzzer = StdFuzzer::new(scheduler, feedback, objective);
-
+        let mut trace_feedback = Vec::<(Relocatable, Relocatable)>::new();
+        let mut index: usize = 1;
         // The wrapped harness function
-        let mut harness = |_input: &BytesInput| {
-            for function in functions.clone() {
-                signals_set(1); // set SIGNALS[1]
-                runner(&contents, function.name, function.num_args, 0);
-                //signals_set(2); // set SIGNALS[2]
+        let mut harness = |input: &BytesInput| {
+            let target = input.target_bytes();
+            let buf = target.as_slice();
+            if !buf.is_empty() && buf.len() == 11 {
+                match runner(&contents, function.name.clone(), input) {
+                    Ok(trace) => {
+                        for i in trace.unwrap() {
+                            //if !trace_feedback.contains(&i) {
+                            //    trace_feedback.push(i);
+                            //}
+
+                            /* how to use edges/edges map ?? */
+
+                            //signals_set(i.0.offset, i.1.offset);
+                            //    index += 1;
+                            // }
+                        }
+                    }
+                    Err(_e) => (),
+                }
+            } else {
+                println!("BUG IN GENERATOR {}", buf.len());
             }
             ExitKind::Ok
         };
@@ -105,14 +150,14 @@ pub fn main() {
         // Create the executor for an in-process function with just one observer
         let mut executor = InProcessExecutor::new(
             &mut harness,
-            tuple_list!(observer),
+            tuple_list!(edges_observer, time_observer),
             &mut fuzzer,
             &mut state,
             &mut mgr,
         )?;
 
         // Generator of printable bytearrays of max size 32
-        let mut generator = RandPrintablesGenerator::new(32);
+        let mut generator = MyRandPrintablesGenerator::new(11);
 
         // Generate 8 initial inputs
         state
@@ -120,7 +165,7 @@ pub fn main() {
             .expect("Failed to generate the initial corpus");
 
         // Setup a mutational stage with a basic bytes mutator
-        let mutator = StdScheduledMutator::new(havoc_mutations());
+        let mutator = StdScheduledMutator::new(tuple_list!(BitFlipMutator::new()));
         let mut stages = tuple_list!(StdMutationalStage::new(mutator));
         if iter == -1 {
             fuzzer
@@ -146,7 +191,7 @@ pub fn main() {
         .monitor(monitor)
         .run_client(&mut run_client)
         .cores(&cores)
-        //.stdout_file(Some("/dev/null"))
+        .stdout_file(Some("/dev/null"))
         .build()
         .launch()
     {

@@ -1,8 +1,8 @@
 use clap::{self, Parser};
+use core::time::Duration;
 use libafl::bolts::core_affinity::Cores;
 use libafl::Error;
 use std::path::PathBuf;
-use core::time::Duration;
 
 fn timeout_from_millis_str(time: &str) -> Result<Duration, Error> {
     Ok(Duration::from_millis(time.parse()?))
@@ -28,6 +28,13 @@ pub struct Opt {
         default_value = "./out"
     )]
     pub output: PathBuf,
+
+    #[arg(
+        long,
+        help = "Set the output directory, default is ./out",
+        name = "FUNCTION"
+    )]
+    pub function: String,
 
     #[arg(long, help = "Set the artefact of the contract", name = "CONTRACT")]
     pub contract: PathBuf,
