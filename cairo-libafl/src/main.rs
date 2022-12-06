@@ -1,4 +1,3 @@
-use cairo_rs::types::relocatable::Relocatable;
 use libafl::prelude::AsSlice;
 use libafl::prelude::HasTargetBytes;
 use mimalloc::MiMalloc;
@@ -12,7 +11,6 @@ use cairo_vm::cairo_runner::runner;
 use clap::Parser;
 mod input_generator;
 use input_generator::generator::MyRandPrintablesGenerator;
-use libafl::prelude::HavocMutationsType;
 use libafl::prelude::SimpleMonitor;
 use libafl::prelude::*;
 use libafl::{
@@ -29,25 +27,27 @@ use libafl::{
     feedbacks::{CrashFeedback, MaxMapFeedback},
     fuzzer::{Fuzzer, StdFuzzer},
     inputs::BytesInput,
-    mutators::scheduled::{havoc_mutations, StdScheduledMutator},
+    mutators::scheduled::{StdScheduledMutator},
     observers::StdMapObserver,
     schedulers::QueueScheduler,
     stages::mutational::StdMutationalStage,
     state::StdState,
     Error,
 };
-use libafl_targets::{CmpLogObserver, CMPLOG_MAP, EDGES_MAP, MAX_EDGES_NUM};
 use std::{fs, path::PathBuf};
 use utils::parse_json::parse_json;
+
 /// Coverage map with explicit assignments due to the lack of instrumentation
-//static mut SIGNALS: [u8; 100] = [0; 100];
-//#[derive(SliceIndex)]
-//static mut SIGNALS: [(usize, usize); 100] = [(0, 0); 100];
+static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
+static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
 
 /// Assign a signal to the signals map
-//fn signals_set(fp_off: usize, pc_off: usize) {
-//    unsafe { SIGNALS[(fp_off, pc_off)] = 1 };
-//}
+fn signals_set(fp: usize, pc: usize) {
+    unsafe { SIGNALS_FP[fp] = 1 };
+    unsafe { SIGNALS_PC[pc] = 1 };
+}
+
+
 
 pub fn main() {
     let opt = Opt::parse();
@@ -72,27 +72,18 @@ pub fn main() {
     };
 
     let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
-        let edges = unsafe { &mut EDGES_MAP[0..MAX_EDGES_NUM] };
-        let edges_observer = StdMapObserver::new("edges", edges);
 
-        // Create an observation channel to keep track of the execution time
-        let time_observer = TimeObserver::new("time");
+        let observer_fp =
+        unsafe { StdMapObserver::new_from_ptr("signals_fp", SIGNALS_FP.as_mut_ptr(), SIGNALS_FP.len()) };
 
-        let cmplog = unsafe { &mut CMPLOG_MAP };
-        let cmplog_observer = CmpLogObserver::new("cmplog", cmplog, true);
+        let observer_pc =
+        unsafe { StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len()) };
 
-        //let observer = ListObserver::new("cov", unsafe { &mut COVERAGE });
 
-        // Feedback to rate the interestingness of an input
-        //let mut feedback = ListFeedback::new_with_observer(&observer);
-
-        let mut feedback = feedback_or!(
-            // New maximization map feedback linked to the edges observer and the feedback state
-            MaxMapFeedback::new_tracking(&edges_observer, true, false),
-            // Time feedback, this one does not need a feedback state
-            TimeFeedback::new_with_observer(&time_observer)
+        let mut feedback =feedback_and!(
+            MaxMapFeedback::new(&observer_pc),
+            MaxMapFeedback::new(&observer_fp)
         );
-
         // A feedback to choose if an input is a solution or not
         let mut objective = CrashFeedback::new();
 
@@ -118,25 +109,14 @@ pub fn main() {
 
         // A fuzzer with feedbacks and a corpus scheduler
         let mut fuzzer = StdFuzzer::new(scheduler, feedback, objective);
-        let mut trace_feedback = Vec::<(Relocatable, Relocatable)>::new();
-        let mut index: usize = 1;
-        // The wrapped harness function
         let mut harness = |input: &BytesInput| {
             let target = input.target_bytes();
             let buf = target.as_slice();
             if !buf.is_empty() && buf.len() == 11 {
                 match runner(&contents, function.name.clone(), input) {
-                    Ok(trace) => {
-                        for i in trace.unwrap() {
-                            //if !trace_feedback.contains(&i) {
-                            //    trace_feedback.push(i);
-                            //}
-
-                            /* how to use edges/edges map ?? */
-
-                            //signals_set(i.0.offset, i.1.offset);
-                            //    index += 1;
-                            // }
+                    Ok(traces) => {
+                        for trace in traces.unwrap() {
+                            signals_set(trace.0.offset, trace.1.offset);
                         }
                     }
                     Err(_e) => (),
@@ -150,7 +130,7 @@ pub fn main() {
         // Create the executor for an in-process function with just one observer
         let mut executor = InProcessExecutor::new(
             &mut harness,
-            tuple_list!(edges_observer, time_observer),
+            tuple_list!(observer_fp, observer_pc),
             &mut fuzzer,
             &mut state,
             &mut mgr,
