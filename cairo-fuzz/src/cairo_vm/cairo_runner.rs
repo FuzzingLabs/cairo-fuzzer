@@ -4,6 +4,8 @@ use cairo_rs::types::relocatable::MaybeRelocatable;
 use cairo_rs::types::relocatable::Relocatable;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
+use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
+
 use num_bigint::BigInt;
 use num_bigint::Sign;
 
@@ -11,7 +13,7 @@ pub fn runner(
     json: &String,
     func_name: String,
     data: &Vec<u8>,
-) -> Result<Option<Vec<(Relocatable, Relocatable)>>, ()> {
+) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
     let program = Program::from_string(json, Some(&func_name)).unwrap();
     let mut cairo_runner = CairoRunner::new(&program, "all", false).unwrap();
     let mut vm = VirtualMachine::new(
@@ -104,7 +106,8 @@ pub fn runner(
             //let trace = vm.trace.as_ref().unwrap();
             //println!("{:?}", trace);
             println!("{:?}", e);
-            panic!("{:?} {:?}", data, e);
+            return Err(e);
+            //panic!("{:?} {:?}", data, e);
         }
     }
 }
