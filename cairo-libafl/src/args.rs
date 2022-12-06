@@ -43,9 +43,8 @@ pub struct Opt {
         long,
         help = "Set the artefact of the contract",
         name = "ITERATION",
-        default_value = "-1"
     )]
-    pub iteration: i64,
+    pub iteration: Option<u64>,
 
     #[arg(
         value_parser = timeout_from_millis_str,
