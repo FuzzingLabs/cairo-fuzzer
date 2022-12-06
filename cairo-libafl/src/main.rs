@@ -39,16 +39,16 @@ use std::{fs, path::PathBuf};
 use utils::parse_json::parse_json;
 
 /// Coverage map with explicit assignments due to the lack of instrumentation
-static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
-static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
-//static mut SIGNALS: [usize; 1000000] = [0; 1000000];
+//static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
+//static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
+static mut SIGNALS: [u32; 100000] = [0; 100000];
 
 
 /// Assign a signal to the signals map
-fn signals_set(fp: usize, pc: usize) {
-    unsafe { SIGNALS_FP[fp] = 1 };
-    unsafe { SIGNALS_PC[pc] = 1 };
-    //unsafe { SIGNALS[sig] = 1 };
+fn signals_set(sig: u32/*fp: usize, pc: usize*/) {
+    //unsafe { SIGNALS_FP[fp] = 1 };
+    //unsafe { SIGNALS_PC[pc] = 1 };
+    unsafe { SIGNALS[sig] = 1 };
 }
 
 pub fn debug_input(buf: &[u8]) {
@@ -104,18 +104,18 @@ pub fn main() {
         }
     };
 
-    let mut run_client = |_state: Option<_>, mut mgr, _core_id| {
-        let observer_fp = unsafe {
+
+    let mut run_client = |state: Option<_>, mut mgr, _core_id| {
+        /*let observer_fp = unsafe {
             StdMapObserver::new_from_ptr("signals_fp", SIGNALS_FP.as_mut_ptr(), SIGNALS_FP.len())
         };
 
         let observer_pc = unsafe {
             StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len())
         };
-        //let observer = unsafe {
-        //    StdMapObserver::new_from_ptr("signals", SIGNALS.as_mut_ptr(), SIGNALS.len())
-        //};
-        let mut feedback = feedback_or!(
+
+        //let observer = unsafe { ConstMapObserver::<u8, 3>::new_from_ptr("signals", array_ptr) };
+        /*let mut feedback = feedback_or!(
             MaxMapFeedback::new(&observer_pc),
             MaxMapFeedback::new(&observer_fp)
         );
