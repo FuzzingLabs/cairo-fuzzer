@@ -37,6 +37,10 @@ use libafl::{
 use std::{fs, path::PathBuf};
 use utils::parse_json::parse_json;
 
+use debug_print::{
+    debug_println as dprintln,
+};
+
 /// Coverage map with explicit assignments due to the lack of instrumentation
 static mut SIGNALS_FP: [usize; 100000] = [0; 100000];
 static mut SIGNALS_PC: [usize; 100000] = [0; 100000];
@@ -46,8 +50,6 @@ fn signals_set(fp: usize, pc: usize) {
     unsafe { SIGNALS_FP[fp] = 1 };
     unsafe { SIGNALS_PC[pc] = 1 };
 }
-
-
 
 pub fn main() {
     let opt = Opt::parse();
@@ -80,7 +82,7 @@ pub fn main() {
         unsafe { StdMapObserver::new_from_ptr("signals_fp", SIGNALS_PC.as_mut_ptr(), SIGNALS_PC.len()) };
 
 
-        let mut feedback =feedback_and!(
+        let mut feedback =feedback_or!(
             MaxMapFeedback::new(&observer_pc),
             MaxMapFeedback::new(&observer_fp)
         );
@@ -117,6 +119,7 @@ pub fn main() {
                     Ok(traces) => {
                         for trace in traces.unwrap() {
                             signals_set(trace.0.offset, trace.1.offset);
+                            dprintln!("Setting signals! {} {}",trace.0.offset, trace.1.offset);
                         }
                     }
                     Err(_e) => (),
@@ -171,7 +174,7 @@ pub fn main() {
         .monitor(monitor)
         .run_client(&mut run_client)
         .cores(&cores)
-        .stdout_file(Some("/dev/null"))
+        //.stdout_file(Some("/dev/null"))
         .build()
         .launch()
     {

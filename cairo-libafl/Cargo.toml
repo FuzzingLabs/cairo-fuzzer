@@ -15,6 +15,7 @@ serde_json = "1.0"
 arbitrary = {version="1.1.7", features= ["derive"], optional=true, default-features=false}
 clap = { version = "4.0", features = ["derive"] }
 mimalloc = { version = "*", default-features = false }
+debug_print = "*"
 
 [profile.dev]
 panic = "abort"
