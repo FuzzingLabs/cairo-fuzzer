@@ -12,3 +12,14 @@ The name of the function we want to execute.
 
 ### --cores:
 Spawn a client in each of the provided cores. Broker runs in the 0th core. 'all' to select all available cores. 'none' to run a client without binding to any core. eg: '1,2-4,6' selects the cores 1,2,3,4,6.",
+
+### Debug print:
+Add --release to hide them
+```sh
+cargo run --release -- --cores all --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
+```
+
+Add --debug to show them
+```sh
+cargo run --debug -- --cores all --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
+```

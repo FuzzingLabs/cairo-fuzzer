@@ -174,7 +174,7 @@ pub fn main() {
         .monitor(monitor)
         .run_client(&mut run_client)
         .cores(&cores)
-        //.stdout_file(Some("/dev/null"))
+        .stdout_file(Some("/dev/null"))
         .build()
         .launch()
     {
