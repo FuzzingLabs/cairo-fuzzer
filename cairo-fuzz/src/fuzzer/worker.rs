@@ -19,7 +19,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
 
     // Create a mutator for 11-byte ASCII printable inputs
     // TODO - remove ascii limitation
-    let mut mutator = Mutator::new().seed(fuzzing_data.seed + (worker_id as u64)).max_input_size(11).printable(true);
+    let mut mutator = Mutator::new()
+        .seed(fuzzing_data.seed + (worker_id as u64))
+        .max_input_size(11)
+        .printable(true);
 
     'next_case: loop {
         // clear previous data
@@ -124,6 +127,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
                         stats.input_len += 1;
 
                         record_input(&fuzz_input, true);
+                        record_input(&fuzz_input, false);
                     }
 
                     // Add the crash name and corresponding fuzz input to the crash
