@@ -1,40 +1,37 @@
-use std::sync::{Arc, Mutex};
-use std::fs;
 use basic_mutator::EmptyDatabase;
 use basic_mutator::Mutator;
+use std::sync::{Arc, Mutex};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use super::inputs::record_input;
 use super::stats::*;
-use crate::custom_rand::rng::Rng;
-use crate::json::json_parser::parse_json;
 use crate::cairo_vm::cairo_runner::runner;
+use crate::custom_rand::rng::Rng;
+use crate::FuzzingData;
 
-
-pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: u32) {
+pub fn worker(
+    stats: Arc<Mutex<Statistics>>,
+    worker_id: i32,
+    fuzzing_data: Arc<Mutex<FuzzingData>>,
+) {
     // Local stats database
     let mut local_stats = Statistics::default();
-
-    // TODO - make a good & clean Rng
-    let seed = unsafe { core::arch::x86_64::_rdtsc() };
+    let fuzzing_data = fuzzing_data.lock().unwrap();
+    let contents = &fuzzing_data.contents;
+    let function = &fuzzing_data.function;
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let seed = match fuzzing_data.seed {
+        Some(val) => val,
+        None => since_the_epoch.as_millis() as u64,
+    };
 
     // Create an RNG for this thread
     let mut rng = Rng {
         seed: seed, // 0x12640367f4b7ea35
         exp_disabled: false,
-    };
-
-    // TODO - get those info from main
-    let contract = "../cairo-libafl/tests/fuzzinglabs.json";
-    let function_name = "test_symbolic_execution";
-    // --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
-    let contents =
-        fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
-    let function = match parse_json(&contents, &function_name.to_string()) {
-        Some(func) => func,
-        None => {
-            println!("Could not find the function {}", function_name);
-            return;
-        }
     };
 
     // Create a mutator for 11-byte ASCII printable inputs
@@ -46,7 +43,11 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: u32) {
         mutator.input.clear();
         // pick index
 
-        let index: usize = if local_stats.input_len > 0 {rng.rand(0, (local_stats.input_len - 1) as usize)} else {0};
+        let index: usize = if local_stats.input_len > 0 {
+            rng.rand(0, (local_stats.input_len - 1) as usize)
+        } else {
+            0
+        };
 
         if local_stats.input_len == 0 {
             // we create a first input because our db is empty
@@ -152,9 +153,6 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: u32) {
                         record_input(&fuzz_input, true);
                     }
 
-                    // TODO - generate crash name
-                    //let crashname: String = format!("worker_{}_crash.txt", worker_id).to_string();
-
                     // Add the crash name and corresponding fuzz input to the crash
                     // database
                     local_stats
@@ -162,9 +160,11 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: u32) {
                         .insert(e.to_string(), fuzz_input.clone());
                     stats.crash_db.insert(e.to_string(), fuzz_input.clone());
                 }
-    
 
-                println!("WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"", worker_id, &mutator.input, e);
+                println!(
+                    "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
+                    worker_id, &mutator.input, e
+                );
             }
         }
 
