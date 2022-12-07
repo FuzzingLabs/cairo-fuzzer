@@ -18,10 +18,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     // to prevent duplication of efforts
     let rng = Rng::seeded(fuzzing_data.seed + (worker_id as u64)); // 0x12640367f4b7ea35
 
-    // Create a mutator for 11-byte inputs
+    // Create a mutator
     let mut mutator = Mutator::new()
         .seed(fuzzing_data.seed + (worker_id as u64))
-        .max_input_size(11);
+        .max_input_size(function.num_args as usize);
     //.printable(true);
 
     'next_case: loop {
@@ -41,7 +41,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
 
         // not the good size, drop this input
         // TODO - remove mutator that change the input size
-        if mutator.input.len() != 11 {
+        if mutator.input.len() != function.num_args as usize {
             continue 'next_case;
         }
 

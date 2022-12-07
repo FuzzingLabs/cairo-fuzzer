@@ -8,7 +8,7 @@ pub struct Rng {
 
 impl Rng {
     /// Create a new, TSC-seeded random number generator
-    pub fn new() -> Self {
+    /*pub fn new() -> Self {
         let ret = Rng {
             seed: Cell::new(unsafe { core::arch::x86_64::_rdtsc() }),
         };
@@ -18,7 +18,7 @@ impl Rng {
         }
 
         ret
-    }
+    }*/
 
     /// Created a RNG with a fixed `seed` value
     pub fn seeded(seed: u64) -> Self {
