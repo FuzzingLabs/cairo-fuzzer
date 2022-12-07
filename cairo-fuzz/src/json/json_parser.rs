@@ -35,8 +35,9 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     }
     return None;
 }
+
 /*
-pub fn parse_json(filename: &String) -> Vec<Function> {
+pub fn parse_json_test(filename: &String) -> Vec<Function> {
     let data = fs::read_to_string(filename).expect("Unable to read file");
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let identifiers = &data["identifiers"];
