@@ -13,32 +13,20 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
-    let seed = fuzzing_data.seed;
+
     // Create an RNG for this thread
-    let rng = Rng::seeded(seed); // 0x12640367f4b7ea35
+    let rng = Rng::seeded(fuzzing_data.seed + (worker_id as u64)); // 0x12640367f4b7ea35
 
     // Create a mutator for 11-byte ASCII printable inputs
     // TODO - remove ascii limitation
-    let mut mutator = Mutator::new().seed(seed).max_input_size(11).printable(true);
+    let mut mutator = Mutator::new().seed(fuzzing_data.seed + (worker_id as u64)).max_input_size(11).printable(true);
 
     'next_case: loop {
         // clear previous data
         mutator.input.clear();
-        // pick index
 
-        let index: usize = if local_stats.input_len > 0 {
-            rng.rand_usize() % local_stats.input_len
-        } else {
-            0
-        };
-
-        if local_stats.input_len == 0 {
-            // we create a first input because our db is empty
-            //cov_map.new_input(&b"\0\0\0\0\0\0\0\0\0\0\0".to_vec());
-            mutator
-                .input
-                .extend_from_slice(&b"\0\0\0\0\0\0\0\0\0\0\0".to_vec());
-        } else {
+        if local_stats.input_len > 0 {
+            let index: usize = rng.rand_usize() % local_stats.input_len;
             // pick from feedback corpora
             mutator
                 .input
@@ -56,6 +44,8 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
 
         // Wrap up the fuzz input in an `Arc`
         let fuzz_input = Arc::new(mutator.input.clone());
+        //println!("{:?}", &mutator.input);
+        //std::process::exit(1);
 
         match runner(&contents, function.name.clone(), &mutator.input) {
             Ok(traces) => {
