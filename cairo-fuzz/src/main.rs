@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::Write;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 mod cairo_vm;
 mod cli;
@@ -22,7 +23,7 @@ use fuzzer::worker::worker;
 pub struct FuzzingData {
     contents: String,
     function: Function,
-    seed: Option<u64>,
+    seed: u64,
 }
 
 fn main() {
@@ -32,7 +33,6 @@ fn main() {
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
-    let seed = opt.seed;
     let function_name = opt.function;
     // Global statistics
     let stats = Arc::new(Mutex::new(Statistics::default()));
@@ -43,7 +43,15 @@ fn main() {
     // Save the current time
     let start_time = Instant::now();
 
-    // TODO - get those info from main
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let seed = match opt.seed {
+        Some(val) => val,
+        None => since_the_epoch.as_millis() as u64,
+    };
+    println!("Fuzzing SEED => {}", seed);
     let contents =
         fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
     let function = match parse_json(&contents, &function_name.to_string()) {

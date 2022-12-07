@@ -1,7 +1,6 @@
 use basic_mutator::EmptyDatabase;
 use basic_mutator::Mutator;
 use std::sync::{Arc, Mutex};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use super::inputs::record_input;
 use super::stats::*;
@@ -14,14 +13,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
-    let start = SystemTime::now();
-    let since_the_epoch = start
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-    let seed = match fuzzing_data.seed {
-        Some(val) => val,
-        None => since_the_epoch.as_millis() as u64,
-    };
+    let seed = fuzzing_data.seed;
     // Create an RNG for this thread
     let mut rng = Rng {
         seed: seed, // 0x12640367f4b7ea35
@@ -33,7 +25,6 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let mut mutator = Mutator::new().seed(seed).max_input_size(11).printable(true);
 
     'next_case: loop {
-        //println!("worker {} looping ", worker_id);
         // clear previous data
         mutator.input.clear();
         // pick index
@@ -164,7 +155,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         }
 
         // TODO - only update every 1k exec to prevent lock
-        let counter_update = 20000;
+        let counter_update = 1000;
         if local_stats.fuzz_cases % counter_update == 1 {
             // Get access to global stats
             let mut stats = stats.lock().unwrap();
