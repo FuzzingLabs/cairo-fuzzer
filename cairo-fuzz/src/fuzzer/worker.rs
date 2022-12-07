@@ -9,14 +9,9 @@ use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
 use crate::FuzzingData;
 
-pub fn worker(
-    stats: Arc<Mutex<Statistics>>,
-    worker_id: i32,
-    fuzzing_data: Arc<Mutex<FuzzingData>>,
-) {
+pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<FuzzingData>) {
     // Local stats database
     let mut local_stats = Statistics::default();
-    let fuzzing_data = fuzzing_data.lock().unwrap();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
     let start = SystemTime::now();
@@ -27,7 +22,6 @@ pub fn worker(
         Some(val) => val,
         None => since_the_epoch.as_millis() as u64,
     };
-
     // Create an RNG for this thread
     let mut rng = Rng {
         seed: seed, // 0x12640367f4b7ea35
@@ -39,6 +33,7 @@ pub fn worker(
     let mut mutator = Mutator::new().seed(seed).max_input_size(11).printable(true);
 
     'next_case: loop {
+        //println!("worker {} looping ", worker_id);
         // clear previous data
         mutator.input.clear();
         // pick index

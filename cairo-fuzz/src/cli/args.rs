@@ -32,6 +32,6 @@ pub struct Opt {
     #[arg(long, help = "Set the artefact of the contract", name = "CONTRACT")]
     pub contract: PathBuf,
 
-    #[arg(long, help = "Set the artefact of the contract", name = "ITERATION")]
-    pub iteration: Option<u64>,
+    #[arg(long, help = "Set a custom seed", name = "SEED")]
+    pub seed: Option<u64>,
 }

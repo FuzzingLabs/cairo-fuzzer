@@ -32,7 +32,7 @@ fn main() {
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
-    let seed = opt.iteration;
+    let seed = opt.seed;
     let function_name = opt.function;
     // Global statistics
     let stats = Arc::new(Mutex::new(Statistics::default()));
@@ -53,11 +53,11 @@ fn main() {
             return;
         }
     };
-    let fuzzing_data = Arc::new(Mutex::new(FuzzingData {
+    let fuzzing_data = Arc::new(FuzzingData {
         contents: contents,
         function: function,
         seed: seed,
-    }));
+    });
     for i in 0..cores {
         // Spawn threads
         let stats = stats.clone();
@@ -65,6 +65,7 @@ fn main() {
         let _ = std::thread::spawn(move || {
             worker(stats, i, fuzzing_data_clone);
         });
+        println!("Thread {} Spawned", i);
     }
 
     loop {
