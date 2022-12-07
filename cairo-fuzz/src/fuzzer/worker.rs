@@ -22,7 +22,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let mut mutator = Mutator::new()
         .seed(fuzzing_data.seed + (worker_id as u64))
         .max_input_size(11);
-        //.printable(true);
+    //.printable(true);
 
     'next_case: loop {
         // clear previous data
@@ -50,7 +50,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         //println!("{:?}", &mutator.input);
         //std::process::exit(1);
 
-        match runner(&contents, function.name.clone(), &mutator.input) {
+        match runner(&contents, &function.name, &mutator.input) {
             Ok(traces) => {
                 //println!("traces = {:?}", traces);
                 let mut vec_trace: Vec<(u32, u32)> = vec![];

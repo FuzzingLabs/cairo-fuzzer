@@ -2,16 +2,16 @@ use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_def
 use cairo_rs::types::program::Program;
 use cairo_rs::types::relocatable::MaybeRelocatable;
 use cairo_rs::types::relocatable::Relocatable;
+use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
-use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
 
 use num_bigint::BigInt;
 use num_bigint::Sign;
 
 pub fn runner(
     json: &String,
-    func_name: String,
+    func_name: &String,
     data: &Vec<u8>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
     let program = Program::from_string(json, Some(&func_name)).unwrap();
@@ -62,7 +62,6 @@ pub fn runner(
         &hint_processor,
     ) {
         Ok(()) => {
-
             //let rel_table = vm
             //.segments
             //.relocate_segments()
