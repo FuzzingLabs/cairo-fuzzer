@@ -14,15 +14,15 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
 
-    // Create an RNG for this thread
+    // Create an RNG for this thread, seed is unique per thread
+    // to prevent duplication of efforts
     let rng = Rng::seeded(fuzzing_data.seed + (worker_id as u64)); // 0x12640367f4b7ea35
 
-    // Create a mutator for 11-byte ASCII printable inputs
-    // TODO - remove ascii limitation
+    // Create a mutator for 11-byte inputs
     let mut mutator = Mutator::new()
         .seed(fuzzing_data.seed + (worker_id as u64))
-        .max_input_size(11)
-        .printable(true);
+        .max_input_size(11);
+        //.printable(true);
 
     'next_case: loop {
         // clear previous data
@@ -98,6 +98,8 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
                                 stats.input_list.push(fuzz_input.clone());
                                 stats.input_len += 1;
 
+                                // TODO - to optimize / remove that from mutex locking scope
+                                // we save the input in the input folder
                                 record_input(&fuzz_input, false);
                             }
 
@@ -126,7 +128,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
                         stats.input_list.push(fuzz_input.clone());
                         stats.input_len += 1;
 
+                        // TODO - to optimize / remove that from mutex locking scope
+                        // we save the input in the crash folder
                         record_input(&fuzz_input, true);
+                        // we save the input in the input folder
                         record_input(&fuzz_input, false);
                     }
 
