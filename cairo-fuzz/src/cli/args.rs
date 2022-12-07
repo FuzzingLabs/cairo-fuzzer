@@ -5,31 +5,20 @@ use std::path::PathBuf;
 pub struct Opt {
     #[arg(
         long,
-        help = "number of threads to run",
+        help = "Set the number of threads to run",
         name = "CORES",
         default_value = "1"
     )]
     pub cores: i32,
 
-    #[arg(long, help = "Set an initial corpus directory", name = "INPUT")]
-    pub input: Vec<PathBuf>,
-
-    #[arg(
-        long,
-        help = "Set the output directory, default is ./out",
-        name = "OUTPUT",
-        default_value = "./out"
-    )]
-    pub output: PathBuf,
-
-    #[arg(
-        long,
-        help = "Set the output directory, default is ./out",
-        name = "FUNCTION"
-    )]
+    #[arg(long, help = "Set the function to fuzz", name = "FUNCTION")]
     pub function: String,
 
-    #[arg(long, help = "Set the artefact of the contract", name = "CONTRACT")]
+    #[arg(
+        long,
+        help = "Set the path of the json artifact to load",
+        name = "CONTRACT"
+    )]
     pub contract: PathBuf,
 
     #[arg(long, help = "Set a custom seed", name = "SEED")]
