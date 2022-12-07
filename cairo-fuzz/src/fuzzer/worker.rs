@@ -164,7 +164,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         }
 
         // TODO - only update every 1k exec to prevent lock
-        let counter_update = 1000;
+        let counter_update = 20000;
         if local_stats.fuzz_cases % counter_update == 1 {
             // Get access to global stats
             let mut stats = stats.lock().unwrap();
