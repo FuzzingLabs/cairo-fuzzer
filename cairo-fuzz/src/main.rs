@@ -85,8 +85,8 @@ fn main() {
         let uptime = (Instant::now() - start_time).as_secs_f64();
         let fuzz_case = stats.fuzz_cases;
         print!(
-            "{:12.2} uptime | {:7} fuzz cases | {} fcps | \
-                {:8} coverage | {:5} inputs | {:6} crashes [{:6} unique]\n",
+            "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
+                {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
             uptime,
             fuzz_case,
             fuzz_case as f64 / uptime,

@@ -15,10 +15,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let function = &fuzzing_data.function;
     let seed = fuzzing_data.seed;
     // Create an RNG for this thread
-    let mut rng = Rng {
-        seed: seed, // 0x12640367f4b7ea35
-        exp_disabled: false,
-    };
+    let rng = Rng::seeded(seed); // 0x12640367f4b7ea35
 
     // Create a mutator for 11-byte ASCII printable inputs
     // TODO - remove ascii limitation
@@ -30,7 +27,7 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         // pick index
 
         let index: usize = if local_stats.input_len > 0 {
-            rng.rand(0, (local_stats.input_len - 1) as usize)
+            rng.rand_usize() % local_stats.input_len
         } else {
             0
         };

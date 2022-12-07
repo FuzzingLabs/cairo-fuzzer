@@ -19,7 +19,7 @@ pub struct Statistics {
     pub input_list: Vec<FuzzInput>,
 
     /// List of all unique inputs
-    pub input_len: u64,
+    pub input_len: usize,
 
     /// Unique set of fuzzer actions
     ///pub unique_action_set: HashSet<FuzzerAction>,
