@@ -1,5 +1,4 @@
-use basic_mutator::EmptyDatabase;
-use basic_mutator::Mutator;
+use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use std::sync::{Arc, Mutex};
 
 use super::inputs::record_input;
@@ -22,7 +21,6 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
     let mut mutator = Mutator::new()
         .seed(fuzzing_data.seed + (worker_id as u64))
         .max_input_size(function.num_args as usize);
-    //.printable(true);
 
     'next_case: loop {
         // clear previous data
@@ -34,6 +32,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
             mutator
                 .input
                 .extend_from_slice(&local_stats.get_stats_input(index));
+        } else {
+            mutator
+                .input
+                .extend_from_slice(&vec![b'\0'; function.num_args as usize]);
         }
 
         // Corrupt it with 4 mutation passes
@@ -42,6 +44,11 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         // not the good size, drop this input
         // TODO - remove mutator that change the input size
         if mutator.input.len() != function.num_args as usize {
+            println!(
+                "Corrupted input size {} != {}",
+                mutator.input.len(),
+                function.num_args
+            );
             continue 'next_case;
         }
 

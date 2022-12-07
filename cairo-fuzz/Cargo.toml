@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 cairo-rs = { git="https://github.com/raefko/cairo-rs/", rev="8e06bf1179643a25e7590551745b38723d2b11b9"}
-basic_mutator = { git = "https://github.com/gamozolabs/basic_mutator" }
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }

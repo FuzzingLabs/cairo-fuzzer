@@ -1,7 +1,7 @@
 /// Sharable fuzz input
 use std::sync::Arc;
 pub type FuzzInput = Arc<Vec<u8>>;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 /// Fuzz case statistics
 #[derive(Default)]
@@ -34,7 +34,7 @@ pub struct Statistics {
     pub crash_db: HashMap<String, FuzzInput>,
 }
 impl Statistics {
-    pub fn get_stats_input(&self, index: usize) -> Vec<u8>{
+    pub fn get_stats_input(&self, index: usize) -> Vec<u8> {
         return self.input_list[index].to_vec();
     }
 }
