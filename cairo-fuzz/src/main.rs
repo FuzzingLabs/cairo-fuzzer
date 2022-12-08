@@ -27,13 +27,20 @@ pub struct FuzzingData {
     seed: u64,
 }
 
-pub fn cairo_fuzz(cores: i32, contract: &str, function_name: String, seed: Option<u64>) {
+pub fn cairo_fuzz(
+    cores: i32,
+    contract: &str,
+    function_name: String,
+    seed: Option<u64>,
+    logs: bool,
+) {
     // Global statistics
     let stats = Arc::new(Mutex::new(Statistics::default()));
-
+    let mut log:Option<File> = None;
     // Open a log file
-    let mut log = File::create("fuzz_stats.txt").unwrap();
-
+    if logs {
+        log = Some(File::create("fuzz_stats.txt").unwrap());
+    }
     // Save the current time
     let start_time = Instant::now();
 
@@ -89,19 +96,20 @@ pub fn cairo_fuzz(cores: i32, contract: &str, function_name: String, seed: Optio
             stats.crashes,
             stats.crash_db.len()
         );
-
-        write!(
-            log,
-            "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
-            uptime,
-            fuzz_case,
-            stats.coverage_db.len(),
-            stats.input_db.len(),
-            stats.crashes,
-            stats.crash_db.len()
-        )
-        .unwrap();
-        log.flush().unwrap();
+        if let Some(ref mut file) = log {
+            write!(
+                file,
+                "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+                uptime,
+                fuzz_case,
+                stats.coverage_db.len(),
+                stats.input_db.len(),
+                stats.crashes,
+                stats.crash_db.len()
+            )
+            .unwrap();
+            file.flush().unwrap();
+            }
     }
 }
 
@@ -111,5 +119,5 @@ fn main() {
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
-    cairo_fuzz(opt.cores, contract, opt.function, opt.seed);
+    cairo_fuzz(opt.cores, contract, opt.function, opt.seed, opt.logs);
 }

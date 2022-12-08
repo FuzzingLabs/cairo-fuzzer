@@ -23,4 +23,12 @@ pub struct Opt {
 
     #[arg(long, help = "Set a custom seed", name = "SEED")]
     pub seed: Option<u64>,
+
+    #[arg(
+        long,
+        help = "Enable fuzzer logs in file",
+        name = "logs",
+        default_value = "false"
+    )]
+    pub logs: bool,
 }
