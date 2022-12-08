@@ -42,7 +42,6 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         mutator.mutate(4, &EmptyDatabase);
 
         // not the good size, drop this input
-        // TODO - remove mutator that change the input size
         if mutator.input.len() != function.num_args as usize {
             println!(
                 "Corrupted input size {} != {}",
@@ -54,12 +53,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
 
         // Wrap up the fuzz input in an `Arc`
         let fuzz_input = Arc::new(mutator.input.clone());
-        //println!("{:?}", &mutator.input);
-        //std::process::exit(1);
+
 
         match runner(&contents, &function.name, &mutator.input) {
             Ok(traces) => {
-                //println!("traces = {:?}", traces);
                 let mut vec_trace: Vec<(u32, u32)> = vec![];
                 for trace in traces.unwrap() {
                     vec_trace.push((
