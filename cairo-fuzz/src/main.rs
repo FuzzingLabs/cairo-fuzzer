@@ -27,14 +27,7 @@ pub struct FuzzingData {
     seed: u64,
 }
 
-fn main() {
-    let opt = Opt::parse();
-    let cores = opt.cores;
-    let contract = opt
-        .contract
-        .to_str()
-        .expect("Fuzzer needs path to contract");
-    let function_name = opt.function;
+pub fn cairo_fuzz(cores: i32, contract: &str, function_name: String, seed: Option<u64>) {
     // Global statistics
     let stats = Arc::new(Mutex::new(Statistics::default()));
 
@@ -48,7 +41,7 @@ fn main() {
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards");
-    let seed = match opt.seed {
+    let seed = match seed {
         Some(val) => val,
         None => since_the_epoch.as_millis() as u64,
     };
@@ -87,7 +80,7 @@ fn main() {
         let fuzz_case = stats.fuzz_cases;
         print!(
             "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
-                {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
+                    {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
             uptime,
             fuzz_case,
             fuzz_case as f64 / uptime,
@@ -110,4 +103,13 @@ fn main() {
         .unwrap();
         log.flush().unwrap();
     }
+}
+
+fn main() {
+    let opt = Opt::parse();
+    let contract = opt
+        .contract
+        .to_str()
+        .expect("Fuzzer needs path to contract");
+    cairo_fuzz(opt.cores, contract, opt.function, opt.seed);
 }
