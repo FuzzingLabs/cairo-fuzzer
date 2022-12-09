@@ -54,7 +54,6 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         // Wrap up the fuzz input in an `Arc`
         let fuzz_input = Arc::new(mutator.input.clone());
 
-
         match runner(&contents, &function.name, &mutator.input) {
             Ok(traces) => {
                 let mut vec_trace: Vec<(u32, u32)> = vec![];
@@ -152,7 +151,10 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
                             worker_id, &mutator.input, e
                         );
                     } else {
-                        *stats.crash_list.entry(e.to_string().to_owned()).or_default() += 1;
+                        *stats
+                            .crash_list
+                            .entry(e.to_string().to_owned())
+                            .or_default() += 1;
                     }
                 }
             }
