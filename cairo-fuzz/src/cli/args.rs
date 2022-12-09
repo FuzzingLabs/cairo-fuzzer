@@ -31,4 +31,12 @@ pub struct Opt {
         default_value = "false"
     )]
     pub logs: bool,
+
+    #[arg(
+        long,
+        help = "Replay the corpus folder",
+        name = "REPLAY",
+        default_value = "false"
+    )]
+    pub replay: bool,
 }
