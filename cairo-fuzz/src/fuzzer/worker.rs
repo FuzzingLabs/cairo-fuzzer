@@ -145,12 +145,16 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
                         .crash_db
                         .insert(e.to_string(), fuzz_input.clone());
                     stats.crash_db.insert(e.to_string(), fuzz_input.clone());
+                    if !stats.crash_list.contains_key(&e.to_string()) {
+                        stats.crash_list.insert(e.to_string(), 1);
+                        println!(
+                            "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
+                            worker_id, &mutator.input, e
+                        );
+                    } else {
+                        *stats.crash_list.entry(e.to_string().to_owned()).or_default() += 1;
+                    }
                 }
-
-                println!(
-                    "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
-                    worker_id, &mutator.input, e
-                );
             }
         }
 

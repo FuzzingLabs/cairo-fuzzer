@@ -72,7 +72,6 @@ pub fn runner(
             return Ok(Some(ret));
         }
         Err(e) => {
-            println!("{:?}", e);
             return Err(e);
         }
     }

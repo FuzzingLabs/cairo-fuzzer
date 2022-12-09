@@ -14,7 +14,7 @@ mod custom_rand;
 mod fuzzer;
 mod json;
 mod mutator;
-// JSON parsing
+
 use cli::args::Opt;
 use fuzzer::stats::*;
 use fuzzer::worker::worker;

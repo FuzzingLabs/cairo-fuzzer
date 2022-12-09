@@ -14,6 +14,9 @@ pub struct Statistics {
 
     /// Set of all unique inputs
     pub input_db: HashSet<FuzzInput>,
+ 
+    /// List of all unique crashes
+    pub crash_list: HashMap<String, u128>,
 
     /// List of all unique inputs
     pub input_list: Vec<FuzzInput>,
