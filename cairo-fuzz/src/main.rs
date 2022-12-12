@@ -13,6 +13,7 @@ mod cli;
 mod custom_rand;
 mod fuzzer;
 mod json;
+mod minimizer;
 mod mutator;
 mod replay;
 
@@ -20,6 +21,12 @@ use cli::args::Opt;
 use fuzzer::stats::*;
 use fuzzer::worker::worker;
 use replay::replay::replay;
+
+use cli::args::Opt;
+use fuzzer::stats::*;
+use fuzzer::worker::worker;
+use minimizer::minimizer::minimizer;
+
 
 #[derive(Debug)]
 
@@ -190,6 +197,25 @@ pub fn cairo_replay(cores: i32, contract: &str, function_name: String, seed: Opt
     }
 }
 
+pub fn cairo_minimizer(contract: &str, function_name: String) {
+    let contents =
+        fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
+    let function = match parse_json(&contents, &function_name.to_string()) {
+        Some(func) => func,
+        None => {
+            println!("Could not find the function {}", function_name);
+            return;
+        }
+    };
+    let fuzzing_data = FuzzingData {
+        contents: contents,
+        function: function,
+        seed: 0,
+    };
+    let stats = Statistics::default();
+    minimizer(stats, fuzzing_data, "./inputs".to_string());
+}
+
 fn main() {
     let opt = Opt::parse();
     let contract = opt
@@ -200,5 +226,9 @@ fn main() {
         cairo_replay(opt.cores, contract, opt.function, opt.seed)
     } else {
         cairo_fuzz(opt.cores, contract, opt.function, opt.seed, opt.logs);
+    if !opt.minimizer {
+        cairo_fuzz(opt.cores, contract, opt.function, opt.seed, opt.logs);
+    } else {
+        cairo_minimizer(contract, opt.function);
     }
 }

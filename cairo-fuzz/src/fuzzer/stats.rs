@@ -11,15 +11,17 @@ pub struct Statistics {
 
     /// Coverage database. Maps (module, offset) to `FuzzInput`s
     pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
-
+    pub coverage_minimizer_db: HashMap<Vec<(u32, u32)>, Vec<u8>>,
     /// Set of all unique inputs
     pub input_db: HashSet<FuzzInput>,
+    pub input_minimizer_db: HashSet<Vec<u8>>,
 
     /// List of all unique crashes
     pub crash_list: HashMap<String, u128>,
-
+    pub crash_minimizer_list: Vec<String>,
     /// List of all unique inputs
     pub input_list: Vec<FuzzInput>,
+    pub input_minimizer_list: Vec<u8>,
 
     /// List of all unique inputs
     pub input_len: usize,
@@ -38,6 +40,9 @@ pub struct Statistics {
 
     /// Set number of threads that stopped running
     pub finished: u64,
+
+    /// Removed files
+    pub removed_files: u64,
 }
 impl Statistics {
     pub fn get_stats_input(&self, index: usize) -> Vec<u8> {
