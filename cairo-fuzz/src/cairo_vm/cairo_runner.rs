@@ -51,13 +51,7 @@ pub fn runner(
         args.push(val)
     }
 
-    match cairo_runner.run_from_entrypoint_fuzz(
-        entrypoint,
-        args,
-        true,
-        &mut vm,
-        &hint_processor,
-    ) {
+    match cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &hint_processor) {
         Ok(()) => {
             cairo_runner.relocate(&mut vm).unwrap();
             let trace = vm.get_trace().unwrap();

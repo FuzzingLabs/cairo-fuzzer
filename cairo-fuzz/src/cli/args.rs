@@ -27,8 +27,25 @@ pub struct Opt {
     #[arg(
         long,
         help = "Enable fuzzer logs in file",
-        name = "logs",
+        name = "LOGS",
         default_value = "false"
     )]
     pub logs: bool,
+
+    #[arg(
+        long,
+
+        help = "Replay the corpus folder",
+        name = "REPLAY",
+        default_value = "false"
+    )]
+    pub replay: bool,
+    #[arg(
+        long,
+        help = "Minimize Corpora",
+        name = "MINIMIZER",
+        default_value = "false"
+    )]
+    pub minimizer: bool,
+
 }
