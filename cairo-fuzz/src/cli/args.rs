@@ -34,7 +34,6 @@ pub struct Opt {
 
     #[arg(
         long,
-
         help = "Replay the corpus folder",
         name = "REPLAY",
         default_value = "false"
@@ -47,5 +46,4 @@ pub struct Opt {
         default_value = "false"
     )]
     pub minimizer: bool,
-
 }

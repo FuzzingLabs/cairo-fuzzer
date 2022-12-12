@@ -1,6 +1,7 @@
 use clap::Parser;
 use json::json_parser::parse_json;
 use json::json_parser::Function;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -31,10 +32,12 @@ pub struct FuzzingData {
     seed: u64,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FunctionCorpus {
     name: String,
     args: Vec<String>,
-    inputs: Vec<Vec<String>>,
+    inputs: Vec<Vec<u8>>,
+    crash: Vec<Vec<u8>>,
 }
 
 pub fn cairo_fuzz(
@@ -78,17 +81,20 @@ pub fn cairo_fuzz(
         seed: seed,
     });
 
+    let types_args = fuzzing_data.function.type_args.clone();
     let func_corpus = Arc::new(Mutex::new(FunctionCorpus {
         name: function_name,
-        args: vec!["felt".to_string(), "felt".to_string()],
-        inputs: Vec::<Vec<String>>::new(),
+        args: types_args,
+        inputs: Vec::<Vec<u8>>::new(),
+        crash: Vec::<Vec<u8>>::new(),
     }));
     for i in 0..cores {
         // Spawn threads
         let stats = stats.clone();
         let fuzzing_data_clone = fuzzing_data.clone();
+        let function_corpus = func_corpus.clone();
         let _ = std::thread::spawn(move || {
-            worker(stats, func_corpus, i, fuzzing_data_clone);
+            worker(stats, function_corpus, i, fuzzing_data_clone);
         });
         println!("Thread {} Spawned", i);
     }

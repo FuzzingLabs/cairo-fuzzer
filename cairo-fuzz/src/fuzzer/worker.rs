@@ -1,7 +1,7 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use std::sync::{Arc, Mutex};
 
-use super::inputs::record_input;
+use super::inputs::{record_input, record_json_input};
 use super::stats::*;
 use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
@@ -100,6 +100,8 @@ pub fn worker(
                     {
                         // Get access to global stats
                         let mut stats = stats.lock().unwrap();
+                        let mut corpus = func_corpus.lock().unwrap();
+
                         if !stats.coverage_db.contains_key(&vec_trace) {
                             // Save input to global input database
                             if stats.input_db.insert(fuzz_input.clone()) {
@@ -108,6 +110,7 @@ pub fn worker(
 
                                 // TODO - to optimize / remove that from mutex locking scope
                                 // we save the input in the input folder
+                                corpus.inputs.push(mutator.input.clone());
                                 record_input(&fuzz_input, false);
                             }
 
@@ -124,7 +127,7 @@ pub fn worker(
                 {
                     // Get access to global stats
                     let mut stats = stats.lock().unwrap();
-
+                    let mut corpus = func_corpus.lock().unwrap();
                     // Check if this case ended due to a crash
                     // Update crash information
                     local_stats.crashes += 1;
@@ -138,9 +141,10 @@ pub fn worker(
 
                         // TODO - to optimize / remove that from mutex locking scope
                         // we save the input in the crash folder
-                        record_input(&fuzz_input, true);
+                        corpus.inputs.push(mutator.input.clone());
+                        //record_input(&fuzz_input, true);
                         // we save the input in the input folder
-                        record_input(&fuzz_input, false);
+                        //record_input(&fuzz_input, false);
                     }
 
                     // Add the crash name and corresponding fuzz input to the crash
@@ -150,6 +154,7 @@ pub fn worker(
                         .insert(e.to_string(), fuzz_input.clone());
                     stats.crash_db.insert(e.to_string(), fuzz_input.clone());
                     if !stats.crash_list.contains_key(&e.to_string()) {
+                        corpus.crash.push(mutator.input.clone());
                         stats.crash_list.insert(e.to_string(), 1);
                         println!(
                             "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
@@ -168,11 +173,14 @@ pub fn worker(
         // TODO - only update every 1k exec to prevent lock
         let counter_update = 1000;
         if local_stats.fuzz_cases % counter_update == 1 {
-            let mut corpus = func_corpus.lock().unwrap();
+            let corpus = func_corpus.lock().unwrap();
             // Get access to global stats
             let mut stats = stats.lock().unwrap();
             // Update fuzz case count
-            corpus.inputs = stats.input_db.stats.fuzz_cases += counter_update;
+            stats.fuzz_cases += counter_update;
+            if local_stats.fuzz_cases % 100000 == 1 {
+                record_json_input(&*corpus)
+            }
         }
         local_stats.fuzz_cases += 1;
     }
