@@ -1,1 +1,1 @@
-pub mod mini;
+pub mod minimizer;

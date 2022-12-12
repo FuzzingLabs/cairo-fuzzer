@@ -18,7 +18,7 @@ mod mutator;
 use cli::args::Opt;
 use fuzzer::stats::*;
 use fuzzer::worker::worker;
-use minimizer::mini::minimizer;
+use minimizer::minimizer::minimizer;
 
 #[derive(Debug)]
 
