@@ -31,6 +31,12 @@ pub struct FuzzingData {
     seed: u64,
 }
 
+pub struct FunctionCorpus {
+    name: String,
+    args: Vec<String>,
+    inputs: Vec<Vec<String>>,
+}
+
 pub fn cairo_fuzz(
     cores: i32,
     contract: &str,
@@ -71,12 +77,18 @@ pub fn cairo_fuzz(
         function: function,
         seed: seed,
     });
+
+    let func_corpus = Arc::new(Mutex::new(FunctionCorpus {
+        name: function_name,
+        args: vec!["felt".to_string(), "felt".to_string()],
+        inputs: Vec::<Vec<String>>::new(),
+    }));
     for i in 0..cores {
         // Spawn threads
         let stats = stats.clone();
         let fuzzing_data_clone = fuzzing_data.clone();
         let _ = std::thread::spawn(move || {
-            worker(stats, i, fuzzing_data_clone);
+            worker(stats, func_corpus, i, fuzzing_data_clone);
         });
         println!("Thread {} Spawned", i);
     }

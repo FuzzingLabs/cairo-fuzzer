@@ -5,9 +5,14 @@ use super::inputs::record_input;
 use super::stats::*;
 use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
-use crate::FuzzingData;
+use crate::{FunctionCorpus, FuzzingData};
 
-pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<FuzzingData>) {
+pub fn worker(
+    stats: Arc<Mutex<Statistics>>,
+    func_corpus: Arc<Mutex<FunctionCorpus>>,
+    worker_id: i32,
+    fuzzing_data: Arc<FuzzingData>,
+) {
     // Local stats database
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
@@ -163,10 +168,11 @@ pub fn worker(stats: Arc<Mutex<Statistics>>, worker_id: i32, fuzzing_data: Arc<F
         // TODO - only update every 1k exec to prevent lock
         let counter_update = 1000;
         if local_stats.fuzz_cases % counter_update == 1 {
+            let mut corpus = func_corpus.lock().unwrap();
             // Get access to global stats
             let mut stats = stats.lock().unwrap();
             // Update fuzz case count
-            stats.fuzz_cases += counter_update;
+            corpus.inputs = stats.input_db.stats.fuzz_cases += counter_update;
         }
         local_stats.fuzz_cases += 1;
     }
