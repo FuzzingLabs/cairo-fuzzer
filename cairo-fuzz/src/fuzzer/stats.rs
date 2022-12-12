@@ -15,6 +15,7 @@ pub struct Statistics {
     /// Set of all unique inputs
     pub input_db: HashSet<FuzzInput>,
     pub input_minimizer_db: HashSet<Vec<u8>>,
+
     /// List of all unique crashes
     pub crash_list: HashMap<String, u128>,
     pub crash_minimizer_list: Vec<String>,
@@ -36,6 +37,9 @@ pub struct Statistics {
 
     /// Database of crash file names to `FuzzInput`s
     pub crash_db: HashMap<String, FuzzInput>,
+
+    /// Set number of threads that stopped running
+    pub finished: u64,
 
     /// Removed files
     pub removed_files: u64,
