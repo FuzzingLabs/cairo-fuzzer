@@ -20,13 +20,8 @@ mod replay;
 use cli::args::Opt;
 use fuzzer::stats::*;
 use fuzzer::worker::worker;
-use replay::replay::replay;
-
-use cli::args::Opt;
-use fuzzer::stats::*;
-use fuzzer::worker::worker;
 use minimizer::minimizer::minimizer;
-
+use replay::replay::replay;
 
 #[derive(Debug)]
 
@@ -223,12 +218,25 @@ fn main() {
         .to_str()
         .expect("Fuzzer needs path to contract");
     if opt.replay {
-        cairo_replay(opt.cores, contract, opt.function, opt.seed)
+        cairo_replay(opt.cores, contract, opt.function.clone(), opt.seed)
     } else {
-        cairo_fuzz(opt.cores, contract, opt.function, opt.seed, opt.logs);
-    if !opt.minimizer {
-        cairo_fuzz(opt.cores, contract, opt.function, opt.seed, opt.logs);
-    } else {
-        cairo_minimizer(contract, opt.function);
+        cairo_fuzz(
+            opt.cores,
+            contract,
+            opt.function.clone(),
+            opt.seed,
+            opt.logs,
+        );
+        if !opt.minimizer {
+            cairo_fuzz(
+                opt.cores,
+                contract,
+                opt.function.clone(),
+                opt.seed,
+                opt.logs,
+            );
+        } else {
+            cairo_minimizer(contract, opt.function);
+        }
     }
 }
