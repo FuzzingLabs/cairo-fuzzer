@@ -2,15 +2,15 @@ use crate::cairo_vm::cairo_runner::runner;
 use crate::fuzzer::stats::*;
 use crate::FuzzingData;
 use std::fs;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 pub fn replay(
-    stats: Arc<Mutex<Statistics>>,
     worker_id: usize,
     fuzzing_data: Arc<FuzzingData>,
     files: &Vec<String>,
 ) {
     // Local stats database
+    let stats = &fuzzing_data.stats;
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;

@@ -8,13 +8,13 @@ use crate::custom_rand::rng::Rng;
 use crate::{InputCorpus, CrashCorpus, FuzzingData};
 
 pub fn worker(
-    stats: Arc<Mutex<Statistics>>,
     inputs_corpus: Arc<Mutex<InputCorpus>>,
     crashes_corpus: Arc<Mutex<CrashCorpus>>,
     worker_id: i32,
     fuzzing_data: Arc<FuzzingData>,
 ) {
     // Local stats database
+    let stats = &fuzzing_data.stats;
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
@@ -168,6 +168,7 @@ pub fn worker(
         // TODO - only update every 1k exec to prevent lock
         let counter_update = 1000;
         if local_stats.fuzz_cases % counter_update == 1 {
+            // TODO - Move this to the Ok() Err()
             let inputs_corpus = inputs_corpus.lock().unwrap();
             let crashes_corpus = crashes_corpus.lock().unwrap();
             // Get access to global stats
