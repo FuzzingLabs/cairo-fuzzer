@@ -1,12 +1,11 @@
 use serde::Serialize;
-use std::collections::hash_map::DefaultHasher;
 use std::fs::create_dir;
 use std::fs::write;
-use std::hash::{Hash, Hasher};
 
-use crate::FunctionCorpus;
+use crate::{InputCorpus, CrashCorpus};
 
-pub fn record_input(fuzz_input: &Vec<u8>, crash: bool) {
+
+/* pub fn record_input(fuzz_input: &Vec<u8>, crash: bool) {
     let mut hasher = DefaultHasher::new();
     fuzz_input.hash(&mut hasher);
     if !crash {
@@ -25,16 +24,29 @@ pub fn record_input(fuzz_input: &Vec<u8>, crash: bool) {
         .expect("Failed to save input to disk");
     }
 }
-
-pub fn record_json_input(function_corpus: &FunctionCorpus) {
-    let _ = create_dir("input_json");
+ */
+pub fn record_json_input(inputs_corpus: &InputCorpus, crashes_corpus: &CrashCorpus ) {
+    let crash_folder = "crashes_corpus";
+    let input_folder = "inputs_corpus";
+    let _ = create_dir(crash_folder);
+    let _ = create_dir(input_folder);
     let buf = Vec::new();
     let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
-    let mut ser = serde_json::Serializer::with_formatter(buf, formatter);
-    function_corpus.serialize(&mut ser).unwrap();
+
+    let mut inputs_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
+    inputs_corpus.serialize(&mut inputs_ser).unwrap();
     write(
-        format!("input_json/{}.json", function_corpus.name),
-        String::from_utf8(ser.into_inner()).unwrap(),
+        format!("{}/{}.json",input_folder, inputs_corpus.name),
+        String::from_utf8(inputs_ser.into_inner()).unwrap(),
+    )
+    .expect("Failed to save input to disk");
+
+
+    let mut crashes_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
+    crashes_corpus.serialize(&mut crashes_ser).unwrap();
+    write(
+        format!("{}/{}.json",crash_folder, crashes_corpus.name),
+        String::from_utf8(crashes_ser.into_inner()).unwrap(),
     )
     .expect("Failed to save input to disk");
 }

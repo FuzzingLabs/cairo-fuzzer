@@ -1,7 +1,6 @@
 use clap::Parser;
 use json::json_parser::parse_json;
 use json::json_parser::Function;
-use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -23,21 +22,14 @@ use fuzzer::stats::*;
 use fuzzer::worker::worker;
 use minimizer::minimizer::minimizer;
 use replay::replay::replay;
-
+use fuzzer::corpus::InputCorpus;
+use fuzzer::corpus::CrashCorpus;
 #[derive(Debug)]
 
 pub struct FuzzingData {
     contents: String,
     function: Function,
     seed: u64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct FunctionCorpus {
-    name: String,
-    args: Vec<String>,
-    inputs: Vec<Vec<u8>>,
-    crash: Vec<Vec<u8>>,
 }
 
 pub fn cairo_fuzz(
@@ -75,6 +67,7 @@ pub fn cairo_fuzz(
             return;
         }
     };
+
     let fuzzing_data = Arc::new(FuzzingData {
         contents: contents,
         function: function,
@@ -82,19 +75,26 @@ pub fn cairo_fuzz(
     });
 
     let types_args = fuzzing_data.function.type_args.clone();
-    let func_corpus = Arc::new(Mutex::new(FunctionCorpus {
-        name: function_name,
-        args: types_args,
+    // Setup input corpus and crash corpus
+    let inputs = Arc::new(Mutex::new(InputCorpus {
+        name: function_name.clone(),
+        args: types_args.clone(),
         inputs: Vec::<Vec<u8>>::new(),
-        crash: Vec::<Vec<u8>>::new(),
     }));
+    let crashes = Arc::new(Mutex::new(CrashCorpus {
+        name: function_name.clone(),
+        args: types_args.clone(),
+        crashes: Vec::<Vec<u8>>::new(),
+    }));
+    // Running all the threads
     for i in 0..cores {
         // Spawn threads
         let stats = stats.clone();
         let fuzzing_data_clone = fuzzing_data.clone();
-        let function_corpus = func_corpus.clone();
+        let inputs_corpus = inputs.clone();
+        let crashes_corpus = crashes.clone();
         let _ = std::thread::spawn(move || {
-            worker(stats, function_corpus, i, fuzzing_data_clone);
+            worker(stats, inputs_corpus, crashes_corpus, i, fuzzing_data_clone);
         });
         println!("Thread {} Spawned", i);
     }
