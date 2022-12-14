@@ -130,15 +130,15 @@ pub fn cairo_replay(
     minimizer: bool,
 ) {
     let fuzzing_data = Arc::new(init_fuzzing_data(false, None, contract, function_name.clone()));
-    let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file);
-    let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file);
-    let corpus = if inputs.inputs.len() != 0 {
+    let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file.clone());
+    let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file.clone());
+    println!("inputs corpus {} , crash corpus {}", inputs.inputs.len(), crashes.crashes.len());
+    let corpus = if crash_file.clone().len() == 0 && inputs.inputs.len() != 0 {
         inputs.inputs
     } else {
         crashes.crashes
     };
     // Split the files into chunks
-    println!("Size before minimization {}", corpus.len());
     let chunk_size = corpus.len() / ((corpus.len() / (cores as usize)) + 1);
     let mut chunks = Vec::new();
     for chunk in corpus.chunks(chunk_size) {
@@ -166,6 +166,7 @@ pub fn cairo_replay(
         for input in stats.input_db.clone() {
             dump_inputs.inputs.push(input.clone().to_vec());
         }
+        println!("Size after minimization : {}", dump_inputs.inputs.len());
         record_json_input(&dump_inputs);
     }
 }
@@ -176,8 +177,8 @@ fn main() {
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
-    let input_file = opt.input_file.to_string();
-    let crash_file = opt.crash_file.to_string();
+    let input_file = opt.inputfile.to_string();
+    let crash_file = opt.crashfile.to_string();
     if opt.replay || opt.minimizer {
         cairo_replay(
             opt.cores,

@@ -81,7 +81,6 @@ pub fn print_stats(fuzzing_data: Arc<FuzzingData>, replay:bool, workers: usize) 
             file.flush().unwrap();
         }
         if replay && stats.finished == workers as u64 {
-            println!("Size after minimization {}", stats.input_db.len());
             break;
         }
     }

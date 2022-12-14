@@ -20,7 +20,7 @@ pub struct Opt {
         name = "INPUTFILE",
         default_value = ""
     )]
-    pub input_file: String,
+    pub inputfile: String,
 
     #[arg(
         long,
@@ -28,7 +28,7 @@ pub struct Opt {
         name = "CRASHFILE",
         default_value = ""
     )]
-    pub crash_file: String,
+    pub crashfile: String,
 
     #[arg(
         long,
