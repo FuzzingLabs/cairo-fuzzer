@@ -2,7 +2,7 @@ use std::fs::File;
 /// Sharable fuzz input
 use std::sync::Arc;
 pub type FuzzInput = Arc<Vec<Felt>>;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use std::io::Write;
 use std::time::{Duration, Instant};
 
@@ -17,20 +17,12 @@ pub struct Statistics {
 
     /// Coverage database. Maps (module, offset) to `FuzzInput`s
     pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
-    pub coverage_minimizer_db: HashMap<Vec<(u32, u32)>, Vec<Felt>>,
+
     /// Set of all unique inputs
-    pub input_db: HashSet<FuzzInput>,
-    pub input_minimizer_db: HashSet<Vec<Felt>>,
+    pub input_db: Vec<FuzzInput>,
 
     /// List of all unique crashes
     pub crash_list: HashMap<String, Felt>,
-    pub crash_minimizer_list: Vec<String>,
-    /// List of all unique inputs
-    pub input_list: Vec<FuzzInput>,
-    pub input_minimizer_list: Vec<Felt>,
-
-    /// List of all unique inputs
-    pub input_len: usize,
 
     /// Unique set of fuzzer actions
     ///pub unique_action_set: HashSet<FuzzerAction>,
@@ -38,10 +30,8 @@ pub struct Statistics {
     /// List of all unique fuzzer actions
     ///pub unique_actions: Vec<FuzzerAction>,
 
-    /// Number of crashes
-    pub crashes: u64,
-
     /// Database of crash file names to `FuzzInput`s
+    pub crashes: u64,
     pub crash_db: HashMap<String, FuzzInput>,
 
     /// Set number of threads that stopped running
@@ -50,11 +40,7 @@ pub struct Statistics {
     /// Removed files
     pub removed_files: u64,
 }
-impl Statistics {
-    pub fn get_stats_input(&self, index: usize) -> Vec<Felt> {
-        return self.input_list[index].to_vec();
-    }
-}
+
 
 pub fn print_stats(fuzzing_data: Arc<FuzzingData>) {
     let mut log = None;

@@ -25,7 +25,8 @@ use crate::{InputCorpus, CrashCorpus};
     }
 }
  */
-pub fn record_json_input(inputs_corpus: &InputCorpus, crashes_corpus: &CrashCorpus) {
+
+ pub fn record_json_input(inputs_corpus: &InputCorpus) {
     let crash_folder = "crashes_corpus";
     let input_folder = "inputs_corpus";
     let _ = create_dir(crash_folder);
@@ -40,7 +41,15 @@ pub fn record_json_input(inputs_corpus: &InputCorpus, crashes_corpus: &CrashCorp
         String::from_utf8(inputs_ser.into_inner()).unwrap(),
     )
     .expect("Failed to save input to disk");
+}
 
+pub fn record_json_crash(crashes_corpus: &CrashCorpus) {
+    let crash_folder = "crashes_corpus";
+    let input_folder = "inputs_corpus";
+    let _ = create_dir(crash_folder);
+    let _ = create_dir(input_folder);
+    let buf = Vec::new();
+    let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
     // TODO - Change name of crashes files by adding the date and the time
 
     let mut crashes_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());

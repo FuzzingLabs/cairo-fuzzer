@@ -29,12 +29,12 @@ pub fn load_inputs_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String) 
         inputs: Vec::<Vec<Felt>>::new(),
     };
     filename = if filename.len() == 0 {
-        format!("inputs_corpus/{}.json", inputs_corpus.name)
+        format!("inputs_corpus/{}_inputs.json", inputs_corpus.name)
     } else {
         filename
     };
     if Path::new(&filename).is_file() {
-        let contents = fs::read_to_string(&format!("inputs_corpus/{}.json", inputs_corpus.name))
+        let contents = fs::read_to_string(filename)
             .expect("Should have been able to read the file");
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load old inputs to prevent overwriting and to use it as a dictionary for the mutator
@@ -68,12 +68,12 @@ pub fn load_crashes_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String)
         crashes: Vec::<Vec<Felt>>::new(),
     };
     filename = if filename.len() == 0 {
-        format!("crashes_corpus/{}.json", crashes_corpus.name)
+        format!("crashes_corpus/{}_crashes.json", crashes_corpus.name)
     } else {
         filename
     };
     if Path::new(&filename).is_file() {
-        let contents = fs::read_to_string(&format!("crashes_corpus/{}.json", crashes_corpus.name))
+        let contents = fs::read_to_string(filename)
             .expect("Should have been able to read the file");
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load old crashes to prevent overwriting and to use it as a dictionary for the mutator

@@ -41,8 +41,8 @@ pub fn init_fuzzing_data(
     contract: String,
     function_name: String,
 ) -> FuzzingData {
+    // Init seed
     let start_time = Instant::now();
-    let stats = Arc::new(Mutex::new(Statistics::default()));
     let seed = match seed {
         Some(val) => val,
         None => SystemTime::now()
@@ -51,6 +51,9 @@ pub fn init_fuzzing_data(
             .as_millis() as u64,
     };
     println!("Fuzzing SEED => {}", seed);
+    // Init stats struct
+    let stats = Arc::new(Mutex::new(Statistics::default()));
+
     // Read json artifact and get its content
     let contents =
         fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
@@ -91,7 +94,10 @@ pub fn cairo_fuzz(
 
     // Setup input corpus and crash corpus
     let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file);
-
+    for input in inputs.inputs.clone() {
+        let mut stats_db = fuzzing_data.stats.lock().unwrap();
+        stats_db.input_db.push(Arc::new(input));
+    }
     let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file);
     // Setup the mutex for the inputs corpus and crash corpus
     let inputs = Arc::new(Mutex::new(inputs));
