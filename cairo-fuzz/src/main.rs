@@ -1,4 +1,6 @@
 use clap::Parser;
+use fuzzer::corpus::load_crashes_corpus;
+use fuzzer::corpus::load_inputs_corpus;
 use json::json_parser::parse_json;
 use json::json_parser::Function;
 use std::fs;
@@ -12,19 +14,15 @@ mod cli;
 mod custom_rand;
 mod fuzzer;
 mod json;
-mod minimizer;
 mod mutator;
 
 use cli::args::Opt;
-use fuzzer::stats::*;
-use fuzzer::fuzzing_worker::worker;
-use minimizer::minimizer_worker::minimizer;
-use fuzzer::replay_worker::replay;
-use fuzzer::corpus::InputCorpus;
 use fuzzer::corpus::CrashCorpus;
-use fuzzer::corpus::load_corpus;
+use fuzzer::corpus::InputCorpus;
+use fuzzer::fuzzing_worker::worker;
+use fuzzer::replay_worker::replay;
 use fuzzer::stats::print_stats;
-use cairo_vm::cairo_types::CairoTypes;
+use fuzzer::stats::*;
 
 #[derive(Debug)]
 pub struct FuzzingData {
@@ -36,27 +34,33 @@ pub struct FuzzingData {
     seed: u64,
 }
 
-
 /// Init all the fuzzing data the fuzzer will need to send to the different workers
-pub fn init_fuzzing_data(logs: bool, seed: Option<u64>, contract: String, function_name: String) -> FuzzingData {
-    let start_time =  Instant::now();
+pub fn init_fuzzing_data(
+    logs: bool,
+    seed: Option<u64>,
+    contract: String,
+    function_name: String,
+) -> FuzzingData {
+    let start_time = Instant::now();
     let stats = Arc::new(Mutex::new(Statistics::default()));
     let seed = match seed {
         Some(val) => val,
-        None => SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as u64,
+        None => SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64,
     };
     println!("Fuzzing SEED => {}", seed);
     // Read json artifact and get its content
     let contents =
-    fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
+        fs::read_to_string(&contract.to_string()).expect("Should have been able to read the file");
     let function = match parse_json(&contents, &function_name.to_string()) {
         Some(func) => func,
         None => {
             process::exit(1);
-    
         }
     };
-    let fuzzing_data =FuzzingData {
+    let fuzzing_data = FuzzingData {
         stats: stats,
         logs: logs,
         contents: contents,
@@ -67,7 +71,6 @@ pub fn init_fuzzing_data(logs: bool, seed: Option<u64>, contract: String, functi
     return fuzzing_data;
 }
 
-
 /// Run the fuzzing worker
 pub fn cairo_fuzz(
     cores: i32,
@@ -75,25 +78,21 @@ pub fn cairo_fuzz(
     function_name: String,
     seed: Option<u64>,
     logs: bool,
+    input_file: String,
+    crash_file: String,
 ) {
     // Set fuzzing data with the contents of the json artifact, the function data and the seed
-    let fuzzing_data = Arc::new(init_fuzzing_data(logs, seed, contract, function_name.clone()));
+    let fuzzing_data = Arc::new(init_fuzzing_data(
+        logs,
+        seed,
+        contract,
+        function_name.clone(),
+    ));
 
     // Setup input corpus and crash corpus
-    let mut inputs = InputCorpus {
-        name: function_name.clone(),
-        args: fuzzing_data.function.type_args.clone(),
-        inputs: Vec::<Vec<CairoTypes>>::new(),
-    };
-    let crashes = CrashCorpus {
-        name: function_name.clone(),
-        args: fuzzing_data.function.type_args.clone(),
-        crashes: Vec::<Vec<CairoTypes>>::new(),
-    };
+    let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file);
 
-    // Load old corpus if exists
-    load_corpus(&mut inputs);
-
+    let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file);
     // Setup the mutex for the inputs corpus and crash corpus
     let inputs = Arc::new(Mutex::new(inputs));
     let crashes = Arc::new(Mutex::new(crashes));
@@ -111,36 +110,43 @@ pub fn cairo_fuzz(
 
     // Call the stats printer
     print_stats(fuzzing_data);
-    
 }
 
-/* pub fn cairo_replay(cores: i32, contract: String, function_name: String) {
+pub fn cairo_replay(
+    cores: i32,
+    contract: String,
+    function_name: String,
+    input_file: String,
+    crash_file: String,
+    minimizer: bool,
+) {
     let fuzzing_data = Arc::new(init_fuzzing_data(false, None, contract, function_name));
-
-    let files: Vec<String> = fs::read_dir("./inputs".to_string())
-        .unwrap()
-        .map(|file| file.unwrap().path().to_str().unwrap().to_string())
-        .collect();
+    let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file);
+    let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file);
+    let corpus = if inputs.inputs.len() != 0 {
+        inputs.inputs
+    } else {
+        crashes.crashes
+    };
     // Split the files into chunks
-    let chunk_size = files.len() / (files.len() / (cores as usize));
+    let chunk_size = corpus.len() / ((corpus.len() / (cores as usize)) + 1);
     let mut chunks = Vec::new();
-    for chunk in files.chunks(chunk_size) {
+    for chunk in corpus.chunks(chunk_size) {
         chunks.push(chunk.to_vec());
     }
-    println!("Total files => {}", files.len());
+    println!("Total inputs => {}", corpus.len());
     for i in 0..chunks.len() {
         // Spawn threads
         let fuzzing_data_clone = fuzzing_data.clone();
         let chunk = chunks[i].clone();
         let _ = std::thread::spawn(move || {
-            replay( i, fuzzing_data_clone, &chunk);
+            replay(i, fuzzing_data_clone, chunk, minimizer);
         });
         println!("Thread {} Spawned", i);
     }
 
     print_stats(fuzzing_data);
-} */
-
+}
 
 fn main() {
     let opt = Opt::parse();
@@ -148,24 +154,26 @@ fn main() {
         .contract
         .to_str()
         .expect("Fuzzer needs path to contract");
-   /*  if opt.replay {
-        cairo_replay(opt.cores, contract.to_string(), opt.function.clone());
-    } else { */
+    let input_file = opt.input_file.to_string();
+    let crash_file = opt.crash_file.to_string();
+    if opt.replay || opt.minimizer {
+        cairo_replay(
+            opt.cores,
+            contract.to_string(),
+            opt.function.clone(),
+            input_file,
+            crash_file,
+            opt.minimizer,
+        );
+    } else {
         cairo_fuzz(
             opt.cores,
             contract.to_string(),
             opt.function.clone(),
             opt.seed,
             opt.logs,
+            input_file,
+            crash_file,
         );
-/*         if !opt.minimizer {
-            cairo_fuzz(
-                opt.cores,
-                contract.to_string(),
-                opt.function.clone(),
-                opt.seed,
-                opt.logs,
-            );
-        }
-    } */
+    }
 }

@@ -23,10 +23,10 @@
  */
 extern crate alloc;
 
+use crate::cairo_vm::cairo_types::Felt;
 use crate::mutator::magic_values::MAGIC_VALUES;
 use alloc::vec::Vec;
 use core::convert::TryInto;
-use crate::cairo_vm::cairo_types::CairoTypes;
 
 /// An empty database that never returns an input, useful for fuzzers without
 /// corpuses or input databases.
@@ -36,7 +36,7 @@ impl InputDatabase for EmptyDatabase {
     fn num_inputs(&self) -> usize {
         0
     }
-    fn input(&self, _idx: usize) -> Option<&[CairoTypes]> {
+    fn input(&self, _idx: usize) -> Option<&[Felt]> {
         None
     }
 }
@@ -57,7 +57,7 @@ pub trait InputDatabase {
 
     /// Get an input with a specific zero-index identifier
     /// If the `idx` is invalid or otherwise not available, this returns `None`
-    fn input(&self, idx: usize) -> Option<&[CairoTypes]>;
+    fn input(&self, idx: usize) -> Option<&[Felt]>;
 }
 
 /// A basic random number generator based on xorshift64 with 64-bits of state
@@ -130,7 +130,7 @@ pub struct Mutator {
     /// It is strongly recommended that you do `input.clear()` and
     /// `input.extend_from_slice()` to update this buffer, to prevent the
     /// backing from being deallocated and reallocated.
-    pub input: Vec<CairoTypes>,
+    pub input: Vec<Felt>,
 
     /// If non-zero length, this contains a list of valid indicies into
     /// `input`, indicating which bytes of the input should mutated. This often
@@ -165,7 +165,7 @@ pub struct Mutator {
 /// A byte corruption skeleton which has user-supplied corruption logic which
 /// will be used to mutate a byte which is passed to it
 ///
-/// $corrupt takes a &mut self, `CairoTypes` as arguments, and returns a `CairoTypes` as the
+/// $corrupt takes a &mut self, `Felt` as arguments, and returns a `Felt` as the
 /// corrupted value.
 macro_rules! byte_corruptor {
     ($func:ident, $corrupt:expr) => {
@@ -447,7 +447,7 @@ impl Mutator {
     } */
 
     /// Add or subtract a random amount with a random endianness from a random
-    /// size `CairoTypes` through `u64`
+    /// size `Felt` through `u64`
     fn add_sub(&mut self) {
         // Nothing to do on an empty input
         if self.input.is_empty() {
@@ -504,7 +504,7 @@ impl Mutator {
 
         // Apply the delta to the offset
         match intsize {
-            1 => mutate!(CairoTypes),
+            1 => mutate!(Felt),
             2 => mutate!(u16),
             4 => mutate!(u32),
             8 => mutate!(u64),
@@ -536,9 +536,9 @@ impl Mutator {
 
         // Pick the value to memset
         let chr = if self.printable {
-            (self.rng.rand(0, 94) + 32) as CairoTypes
+            (self.rng.rand(0, 94) + 32) as Felt
         } else {
-            self.rng.rand(0, 255) as CairoTypes
+            self.rng.rand(0, 255) as Felt
         };
 
         // Replace the selected bytes at the offset with `chr`
@@ -546,7 +546,7 @@ impl Mutator {
     } */
 
     /// Swap two ranges in an input buffer
-    fn swap_ranges(vec: &mut [CairoTypes], mut offset1: usize, mut offset2: usize, mut len: usize) {
+    fn swap_ranges(vec: &mut [Felt], mut offset1: usize, mut offset2: usize, mut len: usize) {
         if offset1 < offset2 && offset1 + len >= offset2 {
             // The ranges have the following layout here:
             // [o1--------]
@@ -616,7 +616,7 @@ impl Mutator {
 
     /// Insert `buf` at `offset` in the input. `buf` will be truncated to
     /// ensure the input stays within the maximum input size
-    fn insert(&mut self, offset: usize, buf: &[CairoTypes]) {
+    fn insert(&mut self, offset: usize, buf: &[Felt]) {
         // Make sure we don't expand past the maximum input size
         let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
 
@@ -636,7 +636,7 @@ impl Mutator {
     /// Overwrite the bytes in the input with `buf` at `offset`. If `buf`
     /// goes out of bounds of the input the `buf` will be truncated and the
     /// copy will stop.
-    fn overwrite(&mut self, offset: usize, buf: &[CairoTypes]) {
+    fn overwrite(&mut self, offset: usize, buf: &[Felt]) {
         // Get the slice that we may overwrite
         let target = &mut self.input[offset..];
 
@@ -750,11 +750,11 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                (self.rng.rand(0, 94) + 32) as CairoTypes,
-                (self.rng.rand(0, 94) + 32) as CairoTypes,
+                (self.rng.rand(0, 94) + 32) as Felt,
+                (self.rng.rand(0, 94) + 32) as Felt,
             ]
         } else {
-            [self.rng.rand(0, 255) as CairoTypes, self.rng.rand(0, 255) as CairoTypes]
+            [self.rng.rand(0, 255) as Felt, self.rng.rand(0, 255) as Felt]
         };
 
         // Pick a random offset and length
@@ -776,11 +776,11 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                (self.rng.rand(0, 94) + 32) as CairoTypes,
-                (self.rng.rand(0, 94) + 32) as CairoTypes,
+                (self.rng.rand(0, 94) + 32) as Felt,
+                (self.rng.rand(0, 94) + 32) as Felt,
             ]
         } else {
-            [self.rng.rand(0, 255) as CairoTypes, self.rng.rand(0, 255) as CairoTypes]
+            [self.rng.rand(0, 255) as Felt, self.rng.rand(0, 255) as Felt]
         };
 
         // Pick a random offset and length
@@ -893,12 +893,12 @@ impl Mutator {
             self.input[offset..offset + amount]
                 .iter_mut()
                 .for_each(|x| {
-                    *x = (rng.rand(0, 94) + 32) as CairoTypes;
+                    *x = (rng.rand(0, 94) + 32) as Felt;
                 });
         } else {
             self.input[offset..offset + amount]
                 .iter_mut()
-                .for_each(|x| *x = rng.rand(0, 255) as CairoTypes);
+                .for_each(|x| *x = rng.rand(0, 255) as Felt);
         }
     }
     /*
@@ -918,27 +918,31 @@ impl Mutator {
         let rng = &mut self.rng;
         if self.printable {
             self.input.splice(offset..offset, (0..amount).map(|_| {
-                (rng.rand(0, 94) + 32) as CairoTypes
+                (rng.rand(0, 94) + 32) as Felt
             }));
         } else {
             self.input.splice(offset..offset, (0..amount).map(|_| {
-                rng.rand(0, 255) as CairoTypes
+                rng.rand(0, 255) as Felt
             }));
         }
     }
     */
 
     // Corrupt a random bit in the input
-    byte_corruptor!(bit, |obj: &mut Self, x: CairoTypes| -> CairoTypes {
-        x ^ (1CairoTypes << obj.rng.rand(0, 7))
+    byte_corruptor!(bit, |obj: &mut Self, x: Felt| -> Felt {
+        x ^ (1u8 << obj.rng.rand(0, 7))
     });
 
     // Increment a byte in the input
-    byte_corruptor!(inc_byte, |_: &mut Self, x: CairoTypes| -> CairoTypes { x.wrapping_add(1) });
+    byte_corruptor!(inc_byte, |_: &mut Self, x: Felt| -> Felt {
+        x.wrapping_add(1)
+    });
 
     // Decrement a byte in the input
-    byte_corruptor!(dec_byte, |_: &mut Self, x: CairoTypes| -> CairoTypes { x.wrapping_sub(1) });
+    byte_corruptor!(dec_byte, |_: &mut Self, x: Felt| -> Felt {
+        x.wrapping_sub(1)
+    });
 
     // Negate a byte in the input
-    byte_corruptor!(neg_byte, |_: &mut Self, x: CairoTypes| -> CairoTypes { !x });
+    byte_corruptor!(neg_byte, |_: &mut Self, x: Felt| -> Felt { !x });
 }

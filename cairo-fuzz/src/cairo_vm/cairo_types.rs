@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 
 pub trait Unsigned: Copy + Default + 'static {
     const U8: u8;
@@ -33,28 +33,16 @@ pub trait Bit: Copy + Default + 'static {
 }
 
 /// The type-level bit 0.
-#[derive(Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize)]
+#[derive(
+    Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize,
+)]
 pub struct B0;
 
-impl B0 {
-    /// Instantiates a singleton representing this bit.
-    #[inline]
-    pub fn new() -> B0 {
-        B0
-    }
-}
-
 /// The type-level bit 1.
-#[derive(Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize)]
+#[derive(
+    Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize,
+)]
 pub struct B1;
-
-impl B1 {
-    /// Instantiates a singleton representing this bit.
-    #[inline]
-    pub fn new() -> B1 {
-        B1
-    }
-}
 
 impl Bit for B0 {
     const U8: u8 = 0;
@@ -92,18 +80,14 @@ impl Bit for B1 {
     }
 }
 
-#[derive(Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize)]
+#[derive(
+    Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize,
+)]
 pub struct UTerm;
 
-impl UTerm {
-    /// Instantiates a singleton representing this unsigned integer.
-    #[inline]
-    pub fn new() -> UTerm {
-        UTerm
-    }
-}
-
-#[derive(Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize)]
+#[derive(
+    Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash, Debug, Default, Serialize, Deserialize,
+)]
 pub struct UInt<U, B> {
     /// The more significant bits of `Self`.
     pub(crate) msb: U,
@@ -111,18 +95,11 @@ pub struct UInt<U, B> {
     pub(crate) lsb: B,
 }
 
-impl<U: Unsigned, B: Bit> UInt<U, B> {
-    /// Instantiates a singleton representing this unsigned integer.
-    #[inline]
-    pub fn new() -> UInt<U, B> {
-        UInt::default()
-    }
-}
-
-pub type Felt = UInt<UInt<UInt<UInt<UInt<UInt<UInt<UInt<UTerm, B1>, B1>, B1>, B1>, B1>, B1>, B0>, B0>;
-
-
-#[derive(Debug, Clone,  Serialize, Deserialize)]
+/* pub type Felt =
+   UInt<UInt<UInt<UInt<UInt<UInt<UInt<UInt<UTerm, B1>, B1>, B1>, B1>, B1>, B1>, B0>, B0>;
+*/
+pub type Felt = u8;
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CairoTypes {
-    Felt(Felt),
+    Felt(u8),
 }

@@ -1,3 +1,4 @@
+use crate::cairo_vm::cairo_types::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use std::sync::{Arc, Mutex};
 
@@ -5,7 +6,7 @@ use super::inputs::record_json_input;
 use super::stats::*;
 use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
-use crate::{InputCorpus, CrashCorpus, FuzzingData};
+use crate::{CrashCorpus, FuzzingData, InputCorpus};
 
 pub fn worker(
     inputs_corpus: Arc<Mutex<InputCorpus>>,
@@ -41,7 +42,7 @@ pub fn worker(
         } else {
             mutator
                 .input
-                .extend_from_slice(&vec![b'\0'; function.num_args as usize]);
+                .extend_from_slice(&vec![b'\0' as Felt; function.num_args as usize]);
         }
 
         // Corrupt it with 4 mutation passes

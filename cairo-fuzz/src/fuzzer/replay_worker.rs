@@ -1,14 +1,14 @@
 use crate::cairo_vm::cairo_runner::runner;
+use crate::cairo_vm::cairo_types::Felt;
 use crate::fuzzer::stats::*;
 use crate::FuzzingData;
-use std::fs;
 use std::sync::Arc;
 
 pub fn replay(
     worker_id: usize,
     fuzzing_data: Arc<FuzzingData>,
-    files: &Vec<String>,
-    minimizer: bool
+    inputs: Vec<Vec<Felt>>,
+    minimizer: bool,
 ) {
     // Local stats database
     let stats = &fuzzing_data.stats;
@@ -16,12 +16,8 @@ pub fn replay(
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
 
-    for i in 0..files.len() {
-        let input = fs::read_to_string(files[i].clone())
-            .expect("Should have been able to read the file")
-            .as_bytes()
-            .to_vec();
-        match runner(&contents, &function.name, &input.to_owned()) {
+    for input in inputs {
+        match runner(&contents, &function.name, &input) {
             Ok(traces) => {
                 let mut vec_trace: Vec<(u32, u32)> = vec![];
                 for trace in traces.unwrap() {
@@ -67,8 +63,6 @@ pub fn replay(
                             if stats.input_db.insert(fuzz_input.clone()) {
                                 stats.input_list.push(fuzz_input.clone());
                                 stats.input_len += 1;
-
-
                             }
 
                             // Save coverage to global coverage database
@@ -99,7 +93,6 @@ pub fn replay(
                     if stats.input_db.insert(fuzz_input.clone()) {
                         stats.input_list.push(fuzz_input.clone());
                         stats.input_len += 1;
-
                     }
 
                     // Add the crash name and corresponding fuzz input to the crash
@@ -127,14 +120,12 @@ pub fn replay(
             }
         }
 
-        // TODO - only update every 1k exec to prevent lock
         // Get access to global stats
         let mut stats = stats.lock().unwrap();
         // Update fuzz case count
         stats.fuzz_cases += 1;
-        if i == files.len() - 1 {
-            stats.finished += 1;
-        }
         local_stats.fuzz_cases += 1;
     }
+    let mut stats = stats.lock().unwrap();
+    stats.finished += 1;
 }
