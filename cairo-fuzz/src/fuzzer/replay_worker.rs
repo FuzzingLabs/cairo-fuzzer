@@ -8,14 +8,12 @@ pub fn replay(
     worker_id: usize,
     fuzzing_data: Arc<FuzzingData>,
     inputs: Vec<Vec<Felt>>,
-    minimizer: bool,
 ) {
     // Local stats database
     let stats = &fuzzing_data.stats;
     let mut local_stats = Statistics::default();
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
-
     for input in inputs {
         let fuzz_input = Arc::new(input.clone());
         match runner(&contents, &function.name, &input.clone()) {
@@ -42,12 +40,10 @@ pub fn replay(
 
                 // Check if this coverage entry is something we've never seen before
                 if !local_stats.coverage_db.contains_key(&vec_trace) {
-                    // Coverage entry is new, save the fuzz input in the input
-                    // database
+                    // Coverage entry is new, save the fuzz input in the input database
                     local_stats.input_db.push(fuzz_input.clone());
 
-                    // Update the module+offset in the coverage database to
-                    // reflect that this input caused this coverage to occur
+                    // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
                     local_stats
                         .coverage_db
                         .insert(vec_trace.clone(), fuzz_input.clone());
@@ -56,15 +52,12 @@ pub fn replay(
                     {
                         // Get access to global stats
                         let mut stats = stats.lock().unwrap();
+
                         if !stats.coverage_db.contains_key(&vec_trace) {
                             // Save input to global input database
-                            if stats.input_db.contains(&fuzz_input.clone()) {
+                            if !stats.input_db.contains(&fuzz_input.clone()) {
                                 stats.input_db.push(fuzz_input.clone());
                             }
-                                // TODO - to optimize / remove that from mutex locking scope
-                                // we save the input in the input folder
-                                // add input to the inputs corpus
-
                             // Save coverage to global coverage database
                             stats
                                 .coverage_db
@@ -78,14 +71,15 @@ pub fn replay(
                 {
                     // Get access to global stats
                     let mut stats = stats.lock().unwrap();
+                    local_stats.crashes += 1;
+                    stats.crashes += 1;
                     // Check if this case ended due to a crash
                     // Add the crashing input to the input databases
                     local_stats.input_db.push(fuzz_input.clone());
                     if !stats.input_db.contains(&fuzz_input.clone()) {
                         stats.input_db.push(fuzz_input.clone());
                     }
-                    // Add the crash name and corresponding fuzz input to the crash
-                    // database
+                    // Add the crash name and corresponding fuzz input to the crash database
                     local_stats
                         .crash_db
                         .insert(e.to_string(), fuzz_input.clone());
@@ -93,10 +87,9 @@ pub fn replay(
                     if !stats.crash_list.contains_key(&e.to_string()) {
                         // add input to the crash corpus
                         stats.crash_list.insert(e.to_string(), 1);
-
                         println!(
                             "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
-                            worker_id, &input, e
+                            worker_id, &input.clone(), e
                         );
                     } else {
                         *stats
@@ -114,6 +107,8 @@ pub fn replay(
         stats.fuzz_cases += 1;
         local_stats.fuzz_cases += 1;
     }
-    let mut stats = stats.lock().unwrap();
-    stats.finished += 1;
+    {
+        let mut stats = stats.lock().unwrap();
+        stats.finished += 1;
+    }
 }

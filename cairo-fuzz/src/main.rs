@@ -24,6 +24,9 @@ use fuzzer::replay_worker::replay;
 use fuzzer::stats::print_stats;
 use fuzzer::stats::*;
 
+use crate::cairo_vm::cairo_types::Felt;
+use crate::fuzzer::inputs::record_json_input;
+
 #[derive(Debug)]
 pub struct FuzzingData {
     stats: Arc<Mutex<Statistics>>,
@@ -115,7 +118,7 @@ pub fn cairo_fuzz(
     }
 
     // Call the stats printer
-    print_stats(fuzzing_data);
+    print_stats(fuzzing_data, false, 0);
 }
 
 pub fn cairo_replay(
@@ -126,7 +129,7 @@ pub fn cairo_replay(
     crash_file: String,
     minimizer: bool,
 ) {
-    let fuzzing_data = Arc::new(init_fuzzing_data(false, None, contract, function_name));
+    let fuzzing_data = Arc::new(init_fuzzing_data(false, None, contract, function_name.clone()));
     let inputs = load_inputs_corpus(fuzzing_data.clone(), input_file);
     let crashes = load_crashes_corpus(fuzzing_data.clone(), crash_file);
     let corpus = if inputs.inputs.len() != 0 {
@@ -135,6 +138,7 @@ pub fn cairo_replay(
         crashes.crashes
     };
     // Split the files into chunks
+    println!("Size before minimization {}", corpus.len());
     let chunk_size = corpus.len() / ((corpus.len() / (cores as usize)) + 1);
     let mut chunks = Vec::new();
     for chunk in corpus.chunks(chunk_size) {
@@ -146,12 +150,24 @@ pub fn cairo_replay(
         let fuzzing_data_clone = fuzzing_data.clone();
         let chunk = chunks[i].clone();
         let _ = std::thread::spawn(move || {
-            replay(i, fuzzing_data_clone, chunk, minimizer);
+            replay(i, fuzzing_data_clone, chunk);
         });
         println!("Thread {} Spawned", i);
     }
-
-    print_stats(fuzzing_data);
+    print_stats(fuzzing_data.clone(), true, chunks.len());
+    if minimizer {
+        let fuzzing_data = fuzzing_data.clone();
+        let stats = fuzzing_data.stats.lock().unwrap();
+        let mut dump_inputs = InputCorpus {
+            name: function_name.clone(),
+            args: fuzzing_data.function.type_args.clone(),
+            inputs:  Vec::<Vec<Felt>>::new(),
+        };
+        for input in stats.input_db.clone() {
+            dump_inputs.inputs.push(input.clone().to_vec());
+        }
+        record_json_input(&dump_inputs);
+    }
 }
 
 fn main() {

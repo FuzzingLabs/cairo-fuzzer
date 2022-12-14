@@ -42,7 +42,7 @@ pub struct Statistics {
 }
 
 
-pub fn print_stats(fuzzing_data: Arc<FuzzingData>) {
+pub fn print_stats(fuzzing_data: Arc<FuzzingData>, replay:bool, workers: usize) {
     let mut log = None;
     if fuzzing_data.logs {
         log = Some(File::create("fuzz_stats.txt").unwrap());
@@ -79,6 +79,10 @@ pub fn print_stats(fuzzing_data: Arc<FuzzingData>) {
             )
             .unwrap();
             file.flush().unwrap();
+        }
+        if replay && stats.finished == workers as u64 {
+            println!("Size after minimization {}", stats.input_db.len());
+            break;
         }
     }
 }

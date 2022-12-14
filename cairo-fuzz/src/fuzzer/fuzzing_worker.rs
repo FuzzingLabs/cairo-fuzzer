@@ -20,9 +20,6 @@ pub fn worker(
     let contents = &fuzzing_data.contents;
     let function = &fuzzing_data.function;
 
-    //let mut crashes_corpus = crashes_corpus.lock().unwrap();
-    // Load inputs db from previous corpus
-    //let mut inputs_corpus = inputs_corpus.lock().unwrap();
     // Create an RNG for this thread, seed is unique per thread
     // to prevent duplication of efforts
     let rng = Rng::seeded(fuzzing_data.seed + (worker_id as u64)); // 0x12640367f4b7ea35
@@ -77,7 +74,6 @@ pub fn worker(
                 // Mutex locking is limited to this scope
                 {
                     let stats = stats.lock().unwrap();
-                    //println!("db size : {}",stats.input_db.len());
                     // verify if new input has been found by other fuzzers
                     // if so, update our statistics
                     if local_stats.input_db.len() != stats.input_db.len() {
@@ -89,12 +85,10 @@ pub fn worker(
 
                 // Check if this coverage entry is something we've never seen before
                 if !local_stats.coverage_db.contains_key(&vec_trace) {
-                    // Coverage entry is new, save the fuzz input in the input
-                    // database
+                    // Coverage entry is new, save the fuzz input in the input database
                     local_stats.input_db.push(fuzz_input.clone());
 
-                    // Update the module+offset in the coverage database to
-                    // reflect that this input caused this coverage to occur
+                    // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
                     local_stats
                         .coverage_db
                         .insert(vec_trace.clone(), fuzz_input.clone());
@@ -110,9 +104,6 @@ pub fn worker(
                             if !stats.input_db.contains(&fuzz_input.clone()) {
                                 stats.input_db.push(fuzz_input.clone());
                             }
-                                // TODO - to optimize / remove that from mutex locking scope
-                                // we save the input in the input folder
-                                // add input to the inputs corpus
                                 inputs_corpus.inputs.push(mutator.input.clone());
                                 record_json_input(&inputs_corpus);
                             // Save coverage to global coverage database
@@ -137,8 +128,7 @@ pub fn worker(
                     if !stats.input_db.contains(&fuzz_input.clone()) {
                         stats.input_db.push(fuzz_input.clone());
                     }
-                    // Add the crash name and corresponding fuzz input to the crash
-                    // database
+                    // Add the crash name and corresponding fuzz input to the crash database
                     local_stats
                         .crash_db
                         .insert(e.to_string(), fuzz_input.clone());
@@ -165,7 +155,6 @@ pub fn worker(
         // TODO - only update every 1k exec to prevent lock
         let counter_update = 1000;
         if local_stats.fuzz_cases % counter_update == 1 {
-            // TODO - Move this to the Ok() Err()
             // Get access to global stats
             let mut stats = stats.lock().unwrap();
             // Update fuzz case count
