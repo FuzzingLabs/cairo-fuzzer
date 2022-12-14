@@ -2,19 +2,20 @@ use serde::{Deserialize, Serialize};
 use std::path::Path;
 use serde_json::Value;
 use std::fs;
+use crate::cairo_vm::cairo_types::CairoTypes;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct InputCorpus {
     pub name: String,
     pub args: Vec<String>,
-    pub inputs: Vec<Vec<u8>>,
+    pub inputs: Vec<Vec<CairoTypes>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CrashCorpus {
     pub name: String,
     pub args: Vec<String>,
-    pub crashes: Vec<Vec<u8>>,
+    pub crashes: Vec<Vec<CairoTypes>>,
 }
 
 /// Function to load the previous corpus if it exists
@@ -26,7 +27,7 @@ pub fn load_corpus(inputs_corpus: &mut InputCorpus) {
         // TODO : NEED TO VERIFY IF THE ARGS IN THE JSON ARE THE SAME AS THE CAIRO ARTIFACT
 
         // Load old inputs to prevent overwriting and to use it as a dictionary for the mutator
-        let inputs:Vec<Vec<u8>> = data["inputs"].as_array().unwrap().iter().map(|input_array| input_array.as_array().unwrap().iter().map(|input| input.as_u64().unwrap() as u8).collect()).collect();
+        let inputs:Vec<Vec<CairoTypes>> = data["inputs"].as_array().unwrap().iter().map(|input_array| input_array.as_array().unwrap().iter().map(|input| input.as_u64().unwrap() as u8).collect()).collect();
         inputs_corpus.inputs.extend(inputs);
     }
 }

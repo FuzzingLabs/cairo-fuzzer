@@ -14,17 +14,17 @@ mod fuzzer;
 mod json;
 mod minimizer;
 mod mutator;
-mod replay;
 
 use cli::args::Opt;
 use fuzzer::stats::*;
-use fuzzer::worker::worker;
-use minimizer::minimizer::minimizer;
-use replay::replay::replay;
+use fuzzer::fuzzing_worker::worker;
+use minimizer::minimizer_worker::minimizer;
+use fuzzer::replay_worker::replay;
 use fuzzer::corpus::InputCorpus;
 use fuzzer::corpus::CrashCorpus;
 use fuzzer::corpus::load_corpus;
 use fuzzer::stats::print_stats;
+use cairo_vm::cairo_types::CairoTypes;
 
 #[derive(Debug)]
 pub struct FuzzingData {
@@ -67,6 +67,8 @@ pub fn init_fuzzing_data(logs: bool, seed: Option<u64>, contract: String, functi
     return fuzzing_data;
 }
 
+
+/// Run the fuzzing worker
 pub fn cairo_fuzz(
     cores: i32,
     contract: String,
@@ -81,12 +83,12 @@ pub fn cairo_fuzz(
     let mut inputs = InputCorpus {
         name: function_name.clone(),
         args: fuzzing_data.function.type_args.clone(),
-        inputs: Vec::<Vec<u8>>::new(),
+        inputs: Vec::<Vec<CairoTypes>>::new(),
     };
     let crashes = CrashCorpus {
         name: function_name.clone(),
         args: fuzzing_data.function.type_args.clone(),
-        crashes: Vec::<Vec<u8>>::new(),
+        crashes: Vec::<Vec<CairoTypes>>::new(),
     };
 
     // Load old corpus if exists

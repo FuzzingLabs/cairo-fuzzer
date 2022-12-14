@@ -1,12 +1,13 @@
 use std::fs::File;
 /// Sharable fuzz input
 use std::sync::Arc;
-pub type FuzzInput = Arc<Vec<u8>>;
+pub type FuzzInput = Arc<Vec<CairoTypes>>;
 use std::collections::{HashMap, HashSet};
 use std::time::{Duration, Instant};
 use std::io::Write;
 
 use crate::FuzzingData;
+use crate::cairo_vm::cairo_types::CairoTypes;
 
 /// Fuzz case statistics
 #[derive(Default, Debug)]
@@ -16,17 +17,17 @@ pub struct Statistics {
 
     /// Coverage database. Maps (module, offset) to `FuzzInput`s
     pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
-    pub coverage_minimizer_db: HashMap<Vec<(u32, u32)>, Vec<u8>>,
+    pub coverage_minimizer_db: HashMap<Vec<(u32, u32)>, Vec<CairoTypes>>,
     /// Set of all unique inputs
     pub input_db: HashSet<FuzzInput>,
-    pub input_minimizer_db: HashSet<Vec<u8>>,
+    pub input_minimizer_db: HashSet<Vec<CairoTypes>>,
 
     /// List of all unique crashes
-    pub crash_list: HashMap<String, u128>,
+    pub crash_list: HashMap<String, CairoTypes>,
     pub crash_minimizer_list: Vec<String>,
     /// List of all unique inputs
     pub input_list: Vec<FuzzInput>,
-    pub input_minimizer_list: Vec<u8>,
+    pub input_minimizer_list: Vec<CairoTypes>,
 
     /// List of all unique inputs
     pub input_len: usize,
@@ -50,7 +51,7 @@ pub struct Statistics {
     pub removed_files: u64,
 }
 impl Statistics {
-    pub fn get_stats_input(&self, index: usize) -> Vec<u8> {
+    pub fn get_stats_input(&self, index: usize) -> Vec<CairoTypes> {
         return self.input_list[index].to_vec();
     }
 }

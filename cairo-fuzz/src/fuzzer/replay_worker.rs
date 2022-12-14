@@ -8,6 +8,7 @@ pub fn replay(
     worker_id: usize,
     fuzzing_data: Arc<FuzzingData>,
     files: &Vec<String>,
+    minimizer: bool
 ) {
     // Local stats database
     let stats = &fuzzing_data.stats;
@@ -67,15 +68,15 @@ pub fn replay(
                                 stats.input_list.push(fuzz_input.clone());
                                 stats.input_len += 1;
 
-                                // TODO - to optimize / remove that from mutex locking scope
-                                // we save the input in the input folder
-                                //record_input(&fuzz_input, false);
+
                             }
 
                             // Save coverage to global coverage database
                             stats
                                 .coverage_db
                                 .insert(vec_trace.clone(), fuzz_input.clone());
+                        } else if minimizer {
+                            // Remove input
                         }
                     }
                 }
@@ -99,11 +100,6 @@ pub fn replay(
                         stats.input_list.push(fuzz_input.clone());
                         stats.input_len += 1;
 
-                        // TODO - to optimize / remove that from mutex locking scope
-                        // we save the input in the crash folder
-                        //record_input(&fuzz_input, true);
-                        // we save the input in the input folder
-                        //record_input(&fuzz_input, false);
                     }
 
                     // Add the crash name and corresponding fuzz input to the crash
@@ -125,6 +121,7 @@ pub fn replay(
                             .crash_list
                             .entry(e.to_string().to_owned())
                             .or_default() += 1;
+                        // Remove inputs
                     }
                 }
             }
