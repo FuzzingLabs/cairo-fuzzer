@@ -16,6 +16,22 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Filename of the inputs json",
+        name = "INPUTFILE",
+        default_value = ""
+    )]
+    pub inputfile: String,
+
+    #[arg(
+        long,
+        help = "Filename of the crashes json",
+        name = "CRASHFILE",
+        default_value = ""
+    )]
+    pub crashfile: String,
+
+    #[arg(
+        long,
         help = "Set the path of the json artifact to load",
         name = "CONTRACT"
     )]
@@ -34,7 +50,6 @@ pub struct Opt {
 
     #[arg(
         long,
-
         help = "Replay the corpus folder",
         name = "REPLAY",
         default_value = "false"
@@ -47,5 +62,4 @@ pub struct Opt {
         default_value = "false"
     )]
     pub minimizer: bool,
-
 }
