@@ -36,6 +36,7 @@ pub struct Fuzzer {
     pub input_file: String,
     pub crash_file: String,
     pub workers: u64,
+    pub timeout: u64,
 }
 
 impl Fuzzer {
@@ -242,6 +243,9 @@ impl Fuzzer {
             if self.replay && stats.threads_finished == self.workers as u64 {
                 break;
             }
+            if uptime > self.timeout as f64 {
+                process::exit(0);
+            }
         }
     }
 }
@@ -252,6 +256,7 @@ pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
         config.cores,
         config.logs,
         config.seed,
+        config.timeout,
         config.replay,
         config.minimizer,
         &config.contract_file,
@@ -266,6 +271,7 @@ pub fn init_fuzzer(
     cores: i32,
     logs: bool,
     seed: Option<u64>,
+    timeout: Option<u64>,
     replay: bool,
     minimizer: bool,
     contract_file: &String,
@@ -281,6 +287,10 @@ pub fn init_fuzzer(
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_millis() as u64,
+    };
+    let set_timeout = match timeout {
+        Some(val) => val,
+        None => 0,
     };
     println!("Fuzzing SEED => {}", set_seed);
     // Init stats struct
@@ -300,6 +310,7 @@ pub fn init_fuzzer(
         stats: stats,
         cores: cores,
         logs: logs,
+        timeout: set_timeout,
         replay: replay,
         minimizer: minimizer,
         contract_file: contract_file.to_string(),
@@ -312,4 +323,38 @@ pub fn init_fuzzer(
         workers: 0,
     };
     return fuzzer;
+}
+
+#[cfg(test)]
+mod tests {
+    use core::panic;
+    use std::{time::Duration, thread};
+
+    use crate::cli::config::load_config;
+
+    use super::init_fuzzer_from_config;
+    #[test]
+    fn test_init_fuzzer_from_config_file() {
+        let config_file = "tests/config.json".to_string();
+        let config = load_config(&config_file);
+        let mut fuzzer = init_fuzzer_from_config(config.clone());
+        // Create a new thread
+        let handle = thread::spawn(move || {
+            fuzzer.timeout = 10;
+            fuzzer.fuzz();
+            //println!("hi");
+        });
+
+        // Sleep for 5 seconds
+        
+        thread::sleep(Duration::from_secs(5));
+        // Kill the thread
+        if handle.is_finished() {
+            panic!("Process should be running");
+        }
+        thread::sleep(Duration::from_secs(6));
+        if !handle.is_finished() {
+            panic!("Process should not be running");
+        }
+    }
 }

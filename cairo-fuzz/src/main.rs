@@ -42,6 +42,7 @@ fn main() {
             opt.cores,
             opt.logs,
             opt.seed,
+            opt.timeout,
             opt.replay,
             opt.minimizer,
             &contract_file,

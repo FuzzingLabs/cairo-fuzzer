@@ -4,7 +4,6 @@ use std::fs::write;
 
 use crate::{CrashCorpus, InputCorpus};
 
-
 /// Function to dump the inputs corpus
 pub fn record_json_input(inputs_corpus: &InputCorpus) {
     let crash_folder = "crashes_corpus";
