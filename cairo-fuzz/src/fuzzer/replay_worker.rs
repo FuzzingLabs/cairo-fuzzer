@@ -98,6 +98,7 @@ pub fn replay(worker_id: usize, fuzzing_data: Arc<Fuzzer>, inputs: Vec<Vec<Felt>
         local_stats.fuzz_cases += 1;
     }
     {
+        // Update the threads_finished when the worker executes all the corpus chunk
         let mut stats = stats.lock().unwrap();
         stats.threads_finished += 1;
     }
