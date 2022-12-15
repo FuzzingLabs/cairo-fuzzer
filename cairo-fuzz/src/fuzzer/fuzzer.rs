@@ -40,7 +40,6 @@ pub struct Fuzzer {
 
 impl Fuzzer {
     pub fn fuzz(&mut self) {
-        // Set fuzzing data with the contents of the json artifact, the function data and the see
         // Setup input corpus and crash corpus
         let inputs = self.load_inputs_corpus();
         {
@@ -71,10 +70,12 @@ impl Fuzzer {
         self.print_stats();
     }
 
+    /// Function to replay a corpus. If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
         let inputs = self.load_inputs_corpus();
         let crashes = self.load_crashes_corpus();
 
+        // Select if the corpus should be the inputs one or the crashes one
         let corpus = if self.crash_file.clone().len() == 0 && inputs.inputs.len() != 0 {
             inputs.inputs
         } else {
@@ -101,31 +102,39 @@ impl Fuzzer {
             println!("Thread {} Spawned", i);
             self.workers += 1;
         }
+        // Print stats of the current fuzzer
         self.print_stats();
+
+        // If minimizer is set, dump the new corpus
         if self.minimizer {
             let stats = self.stats.lock().unwrap();
+            // Init the struct
             let mut dump_inputs = InputCorpus {
                 name: self.function.name.clone(),
                 args: self.function.type_args.clone(),
                 inputs: Vec::<Vec<Felt>>::new(),
             };
+            // Push every input to the struct
             for input in stats.input_db.clone() {
                 dump_inputs.inputs.push(input.clone().to_vec());
             }
             println!("Size after minimization : {}", dump_inputs.inputs.len());
+            // Dump the struct
             record_json_input(&dump_inputs);
         }
     }
 
     /// Function to load the previous corpus if it exists
     fn load_inputs_corpus(&self) -> InputCorpus {
+        // Init the struct
         let mut inputs_corpus = InputCorpus {
             name: self.function.name.clone(),
             args: self.function.type_args.clone(),
             inputs: Vec::<Vec<Felt>>::new(),
         };
+        // Set the filename based on the function name or if a crash_file was set via config file or CLI
         let filename = if self.input_file.len() == 0 {
-            format!("inputs_corpus/{}_inputs.json", inputs_corpus.name)
+            format!("inputs_corpus/{}_inputs.json", self.function.name)
         } else {
             self.input_file.clone()
         };
@@ -147,18 +156,23 @@ impl Fuzzer {
                         .collect()
                 })
                 .collect();
+            // Add the old corpus to the struct
             inputs_corpus.inputs.extend(inputs);
         }
         return inputs_corpus;
     }
+
+    /// Function to load a crashes corpus
     fn load_crashes_corpus(&self) -> CrashCorpus {
+        // Init the struct
         let mut crashes_corpus = CrashCorpus {
             name: self.function.name.clone(),
             args: self.function.type_args.clone(),
             crashes: Vec::<Vec<Felt>>::new(),
         };
+        // Set the filename based on the function name or if a crash_file was set via config file or CLI
         let filename = if self.crash_file.len() == 0 {
-            format!("crashes_corpus/{}_crashes.json", crashes_corpus.name)
+            format!("crashes_corpus/{}_crashes.json", self.function.name)
         } else {
             self.crash_file.clone()
         };
@@ -180,11 +194,13 @@ impl Fuzzer {
                         .collect()
                 })
                 .collect();
+            // Add the old corpus to the struct
             crashes_corpus.crashes.extend(crashes);
         }
         return crashes_corpus;
     }
 
+    /// Function to print stats of the running fuzzer
     fn print_stats(&self) {
         let mut log = None;
         if self.logs {
@@ -230,6 +246,7 @@ impl Fuzzer {
     }
 }
 
+/// Function that init the fuzzer using the Config struct
 pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
     return init_fuzzer(
         config.cores,
@@ -244,6 +261,7 @@ pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
     );
 }
 
+/// Function to init the fuzzer
 pub fn init_fuzzer(
     cores: i32,
     logs: bool,
@@ -277,6 +295,7 @@ pub fn init_fuzzer(
             process::exit(1);
         }
     };
+    // Setup the fuzzer
     let fuzzer = Fuzzer {
         stats: stats,
         cores: cores,
