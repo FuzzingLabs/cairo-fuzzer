@@ -338,6 +338,16 @@ mod tests {
     fn test_init_fuzzer_from_config_file() {
         let config_file = "tests/config.json".to_string();
         let config = load_config(&config_file);
+        let fuzzer = init_fuzzer_from_config(config.clone());
+        assert_eq!(fuzzer.cores, 1);
+        assert_eq!(fuzzer.logs, false);
+        assert_eq!(fuzzer.function.name, "test_symbolic_execution");
+    }
+
+    #[test]
+    fn test_run_fuzzer_from_config_file() {
+        let config_file = "tests/config.json".to_string();
+        let config = load_config(&config_file);
         let mut fuzzer = init_fuzzer_from_config(config.clone());
         // Create a new thread
         let handle = thread::spawn(move || {
@@ -355,9 +365,38 @@ mod tests {
             panic!("Process should not be running");
         }
     }
-
     #[test]
     fn test_init_fuzzer() {
+        let cores: i32 = 3;
+        let logs: bool = false;
+        let seed: Option<u64> = Some(1000);
+        let run_time: Option<u64> = Some(10);
+        let replay: bool = false;
+        let minimizer: bool = false;
+        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
+        let function_name: &String = &"test_symbolic_execution".to_string();
+        let input_file: &String = &"".to_string();
+        let crash_file: &String = &"".to_string();
+        let fuzzer = init_fuzzer(
+            cores,
+            logs,
+            seed,
+            run_time,
+            replay,
+            minimizer,
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
+        );
+        assert_eq!(fuzzer.cores, 1);
+        assert_eq!(fuzzer.logs, false);
+        assert_eq!(fuzzer.function.name, "test_symbolic_execution");
+
+    }
+
+    #[test]
+    fn test_run_fuzzer() {
         let cores: i32 = 3;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
@@ -395,5 +434,42 @@ mod tests {
         if !handle.is_finished() {
             panic!("Process should not be running");
         }
+    }
+
+    #[test]
+    fn test_replay() {
+        let cores: i32 = 3;
+        let logs: bool = false;
+        let seed: Option<u64> = Some(1000);
+        let run_time: Option<u64> = Some(10);
+        let replay: bool = true;
+        let minimizer: bool = false;
+        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
+        let function_name: &String = &"test_symbolic_execution".to_string();
+        let input_file: &String = &"tests/test_symbolic_execution_inputs.json".to_string();
+        let crash_file: &String = &"".to_string();
+        let fuzzer = init_fuzzer(
+            cores,
+            logs,
+            seed,
+            run_time,
+            replay,
+            minimizer,
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
+        );
+        // Create a new thread
+        let mut fuzzer_clone = fuzzer.clone();
+        let handle = thread::spawn(move || {
+            fuzzer_clone.replay();
+        });
+
+        while !handle.is_finished() {
+        }
+        let stats = fuzzer.stats.lock().unwrap();
+        assert_ne!(stats.coverage_db.len(), 0);
+
     }
 }

@@ -74,7 +74,7 @@ pub fn replay(worker_id: usize, fuzzing_data: Arc<Fuzzer>, inputs: Vec<Vec<Felt>
                     // Check if this case ended due to a crash
                     // Add the crashing input to the input databases
                     local_stats.input_db.insert(fuzz_input.clone());
-                    if !stats.input_db.insert(fuzz_input.clone()) {
+                    if stats.input_db.insert(fuzz_input.clone()) {
                         stats.input_list.push(fuzz_input.clone());
                         stats.input_len += 1;
                     }
