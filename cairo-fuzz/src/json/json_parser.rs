@@ -7,7 +7,8 @@ pub struct Function {
     pub type_args: Vec<String>,
 }
 
-pub fn get_type_args(members: &Value) -> Vec<String> {
+/// Function that returns a vector of the args type of the function the user want to fuzz
+fn get_type_args(members: &Value) -> Vec<String> {
     let mut type_args = Vec::<String>::new();
     for (_key, value) in members.as_object().unwrap() {
         type_args.push(value["cairo_type"].to_string().replace("\"", ""));
