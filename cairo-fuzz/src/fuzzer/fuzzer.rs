@@ -243,7 +243,7 @@ impl Fuzzer {
             if self.replay && stats.threads_finished == self.workers as u64 {
                 break;
             }
-            if uptime > self.timeout as f64 {
+            if self.timeout != 0 && uptime > self.timeout as f64 {
                 process::exit(0);
             }
         }
@@ -328,7 +328,7 @@ pub fn init_fuzzer(
 #[cfg(test)]
 mod tests {
     use core::panic;
-    use std::{time::Duration, thread};
+    use std::{thread, time::Duration};
 
     use crate::cli::config::load_config;
 
@@ -342,16 +342,13 @@ mod tests {
         let handle = thread::spawn(move || {
             fuzzer.timeout = 10;
             fuzzer.fuzz();
-            //println!("hi");
         });
 
-        // Sleep for 5 seconds
-        
         thread::sleep(Duration::from_secs(5));
-        // Kill the thread
         if handle.is_finished() {
             panic!("Process should be running");
         }
+
         thread::sleep(Duration::from_secs(6));
         if !handle.is_finished() {
             panic!("Process should not be running");

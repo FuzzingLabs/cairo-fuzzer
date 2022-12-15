@@ -75,7 +75,7 @@ pub fn worker(
                     let stats = stats.lock().unwrap();
                     // verify if new input has been found by other fuzzers
                     // if so, update our statistics
-                    if local_stats.input_db.len() != stats.input_db.len() {
+                    if local_stats.input_len != stats.input_len {
                         local_stats.coverage_db = stats.coverage_db.clone();
                         local_stats.input_list = stats.input_list.clone();
                         local_stats.input_len = stats.input_len;
@@ -128,7 +128,7 @@ pub fn worker(
                     // Check if this case ended due to a crash
                     // Add the crashing input to the input databases
                     local_stats.input_db.insert(fuzz_input.clone());
-                    if !stats.input_db.insert(fuzz_input.clone()) {
+                    if stats.input_db.insert(fuzz_input.clone()) {
                         stats.input_list.push(fuzz_input.clone());
                         stats.input_len += 1;
                     }
