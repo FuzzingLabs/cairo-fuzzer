@@ -10,6 +10,7 @@ use serde_json::Value;
 
 use crate::{
     cairo_vm::cairo_types::Felt,
+    cli::config::Config,
     fuzzer::{fuzzing_worker::worker, inputs::record_json_input, replay_worker::replay},
     json::json_parser::{parse_json, Function},
 };
@@ -80,7 +81,11 @@ impl Fuzzer {
             crashes.crashes
         };
         // Split the files into chunks
-        let chunk_size = if corpus.len() > (self.cores as usize) {corpus.len() / (self.cores as usize)} else {1};
+        let chunk_size = if corpus.len() > (self.cores as usize) {
+            corpus.len() / (self.cores as usize)
+        } else {
+            1
+        };
         let mut chunks = Vec::new();
         for chunk in corpus.chunks(chunk_size) {
             chunks.push(chunk.to_vec());
@@ -223,6 +228,20 @@ impl Fuzzer {
             }
         }
     }
+}
+
+pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
+    return init_fuzzer(
+        config.cores,
+        config.logs,
+        config.seed,
+        config.replay,
+        config.minimizer,
+        &config.contract_file,
+        &config.function_name,
+        &config.input_file,
+        &config.crash_file,
+    );
 }
 
 pub fn init_fuzzer(

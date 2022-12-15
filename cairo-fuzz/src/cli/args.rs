@@ -1,5 +1,4 @@
 use clap::{self, Parser};
-use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
 pub struct Opt {
@@ -11,8 +10,16 @@ pub struct Opt {
     )]
     pub cores: i32,
 
-    #[arg(long, help = "Set the function to fuzz", name = "FUNCTION")]
+    #[arg(long, help = "Set the function to fuzz", name = "FUNCTION", default_value = "")]
     pub function: String,
+
+    #[arg(
+        long,
+        help = "Set the path of the json artifact to load",
+        name = "CONTRACT",
+        default_value = ""
+    )]
+    pub contract: String,
 
     #[arg(
         long,
@@ -30,15 +37,11 @@ pub struct Opt {
     )]
     pub crashfile: String,
 
-    #[arg(
-        long,
-        help = "Set the path of the json artifact to load",
-        name = "CONTRACT"
-    )]
-    pub contract: PathBuf,
-
     #[arg(long, help = "Set a custom seed", name = "SEED")]
     pub seed: Option<u64>,
+
+    #[arg(long, help = "Load config file", name = "CONFIG")]
+    pub config: Option<String>,
 
     #[arg(
         long,
