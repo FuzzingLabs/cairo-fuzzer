@@ -36,7 +36,7 @@ pub struct Fuzzer {
     pub input_file: String,
     pub crash_file: String,
     pub workers: u64,
-    pub timeout: u64,
+    pub run_time: u64,
 }
 
 impl Fuzzer {
@@ -243,7 +243,7 @@ impl Fuzzer {
             if self.replay && stats.threads_finished == self.workers as u64 {
                 break;
             }
-            if self.timeout != 0 && uptime > self.timeout as f64 {
+            if self.run_time != 0 && uptime > self.run_time as f64 {
                 process::exit(0);
             }
         }
@@ -256,7 +256,7 @@ pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
         config.cores,
         config.logs,
         config.seed,
-        config.timeout,
+        config.run_time,
         config.replay,
         config.minimizer,
         &config.contract_file,
@@ -271,7 +271,7 @@ pub fn init_fuzzer(
     cores: i32,
     logs: bool,
     seed: Option<u64>,
-    timeout: Option<u64>,
+    run_time: Option<u64>,
     replay: bool,
     minimizer: bool,
     contract_file: &String,
@@ -288,7 +288,7 @@ pub fn init_fuzzer(
             .unwrap()
             .as_millis() as u64,
     };
-    let set_timeout = match timeout {
+    let set_run_time = match run_time {
         Some(val) => val,
         None => 0,
     };
@@ -310,7 +310,7 @@ pub fn init_fuzzer(
         stats: stats,
         cores: cores,
         logs: logs,
-        timeout: set_timeout,
+        run_time: set_run_time,
         replay: replay,
         minimizer: minimizer,
         contract_file: contract_file.to_string(),
@@ -332,6 +332,7 @@ mod tests {
 
     use crate::cli::config::load_config;
 
+    use super::init_fuzzer;
     use super::init_fuzzer_from_config;
     #[test]
     fn test_init_fuzzer_from_config_file() {
@@ -340,7 +341,48 @@ mod tests {
         let mut fuzzer = init_fuzzer_from_config(config.clone());
         // Create a new thread
         let handle = thread::spawn(move || {
-            fuzzer.timeout = 10;
+            fuzzer.run_time = 10;
+            fuzzer.fuzz();
+        });
+
+        thread::sleep(Duration::from_secs(5));
+        if handle.is_finished() {
+            panic!("Process should be running");
+        }
+
+        thread::sleep(Duration::from_secs(6));
+        if !handle.is_finished() {
+            panic!("Process should not be running");
+        }
+    }
+
+    #[test]
+    fn test_init_fuzzer() {
+        let cores: i32 = 3;
+        let logs: bool = false;
+        let seed: Option<u64> = Some(1000);
+        let run_time: Option<u64> = Some(10);
+        let replay: bool = false;
+        let minimizer: bool = false;
+        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
+        let function_name: &String = &"test_symbolic_execution".to_string();
+        let input_file: &String = &"".to_string();
+        let crash_file: &String = &"".to_string();
+        let mut fuzzer = init_fuzzer(
+            cores,
+            logs,
+            seed,
+            run_time,
+            replay,
+            minimizer,
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
+        );
+        // Create a new thread
+        let handle = thread::spawn(move || {
+            fuzzer.run_time = 10;
             fuzzer.fuzz();
         });
 

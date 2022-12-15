@@ -45,8 +45,8 @@ pub struct Opt {
     #[arg(long, help = "Set a custom seed", name = "SEED")]
     pub seed: Option<u64>,
 
-    #[arg(long, help = "Set a custom seed", name = "TIMEOUT")]
-    pub timeout: Option<u64>,
+    #[arg(long, help = "Set a custom seed", name = "run_time")]
+    pub run_time: Option<u64>,
 
     #[arg(long, help = "Load config file", name = "CONFIG")]
     pub config: Option<String>,
