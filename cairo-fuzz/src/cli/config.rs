@@ -19,6 +19,5 @@ pub fn load_config(config_file: &String) -> Config {
     let config_string = fs::read_to_string(config_file).expect("Unable to read config file");
     let config: Config =
         serde_json::from_str(&config_string).expect("Could not parse json config file");
-
     return config;
 }

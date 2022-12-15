@@ -10,7 +10,12 @@ pub struct Opt {
     )]
     pub cores: i32,
 
-    #[arg(long, help = "Set the function to fuzz", name = "FUNCTION", default_value = "")]
+    #[arg(
+        long,
+        help = "Set the function to fuzz",
+        name = "FUNCTION",
+        default_value = ""
+    )]
     pub function: String,
 
     #[arg(

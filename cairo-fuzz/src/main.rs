@@ -15,7 +15,7 @@ use fuzzer::corpus::CrashCorpus;
 use fuzzer::corpus::InputCorpus;
 use fuzzer::fuzzer::init_fuzzer;
 use fuzzer::fuzzer::init_fuzzer_from_config;
-
+use log::error;
 fn main() {
     let opt = Opt::parse();
     if let Some(config_file) = opt.config {
@@ -28,11 +28,11 @@ fn main() {
         }
     } else {
         if opt.contract.len() == 0 {
-            println!("Fuzzer needs a contract path using --contract");
+            error!("Fuzzer needs a contract path using --contract");
             process::exit(1);
         }
         if opt.function.len() == 0 {
-            println!("Fuzzer needs a function name to fuzz using --function");
+            error!("Fuzzer needs a function name to fuzz using --function");
             process::exit(1);
         }
         let contract_file = opt.contract;
