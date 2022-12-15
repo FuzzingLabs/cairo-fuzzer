@@ -32,7 +32,7 @@ pub fn worker(
     'next_case: loop {
         // clear previous data
         mutator.input.clear();
-        if local_stats.input_db.len() > 0 {
+        if local_stats.input_len > 0 {
             let index: usize = rng.rand_usize() % local_stats.input_len;
             // pick from feedback corpora
             mutator
