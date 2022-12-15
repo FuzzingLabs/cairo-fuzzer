@@ -1,10 +1,5 @@
 use crate::cairo_vm::cairo_types::Felt;
-use crate::FuzzingData;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::fs;
-use std::path::Path;
-use std::sync::Arc;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct InputCorpus {
@@ -19,17 +14,16 @@ pub struct CrashCorpus {
     pub args: Vec<String>,
     pub crashes: Vec<Vec<Felt>>,
 }
-
+/*
 /// Function to load the previous corpus if it exists
-
-pub fn load_inputs_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String) -> InputCorpus {
+ pub fn load_inputs_corpus(fuzzing_data: &Arc<FuzzingData>, mut filename: &String) -> InputCorpus {
     let mut inputs_corpus = InputCorpus {
         name: fuzzing_data.function.name.clone(),
         args: fuzzing_data.function.type_args.clone(),
         inputs: Vec::<Vec<Felt>>::new(),
     };
     filename = if filename.len() == 0 {
-        format!("inputs_corpus/{}_inputs.json", inputs_corpus.name)
+        &format!("inputs_corpus/{}_inputs.json", inputs_corpus.name)
     } else {
         filename
     };
@@ -54,21 +48,21 @@ pub fn load_inputs_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String) 
         inputs_corpus.inputs.extend(inputs);
     }
     return inputs_corpus;
-}
+} */
 
-/// 1st case - replay multiple inputs (.json) or multiple jsons with inputs
-/// 2nd case - replay multiple crashes (.json) or multiple json with crashes
-/// 3rd case - replay single input or crash (vector with data)
-
+// 1st case - replay multiple inputs (.json) or multiple jsons with inputs
+// 2nd case - replay multiple crashes (.json) or multiple json with crashes
+// 3rd case - replay single input or crash (vector with data)
+/*
 /// Function to load the crashes inputs
-pub fn load_crashes_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String) -> CrashCorpus {
+ pub fn load_crashes_corpus(fuzzing_data: &Arc<FuzzingData>, mut filename: &String) -> CrashCorpus {
     let mut crashes_corpus = CrashCorpus {
         name: fuzzing_data.function.name.clone(),
         args: fuzzing_data.function.type_args.clone(),
         crashes: Vec::<Vec<Felt>>::new(),
     };
     filename = if filename.len() == 0 {
-        format!("crashes_corpus/{}_crashes.json", crashes_corpus.name)
+        &format!("crashes_corpus/{}_crashes.json", crashes_corpus.name)
     } else {
         filename
     };
@@ -93,4 +87,4 @@ pub fn load_crashes_corpus(fuzzing_data: Arc<FuzzingData>, mut filename: String)
         crashes_corpus.crashes.extend(crashes);
     }
     return crashes_corpus;
-}
+} */

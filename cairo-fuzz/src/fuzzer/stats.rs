@@ -1,13 +1,9 @@
-use std::fs::File;
-/// Sharable fuzz input
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-pub type FuzzInput = Arc<Vec<Felt>>;
-use std::collections::{HashMap};
-use std::io::Write;
-use std::time::{Duration, Instant};
 
 use crate::cairo_vm::cairo_types::Felt;
-use crate::FuzzingData;
+
+pub type FuzzInput = Arc<Vec<Felt>>;
 
 /// Fuzz case statistics
 #[derive(Default, Debug)]
@@ -19,11 +15,10 @@ pub struct Statistics {
     pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
 
     /// Set of all unique inputs
-    pub input_db: Vec<FuzzInput>,
-
-    /// List of all unique crashes
-    pub crash_list: HashMap<String, Felt>,
-
+    pub input_db: HashSet<FuzzInput>,
+    pub input_list: Vec<FuzzInput>,
+    pub input_len: usize,
+    // add counter of size
     /// Unique set of fuzzer actions
     ///pub unique_action_set: HashSet<FuzzerAction>,
 
@@ -32,17 +27,20 @@ pub struct Statistics {
 
     /// Database of crash file names to `FuzzInput`s
     pub crashes: u64,
-    pub crash_db: HashMap<String, FuzzInput>,
-
-    /// Set number of threads that stopped running
-    pub finished: u64,
-
-    /// Removed files
-    pub removed_files: u64,
+    // TODO : we don't need the unique crashes anymore, so we use the FuzzInput as the key now HashSet<FuzzInput, String>
+    //pub crash_db: HashMap<String, FuzzInput>,
+    pub crash_db: HashSet<FuzzInput>,
+    // TODO Add counter of unique crashes
+    pub threads_finished: u64,
 }
 
+impl Statistics {
+    pub fn get_stats_input(&self, index: usize) -> Vec<u8> {
+        return self.input_list[index].to_vec();
+    }
+}
 
-pub fn print_stats(fuzzing_data: Arc<FuzzingData>, replay:bool, workers: usize) {
+/* pub fn print_stats(fuzzing_data: &Arc<FuzzingData>, replay: bool, workers: usize) {
     let mut log = None;
     if fuzzing_data.logs {
         log = Some(File::create("fuzz_stats.txt").unwrap());
@@ -62,7 +60,7 @@ pub fn print_stats(fuzzing_data: Arc<FuzzingData>, replay:bool, workers: usize) 
             fuzz_case,
             fuzz_case as f64 / uptime,
             stats.coverage_db.len(),
-            stats.input_db.len(),
+            stats.input_len,
             stats.crashes,
             stats.crash_db.len()
         );
@@ -73,15 +71,15 @@ pub fn print_stats(fuzzing_data: Arc<FuzzingData>, replay:bool, workers: usize) 
                 uptime,
                 fuzz_case,
                 stats.coverage_db.len(),
-                stats.input_db.len(),
+                stats.input_len,
                 stats.crashes,
                 stats.crash_db.len()
             )
             .unwrap();
             file.flush().unwrap();
         }
-        if replay && stats.finished == workers as u64 {
+        if replay && stats.threads_finished == workers as u64 {
             break;
         }
     }
-}
+} */
