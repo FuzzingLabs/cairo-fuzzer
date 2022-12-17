@@ -10,50 +10,54 @@ mod json;
 mod mutator;
 
 use cli::args::Opt;
-use cli::config::load_config;
-use fuzzer::corpus::CrashCorpus;
-use fuzzer::corpus::InputCorpus;
-use fuzzer::fuzzer::init_fuzzer;
-use fuzzer::fuzzer::init_fuzzer_from_config;
+use cli::config::Config;
+use fuzzer::corpus::CrashFile;
+use fuzzer::corpus::InputFile;
+use fuzzer::fuzzer::Fuzzer;
+
 use log::error;
 fn main() {
+    // get cli args
     let opt = Opt::parse();
-    if let Some(config_file) = opt.config {
-        let config = load_config(&config_file);
-        let mut fuzzer = init_fuzzer_from_config(config.clone());
-        if config.replay || config.minimizer {
-            fuzzer.replay();
-        } else {
-            fuzzer.fuzz();
+    // create config file
+    let config = match opt.config {
+        // config file provided
+        Some(config_file) => Config::load_config(&config_file),
+        None => {
+            if opt.contract.len() == 0 {
+                error!("Fuzzer needs a contract path using --contract");
+                process::exit(1);
+            }
+            if opt.function.len() == 0 {
+                error!("Fuzzer needs a function name to fuzz using --function");
+                process::exit(1);
+            }
+    
+            Config {
+                contract_file: opt.contract,
+                function_name: opt.function,
+                input_file: opt.inputfile,
+                crash_file: opt.crashfile,
+                cores: opt.cores,
+                logs: opt.logs,
+                seed: opt.seed,
+                run_time: opt.run_time,
+                replay: opt.replay,
+                minimizer: opt.minimizer,
+            }
         }
-    } else {
-        if opt.contract.len() == 0 {
-            error!("Fuzzer needs a contract path using --contract");
-            process::exit(1);
-        }
-        if opt.function.len() == 0 {
-            error!("Fuzzer needs a function name to fuzz using --function");
-            process::exit(1);
-        }
-        let contract_file = opt.contract;
-        let input_file = opt.inputfile;
-        let crash_file = opt.crashfile;
-        let mut fuzzer = init_fuzzer(
-            opt.cores,
-            opt.logs,
-            opt.seed,
-            opt.run_time,
-            opt.replay,
-            opt.minimizer,
-            &contract_file,
-            &opt.function,
-            &input_file,
-            &crash_file,
-        );
-        if opt.replay || opt.minimizer {
-            fuzzer.replay();
-        } else {
-            fuzzer.fuzz();
-        }
+    };
+
+    // create the fuzzer
+    let mut fuzzer = Fuzzer::new(&config);
+
+    // replay, minimizer mode
+    // TODO - also when input file are provided, need to be replayed before fuzzing?  || (!&config.input_file.is_empty())
+    if opt.replay || opt.minimizer {
+        fuzzer.replay();
+    // launch fuzzing
     }
+
+    fuzzer.fuzz();
+
 }

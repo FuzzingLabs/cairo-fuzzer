@@ -24,7 +24,7 @@ impl Rng {
         seed
     }
 
-    /// Get a random 64-bit number using xorshift
+    /// Get a random usize number using xorshift
     pub fn rand_usize(&self) -> usize {
         self.rand() as usize
     }

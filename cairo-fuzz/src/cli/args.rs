@@ -12,6 +12,14 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Set the path of the JSON artifact to load",
+        name = "CONTRACT",
+        default_value = ""
+    )]
+    pub contract: String,
+
+    #[arg(
+        long,
         help = "Set the function to fuzz",
         name = "FUNCTION",
         default_value = ""
@@ -20,15 +28,7 @@ pub struct Opt {
 
     #[arg(
         long,
-        help = "Set the path of the json artifact to load",
-        name = "CONTRACT",
-        default_value = ""
-    )]
-    pub contract: String,
-
-    #[arg(
-        long,
-        help = "Filename of the inputs json",
+        help = "Path to the inputs file to load",
         name = "INPUTFILE",
         default_value = ""
     )]
@@ -36,20 +36,11 @@ pub struct Opt {
 
     #[arg(
         long,
-        help = "Filename of the crashes json",
+        help = "Path to the crashes file to load",
         name = "CRASHFILE",
         default_value = ""
     )]
     pub crashfile: String,
-
-    #[arg(long, help = "Set a custom seed", name = "SEED")]
-    pub seed: Option<u64>,
-
-    #[arg(long, help = "Set a custom seed", name = "run_time")]
-    pub run_time: Option<u64>,
-
-    #[arg(long, help = "Load config file", name = "CONFIG")]
-    pub config: Option<String>,
 
     #[arg(
         long,
@@ -58,6 +49,15 @@ pub struct Opt {
         default_value = "false"
     )]
     pub logs: bool,
+
+    #[arg(long, help = "Set a custom seed (only applicable for 1 core run)", name = "SEED")]
+    pub seed: Option<u64>,
+
+    #[arg(long, help = "Number of seconds this fuzzing session will last", name = "RUN_TIME")]
+    pub run_time: Option<u64>,
+
+    #[arg(long, help = "Load config file", name = "CONFIG")]
+    pub config: Option<String>,
 
     #[arg(
         long,

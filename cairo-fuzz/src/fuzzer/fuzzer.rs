@@ -11,78 +11,193 @@ use serde_json::Value;
 use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
-    fuzzer::{fuzzing_worker::worker, inputs::record_json_input, replay_worker::replay},
+    fuzzer::{worker::Worker, corpus},
     json::json_parser::{parse_json, Function},
 };
 
 use super::{
-    corpus::{CrashCorpus, InputCorpus},
+    corpus::{CrashFile, InputFile, Workspace},
     stats::Statistics,
 };
 use std::io::Write;
+use std::collections::{HashSet};
+
 
 #[derive(Clone)]
 pub struct Fuzzer {
+    /// Shared fuzzing statistics between threads
     pub stats: Arc<Mutex<Statistics>>,
+    /// Number of cores/threads
     pub cores: i32,
-    pub logs: bool,
-    pub replay: bool,
-    pub minimizer: bool,
+    /// Contract JSON path
     pub contract_file: String,
+    /// Contract JSON content
     pub contract_content: String,
+    /// Contract function to fuzz
     pub function: Function,
-    pub start_time: Instant,
+    /// Store local/on-disk logs
+    pub logs: bool,
+    /// Replay mode
+    pub replay: bool,
+    /// Corpus minimization
+    pub minimizer: bool,
+    /// Seed number
     pub seed: u64,
-    pub input_file: String,
-    pub crash_file: String,
-    pub workers: u64,
-    pub run_time: u64,
+    /// Inputs file path
+    pub workspace: Workspace,
+    /// Inputs file path
+    pub input_file: Arc<Mutex<InputFile>>,
+    /// Crashes file path
+    pub crash_file: Arc<Mutex<CrashFile>>,
+    /// Number of second the fuzzing session will last
+    pub run_time: Option<u64>,
+    /// Starting time of the fuzzer
+    pub start_time: Instant,
+    /// Running workers
+    pub running_workers: u64,
 }
 
 impl Fuzzer {
-    pub fn fuzz(&mut self) {
-        // Setup input corpus and crash corpus
-        let inputs = self.load_inputs_corpus();
-        {
-            let mut stats_db = self.stats.lock().unwrap();
+    /// Create the fuzzer using the given Config struct
+    pub fn new(config: &Config) -> Self {
+
+
+        let stats = Arc::new(Mutex::new(Statistics::default()));
+        // Set seed if provided or generate a new seed using `SystemTime`
+        let seed = match config.seed {
+            Some(val) => val,
+            None => SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis() as u64,
+        };
+        println!("Seed: {}", seed);
+
+        // Read contract JSON artifact and get its content
+        let contents = fs::read_to_string(&config.contract_file)
+            .expect("Should have been able to read the file");
+        
+        // TODO - remove when support multiple txs
+        let function = match parse_json(&contents, &config.function_name) {
+            Some(func) => func,
+            None => {
+                process::exit(1);
+            }
+        };
+
+        // TODO - setup workspace
+        // TODO - support multiple inputs and crashes files
+
+        // Load inputs from the input file if provided
+        let inputs: InputFile = match config.input_file.is_empty() {
+            true => InputFile::new_from_function(&function),
+            false => InputFile::load_from_file(&config.input_file),
+        };
+
+        // Load existing inputs in shared database
+        if inputs.inputs.len() > 0 {
+            let mut stats_db = stats.lock().unwrap();
             for input in inputs.inputs.clone() {
-                stats_db.input_db.insert(Arc::new(input.clone()));
-                stats_db.input_list.push(Arc::new(input.clone()));
-                stats_db.input_len += 1;
+                if stats_db.input_db.insert(Arc::new(input.clone())) {
+                    stats_db.input_list.push(Arc::new(input.clone()));
+                    stats_db.input_len += 1;
+                }
             }
         }
-        let crashes = self.load_crashes_corpus();
+
+        println!("");
+
+        // Load crashes from the crash file if provided
+        let crashes: CrashFile = match config.crash_file.is_empty() {
+            true => CrashFile::new_from_function(&function),
+            false => CrashFile::load_from_file(&config.input_file),
+        };
+
+        // Load existing crashes in shared database
+        if crashes.crashes.len() > 0 {
+            let mut stats_db = stats.lock().unwrap();
+            for input in crashes.crashes.clone() {
+                stats_db.crash_db.insert(Arc::new(input.clone()));
+                stats_db.crashes += 1;
+            }
+        }
+
         // Setup the mutex for the inputs corpus and crash corpus
         let inputs = Arc::new(Mutex::new(inputs));
         let crashes = Arc::new(Mutex::new(crashes));
-        // Running all the threads
-        for i in 0..self.cores {
-            // Spawn threads
-            let fuzzing_data = Arc::new(self.clone()).clone();
-            let inputs_corpus = inputs.clone();
-            let crashes_corpus = crashes.clone();
-            let _ = std::thread::spawn(move || {
-                worker(inputs_corpus, crashes_corpus, i, fuzzing_data);
-            });
-            println!("Thread {} Spawned", i);
+
+        // Setup the fuzzer
+        Fuzzer {
+            // Init stats struct
+            stats: stats,
+            cores: config.cores,
+            logs: config.logs,
+            run_time: config.run_time,
+            replay: config.replay,
+            minimizer: config.minimizer,
+            contract_file: config.contract_file.clone(),
+            contract_content: contents,
+            function: function,
+            // Init starting time
+            start_time: Instant::now(),
+            seed: seed,
+            input_file: inputs,
+            crash_file: crashes,
+            workspace: Workspace::default(),
+            running_workers: 0,
         }
-        self.workers = self.cores as u64;
-        // Call the stats printer
-        self.print_stats();
     }
 
-    /// Function to replay a corpus. If `minimizer` is set to "true" it will dump the new corpus
+    /// Fuzz 
+    pub fn fuzz(&mut self) {
+
+        // Running all the threads
+        for i in 0..self.cores {
+            
+            // create dedicated statistics per thread
+            let stats = self.stats.clone();
+            let contract_content = self.contract_content.clone();
+            let function = self.function.clone();
+            let input_file = self.input_file.clone();
+            let crash_file = self.crash_file.clone();
+            let seed = self.seed + (i as u64); // create unique seed per worker
+
+            // Spawn threads
+            let _ = std::thread::spawn(move || {
+                let worker = Worker::new(stats, i, contract_content, function, seed, input_file, crash_file);
+                worker.fuzz();
+            });
+            println!("Thread {} Spawned", i);
+            self.running_workers += 1;
+        }
+
+        // Call the stats monitoring/printer
+        self.monitor();
+    }
+    
+    /// TODO - fix
+    /// Replay a given corpus.
+    /// If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
-        let inputs = self.load_inputs_corpus();
-        let crashes = self.load_crashes_corpus();
+        //let inputs = self.load_inputs_corpus();
+        //let crashes = self.load_crashes_corpus();
 
         // Select if the corpus should be the inputs one or the crashes one
-        let corpus = if self.crash_file.clone().len() == 0 && inputs.inputs.len() != 0 {
-            inputs.inputs
-        } else {
-            crashes.crashes
-        };
-        // Split the files into chunks
+        //let corpus = if self.crash_file.clone().len() == 0 && inputs.inputs.len() != 0 {
+        //    inputs.inputs
+        //} else {
+        //    crashes.crashes
+        //};
+        
+        // Replay all inputs
+        let stats_db = self.stats.lock().unwrap();
+        // Load inputs
+        let mut corpus = stats_db.input_list.clone();
+        // Load crashes
+        let mut crashes = stats_db.crash_db.clone().into_iter().collect();
+        corpus.append(&mut crashes);
+
+        // Split the inputs into chunks
         let chunk_size = if corpus.len() > (self.cores as usize) {
             corpus.len() / (self.cores as usize)
         } else {
@@ -92,25 +207,43 @@ impl Fuzzer {
         for chunk in corpus.chunks(chunk_size) {
             chunks.push(chunk.to_vec());
         }
-        println!("Total inputs => {}", corpus.len());
+        println!("Total inputs to replay => {}", corpus.len());
+
+        let mut threads = Vec::new();
+
         for i in 0..chunks.len() {
             // Spawn threads
-            let fuzzing_data = Arc::new(self.clone()).clone();
+            let stats_thread = self.stats.clone();
+            //let fuzzing_data = Arc::new(self.clone()).clone();
+            let contract_content = self.contract_content.clone();
+            let function = self.function.clone();
+            let seed = self.seed;
+            let input_file = self.input_file.clone();
+            let crash_file = self.crash_file.clone();
+
             let chunk = chunks[i].clone();
-            let _ = std::thread::spawn(move || {
-                replay(i, fuzzing_data, chunk);
-            });
+            threads.push(std::thread::spawn(move || {
+                let mut worker = Worker::new(stats_thread, i as i32, contract_content, function, seed, input_file, crash_file);
+                worker.replay(chunk);
+            }));
             println!("Thread {} Spawned", i);
-            self.workers += 1;
+            self.running_workers += 1;
         }
+
+        // Wait for all threads to complete
+        for thread in threads {
+            let _ = thread.join();
+        }
+
         // Print stats of the current fuzzer
-        self.print_stats();
+        // self.monitor();
 
         // If minimizer is set, dump the new corpus
         if self.minimizer {
             let stats = self.stats.lock().unwrap();
             // Init the struct
-            let mut dump_inputs = InputCorpus {
+            let mut dump_inputs = InputFile {
+                path: format!("{}_min.json", self.function.name),
                 name: self.function.name.clone(),
                 args: self.function.type_args.clone(),
                 inputs: Vec::<Vec<Felt>>::new(),
@@ -121,208 +254,73 @@ impl Fuzzer {
             }
             println!("Size after minimization : {}", dump_inputs.inputs.len());
             // Dump the struct
-            record_json_input(&dump_inputs);
+            dump_inputs.dump_json();
         }
-    }
-
-    /// Function to load the previous corpus if it exists
-    fn load_inputs_corpus(&self) -> InputCorpus {
-        // Init the struct
-        let mut inputs_corpus = InputCorpus {
-            name: self.function.name.clone(),
-            args: self.function.type_args.clone(),
-            inputs: Vec::<Vec<Felt>>::new(),
-        };
-        // Set the filename based on the function name or if a crash_file was set via config file or CLI
-        let filename = if self.input_file.len() == 0 {
-            format!("inputs_corpus/{}_inputs.json", self.function.name)
-        } else {
-            self.input_file.clone()
-        };
-        if Path::new(&filename).is_file() {
-            let contents =
-                fs::read_to_string(filename).expect("Should have been able to read the file");
-            let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
-            // Load old inputs to prevent overwriting and to use it as a dictionary for the mutator
-            let inputs: Vec<Vec<Felt>> = data["inputs"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|input_array| {
-                    input_array
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|input| input.as_u64().unwrap() as Felt)
-                        .collect()
-                })
-                .collect();
-            // Add the old corpus to the struct
-            inputs_corpus.inputs.extend(inputs);
-        }
-        return inputs_corpus;
-    }
-
-    /// Function to load a crashes corpus
-    fn load_crashes_corpus(&self) -> CrashCorpus {
-        // Init the struct
-        let mut crashes_corpus = CrashCorpus {
-            name: self.function.name.clone(),
-            args: self.function.type_args.clone(),
-            crashes: Vec::<Vec<Felt>>::new(),
-        };
-        // Set the filename based on the function name or if a crash_file was set via config file or CLI
-        let filename = if self.crash_file.len() == 0 {
-            format!("crashes_corpus/{}_crashes.json", self.function.name)
-        } else {
-            self.crash_file.clone()
-        };
-        if Path::new(&filename).is_file() {
-            let contents =
-                fs::read_to_string(filename).expect("Should have been able to read the file");
-            let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
-            // Load old crashes to prevent overwriting and to use it as a dictionary for the mutator
-            let crashes: Vec<Vec<Felt>> = data["crashes"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|input_array| {
-                    input_array
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|input| input.as_u64().unwrap() as Felt)
-                        .collect()
-                })
-                .collect();
-            // Add the old corpus to the struct
-            crashes_corpus.crashes.extend(crashes);
-        }
-        return crashes_corpus;
     }
 
     /// Function to print stats of the running fuzzer
-    fn print_stats(&self) {
+    fn monitor(&self) {
         let mut log = None;
         if self.logs {
             log = Some(File::create("fuzz_stats.txt").unwrap());
         }
+
+        // Monitoring loop
         loop {
+            // wait 1 second
             std::thread::sleep(Duration::from_millis(1000));
 
-            // Get access to the global stats
-            let stats = self.stats.lock().unwrap();
-
+            // Get uptime
             let uptime = (Instant::now() - self.start_time).as_secs_f64();
-            let fuzz_case = stats.fuzz_cases;
-            print!(
-                "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
-                        {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
-                uptime,
-                fuzz_case,
-                fuzz_case as f64 / uptime,
-                stats.coverage_db.len(),
-                stats.input_len,
-                stats.crashes,
-                stats.crash_db.len()
-            );
-            if let Some(ref mut file) = log {
-                write!(
-                    file,
-                    "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+
+            // Get access to the global stats
+            {
+                let stats = self.stats.lock().unwrap();
+
+                // number of executions
+                let fuzz_case = stats.fuzz_cases;
+                print!(
+                    "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
+                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
                     uptime,
                     fuzz_case,
+                    fuzz_case as f64 / uptime,
                     stats.coverage_db.len(),
                     stats.input_len,
                     stats.crashes,
                     stats.crash_db.len()
-                )
-                .unwrap();
-                file.flush().unwrap();
+                );
+                // Writing inside logging file
+                if let Some(ref mut file) = log {
+                    write!(
+                        file,
+                        "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+                        uptime,
+                        fuzz_case,
+                        stats.coverage_db.len(),
+                        stats.input_len,
+                        stats.crashes,
+                        stats.crash_db.len()
+                    )
+                    .unwrap();
+                    file.flush().unwrap();
+                }
+
+                // Only for replay: all thread are finished
+                if self.replay && stats.threads_finished >= self.cores as u64 {
+                    break;
+                }
             }
-            if self.replay && stats.threads_finished == self.workers as u64 {
-                break;
-            }
-            if self.run_time != 0 && uptime > self.run_time as f64 {
-                process::exit(0);
+
+            // time over, fuzzing session is finished
+            if let Some(run_time) = self.run_time{
+                if uptime > run_time as f64 {
+                    process::exit(0);
+                }
+                
             }
         }
     }
-}
-
-/// Function that init the fuzzer using the Config struct
-pub fn init_fuzzer_from_config(config: Config) -> Fuzzer {
-    return init_fuzzer(
-        config.cores,
-        config.logs,
-        config.seed,
-        config.run_time,
-        config.replay,
-        config.minimizer,
-        &config.contract_file,
-        &config.function_name,
-        &config.input_file,
-        &config.crash_file,
-    );
-}
-
-/// Function to init the fuzzer
-pub fn init_fuzzer(
-    cores: i32,
-    logs: bool,
-    seed: Option<u64>,
-    run_time: Option<u64>,
-    replay: bool,
-    minimizer: bool,
-    contract_file: &String,
-    function_name: &String,
-    input_file: &String,
-    crash_file: &String,
-) -> Fuzzer {
-    // Init seed
-    let start_time = Instant::now();
-    let set_seed = match seed {
-        Some(val) => val,
-        None => SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u64,
-    };
-    let set_run_time = match run_time {
-        Some(val) => val,
-        None => 0,
-    };
-    println!("Fuzzing SEED => {}", set_seed);
-    // Init stats struct
-    let stats = Arc::new(Mutex::new(Statistics::default()));
-
-    // Read json artifact and get its content
-    let contents = fs::read_to_string(&contract_file.to_string())
-        .expect("Should have been able to read the file");
-    let function = match parse_json(&contents, &function_name.to_string()) {
-        Some(func) => func,
-        None => {
-            process::exit(1);
-        }
-    };
-    // Setup the fuzzer
-    let fuzzer = Fuzzer {
-        stats: stats,
-        cores: cores,
-        logs: logs,
-        run_time: set_run_time,
-        replay: replay,
-        minimizer: minimizer,
-        contract_file: contract_file.to_string(),
-        contract_content: contents,
-        function: function,
-        start_time: start_time,
-        seed: set_seed,
-        input_file: input_file.to_string(),
-        crash_file: crash_file.to_string(),
-        workers: 0,
-    };
-    return fuzzer;
 }
 
 #[cfg(test)]
@@ -330,15 +328,14 @@ mod tests {
     use core::panic;
     use std::{thread, time::Duration};
 
-    use crate::cli::config::load_config;
+    use crate::cli::config::Config;
 
-    use super::init_fuzzer;
-    use super::init_fuzzer_from_config;
+    use super::Fuzzer;
     #[test]
-    fn test_init_fuzzer_from_config_file() {
+    fn test_loading_config_file() {
         let config_file = "tests/config.json".to_string();
-        let config = load_config(&config_file);
-        let fuzzer = init_fuzzer_from_config(config.clone());
+        let config = Config::load_config(&config_file);
+        let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
         assert_eq!(fuzzer.logs, false);
         assert_eq!(fuzzer.function.name, "test_symbolic_execution");
@@ -347,11 +344,11 @@ mod tests {
     #[test]
     fn test_run_fuzzer_from_config_file() {
         let config_file = "tests/config.json".to_string();
-        let config = load_config(&config_file);
-        let mut fuzzer = init_fuzzer_from_config(config.clone());
+        let config = Config::load_config(&config_file);
+        let mut fuzzer = Fuzzer::new(&config);
         // Create a new thread
         let handle = thread::spawn(move || {
-            fuzzer.run_time = 10;
+            fuzzer.run_time = Some(10);
             fuzzer.fuzz();
         });
 
@@ -366,29 +363,31 @@ mod tests {
         }
     }
     #[test]
-    fn test_init_fuzzer() {
-        let cores: i32 = 3;
+    fn test_init_config() {
+        let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
-        let function_name: &String = &"test_symbolic_execution".to_string();
-        let input_file: &String = &"".to_string();
-        let crash_file: &String = &"".to_string();
-        let fuzzer = init_fuzzer(
+        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let function_name: String = "test_symbolic_execution".to_string();
+        let input_file: String = "".to_string();
+        let crash_file: String = "".to_string();
+        let config = Config {
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
             cores,
             logs,
             seed,
             run_time,
             replay,
             minimizer,
-            contract_file,
-            function_name,
-            input_file,
-            crash_file,
-        );
+
+        };
+        let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
         assert_eq!(fuzzer.logs, false);
         assert_eq!(fuzzer.function.name, "test_symbolic_execution");
@@ -397,31 +396,35 @@ mod tests {
 
     #[test]
     fn test_run_fuzzer() {
-        let cores: i32 = 3;
+        let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
-        let function_name: &String = &"test_symbolic_execution".to_string();
-        let input_file: &String = &"".to_string();
-        let crash_file: &String = &"".to_string();
-        let mut fuzzer = init_fuzzer(
+        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let function_name: String = "test_symbolic_execution".to_string();
+        let input_file: String = "".to_string();
+        let crash_file: String = "".to_string();
+        // create the config file
+        let config = Config {
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
             cores,
             logs,
             seed,
             run_time,
             replay,
             minimizer,
-            contract_file,
-            function_name,
-            input_file,
-            crash_file,
-        );
+
+        };
+        // create the fuzzer
+        let mut fuzzer = Fuzzer::new(&config);
+        
         // Create a new thread
         let handle = thread::spawn(move || {
-            fuzzer.run_time = 10;
             fuzzer.fuzz();
         });
 
@@ -434,6 +437,7 @@ mod tests {
         if !handle.is_finished() {
             panic!("Process should not be running");
         }
+
     }
 
     #[test]
@@ -444,30 +448,28 @@ mod tests {
         let run_time: Option<u64> = Some(10);
         let replay: bool = true;
         let minimizer: bool = false;
-        let contract_file: &String = &"tests/fuzzinglabs.json".to_string();
-        let function_name: &String = &"test_symbolic_execution".to_string();
-        let input_file: &String = &"tests/test_symbolic_execution_inputs.json".to_string();
-        let crash_file: &String = &"".to_string();
-        let fuzzer = init_fuzzer(
+        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let function_name: String = "test_symbolic_execution".to_string();
+        let input_file: String = "tests/test_symbolic_execution_inputs.json".to_string();
+        let crash_file: String = "".to_string();
+        // create the config file
+        let config = Config {
+            contract_file,
+            function_name,
+            input_file,
+            crash_file,
             cores,
             logs,
             seed,
             run_time,
             replay,
             minimizer,
-            contract_file,
-            function_name,
-            input_file,
-            crash_file,
-        );
-        // Create a new thread
-        let mut fuzzer_clone = fuzzer.clone();
-        let handle = thread::spawn(move || {
-            fuzzer_clone.replay();
-        });
+        };
+        // create the fuzzer
+        let mut fuzzer = Fuzzer::new(&config);
+        
+        fuzzer.replay();
 
-        while !handle.is_finished() {
-        }
         let stats = fuzzer.stats.lock().unwrap();
         assert_ne!(stats.coverage_db.len(), 0);
 

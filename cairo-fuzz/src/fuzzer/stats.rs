@@ -14,10 +14,15 @@ pub struct Statistics {
     /// Coverage database. Maps (module, offset) to `FuzzInput`s
     pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
 
+    /// Counter of inputs
+    pub input_len: usize,
+
     /// Set of all unique inputs
     pub input_db: HashSet<FuzzInput>,
+
+    /// List of inputs
     pub input_list: Vec<FuzzInput>,
-    pub input_len: usize,
+
     // add counter of size
     /// Unique set of fuzzer actions
     ///pub unique_action_set: HashSet<FuzzerAction>,
@@ -25,18 +30,23 @@ pub struct Statistics {
     /// List of all unique fuzzer actions
     ///pub unique_actions: Vec<FuzzerAction>,
 
-    /// Database of crash file names to `FuzzInput`s
+    /// Counter of crashes
     pub crashes: u64,
-    // TODO : we don't need the unique crashes anymore, so we use the FuzzInput as the key now HashSet<FuzzInput, String>
-    //pub crash_db: HashMap<String, FuzzInput>,
+
+    
+    /// Set of all unique crashes
     pub crash_db: HashSet<FuzzInput>,
+
+    /// Database of crash file names to `FuzzInput`s
+    // pub crash_db: HashMap<String, FuzzInput>,
+
     // TODO Add counter of unique crashes
     pub threads_finished: u64,
 }
 
 impl Statistics {
-    pub fn get_stats_input(&self, index: usize) -> Vec<u8> {
-        return self.input_list[index].to_vec();
+    pub fn get_input_by_index(&self, index: usize) -> FuzzInput {
+        self.input_list[index].clone()
     }
 }
 
