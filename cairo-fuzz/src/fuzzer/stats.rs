@@ -33,7 +33,6 @@ pub struct Statistics {
     /// Counter of crashes
     pub crashes: u64,
 
-    
     /// Set of all unique crashes
     pub crash_db: HashSet<FuzzInput>,
 

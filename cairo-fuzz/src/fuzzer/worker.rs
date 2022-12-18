@@ -2,8 +2,8 @@ use crate::cairo_vm::cairo_types::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use std::sync::{Arc, Mutex};
 
-use super::stats::*;
 use super::corpus::{CrashFile, InputFile};
+use super::stats::*;
 
 use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
@@ -27,15 +27,15 @@ pub struct Worker {
 }
 
 impl Worker {
-
-    pub fn new(stats: Arc<Mutex<Statistics>>,
-                worker_id: i32,
-                contents: String,
-                function: Function,
-                seed: u64,
-                input_file: Arc<Mutex<InputFile>>,
-                crash_file: Arc<Mutex<CrashFile>>) -> Self {
-
+    pub fn new(
+        stats: Arc<Mutex<Statistics>>,
+        worker_id: i32,
+        contents: String,
+        function: Function,
+        seed: u64,
+        input_file: Arc<Mutex<InputFile>>,
+        crash_file: Arc<Mutex<CrashFile>>,
+    ) -> Self {
         Worker {
             stats,
             worker_id,
@@ -48,7 +48,6 @@ impl Worker {
     }
 
     pub fn fuzz(self) {
-
         // Local stats database
         let mut local_stats = Statistics::default();
 
@@ -60,7 +59,7 @@ impl Worker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
-        
+
         // TODO - IMPORTANT - Should we replay all the corpus before starting to mutate ? because we will not trigger the bug directly after running
         'next_case: loop {
             // clear previous data
@@ -120,24 +119,23 @@ impl Worker {
 
                     // Mutex locking is limited to this scope
                     {
-                    // Check if this coverage entry is something we've never seen before
-                    if !local_stats.coverage_db.contains_key(&vec_trace) {
-                        // Coverage entry is new, save the fuzz input in the input database
-                        local_stats.input_db.insert(fuzz_input.clone());
+                        // Check if this coverage entry is something we've never seen before
+                        if !local_stats.coverage_db.contains_key(&vec_trace) {
+                            // Coverage entry is new, save the fuzz input in the input database
+                            local_stats.input_db.insert(fuzz_input.clone());
 
-                        // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
-                        local_stats
-                            .coverage_db
-                            .insert(vec_trace.clone(), fuzz_input.clone());
+                            // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
+                            local_stats
+                                .coverage_db
+                                .insert(vec_trace.clone(), fuzz_input.clone());
 
-                        
                             // Get access to global stats
                             let mut stats = self.stats.lock().unwrap();
 
                             if !stats.coverage_db.contains_key(&vec_trace) {
                                 // Save input to global input database
                                 if stats.input_db.insert(fuzz_input.clone()) {
-                                    // Copy in the input list 
+                                    // Copy in the input list
                                     stats.input_list.push(fuzz_input.clone());
                                     stats.input_len += 1;
                                     // Copy locally
@@ -156,7 +154,6 @@ impl Worker {
                 Err(e) => {
                     // Mutex locking is limited to this scope
                     {
-
                         // Get access to global stats
                         let mut stats = self.stats.lock().unwrap();
 
@@ -220,7 +217,6 @@ impl Worker {
                             trace.1.offset.try_into().unwrap(),
                         ));
                     }
-    
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().unwrap();
@@ -232,22 +228,21 @@ impl Worker {
                             local_stats.crash_db = stats.crash_db.clone();
                         }
                     }
-    
                     // Check if this coverage entry is something we've never seen before
                     if !local_stats.coverage_db.contains_key(&vec_trace) {
                         // Coverage entry is new, save the fuzz input in the input database
                         local_stats.input_db.insert(fuzz_input.clone());
-    
+
                         // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
                         local_stats
                             .coverage_db
                             .insert(vec_trace.clone(), fuzz_input.clone());
-    
+
                         // Mutex locking is limited to this scope
                         {
                             // Get access to global stats
                             let mut stats = self.stats.lock().unwrap();
-    
+
                             if !stats.coverage_db.contains_key(&vec_trace) {
                                 // Save input to global input database
                                 if stats.input_db.insert(fuzz_input.clone()) {
@@ -277,7 +272,6 @@ impl Worker {
                             stats.input_len += 1;
                         }
 
-
                         // Add the crash name and corresponding fuzz input to the crash database
                         local_stats.crash_db.insert(fuzz_input.clone());
                         if stats.crash_db.insert(fuzz_input.clone()) {
@@ -290,7 +284,7 @@ impl Worker {
                     }
                 }
             }
-    
+
             // Get access to global stats
             let mut stats = self.stats.lock().unwrap();
             // Update fuzz case count
@@ -298,11 +292,8 @@ impl Worker {
             local_stats.fuzz_cases += 1;
         }
 
-        
         // Update the threads_finished when the worker executes all the corpus chunk
         let mut stats = self.stats.lock().unwrap();
         stats.threads_finished += 1;
-        
     }
-
 }

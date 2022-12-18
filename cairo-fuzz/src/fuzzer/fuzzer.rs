@@ -11,7 +11,7 @@ use serde_json::Value;
 use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
-    fuzzer::{worker::Worker, corpus},
+    fuzzer::{corpus, worker::Worker},
     json::json_parser::{parse_json, Function},
 };
 
@@ -19,9 +19,8 @@ use super::{
     corpus::{CrashFile, InputFile, Workspace},
     stats::Statistics,
 };
+use std::collections::HashSet;
 use std::io::Write;
-use std::collections::{HashSet};
-
 
 #[derive(Clone)]
 pub struct Fuzzer {
@@ -60,8 +59,6 @@ pub struct Fuzzer {
 impl Fuzzer {
     /// Create the fuzzer using the given Config struct
     pub fn new(config: &Config) -> Self {
-
-
         let stats = Arc::new(Mutex::new(Statistics::default()));
         // Set seed if provided or generate a new seed using `SystemTime`
         let seed = match config.seed {
@@ -76,7 +73,7 @@ impl Fuzzer {
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
-        
+
         // TODO - remove when support multiple txs
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
@@ -93,6 +90,11 @@ impl Fuzzer {
             true => InputFile::new_from_function(&function),
             false => InputFile::load_from_file(&config.input_file),
         };
+        println!(
+            "Inputs loaded {} empty file {}",
+            inputs.inputs.len(),
+            config.input_file.is_empty()
+        );
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
@@ -148,12 +150,10 @@ impl Fuzzer {
         }
     }
 
-    /// Fuzz 
+    /// Fuzz
     pub fn fuzz(&mut self) {
-
         // Running all the threads
         for i in 0..self.cores {
-            
             // create dedicated statistics per thread
             let stats = self.stats.clone();
             let contract_content = self.contract_content.clone();
@@ -164,7 +164,15 @@ impl Fuzzer {
 
             // Spawn threads
             let _ = std::thread::spawn(move || {
-                let worker = Worker::new(stats, i, contract_content, function, seed, input_file, crash_file);
+                let worker = Worker::new(
+                    stats,
+                    i,
+                    contract_content,
+                    function,
+                    seed,
+                    input_file,
+                    crash_file,
+                );
                 worker.fuzz();
             });
             println!("Thread {} Spawned", i);
@@ -174,7 +182,7 @@ impl Fuzzer {
         // Call the stats monitoring/printer
         self.monitor();
     }
-    
+
     /// TODO - fix
     /// Replay a given corpus.
     /// If `minimizer` is set to "true" it will dump the new corpus
@@ -188,15 +196,16 @@ impl Fuzzer {
         //} else {
         //    crashes.crashes
         //};
-        
+
         // Replay all inputs
         let stats_db = self.stats.lock().unwrap();
         // Load inputs
         let mut corpus = stats_db.input_list.clone();
+        println!("Total inputs to replay => {}", corpus.len());
         // Load crashes
         let mut crashes = stats_db.crash_db.clone().into_iter().collect();
         corpus.append(&mut crashes);
-
+        drop(stats_db);
         // Split the inputs into chunks
         let chunk_size = if corpus.len() > (self.cores as usize) {
             corpus.len() / (self.cores as usize)
@@ -223,7 +232,15 @@ impl Fuzzer {
 
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
-                let mut worker = Worker::new(stats_thread, i as i32, contract_content, function, seed, input_file, crash_file);
+                let mut worker = Worker::new(
+                    stats_thread,
+                    i as i32,
+                    contract_content,
+                    function,
+                    seed,
+                    input_file,
+                    crash_file,
+                );
                 worker.replay(chunk);
             }));
             println!("Thread {} Spawned", i);
@@ -234,9 +251,8 @@ impl Fuzzer {
         for thread in threads {
             let _ = thread.join();
         }
-
         // Print stats of the current fuzzer
-        // self.monitor();
+        self.monitor();
 
         // If minimizer is set, dump the new corpus
         if self.minimizer {
@@ -307,17 +323,16 @@ impl Fuzzer {
                 }
 
                 // Only for replay: all thread are finished
-                if self.replay && stats.threads_finished >= self.cores as u64 {
+                if self.replay && stats.threads_finished == self.running_workers {
                     break;
                 }
             }
 
             // time over, fuzzing session is finished
-            if let Some(run_time) = self.run_time{
+            if let Some(run_time) = self.run_time {
                 if uptime > run_time as f64 {
                     process::exit(0);
                 }
-                
             }
         }
     }
@@ -385,13 +400,11 @@ mod tests {
             run_time,
             replay,
             minimizer,
-
         };
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
         assert_eq!(fuzzer.logs, false);
         assert_eq!(fuzzer.function.name, "test_symbolic_execution");
-
     }
 
     #[test]
@@ -418,11 +431,10 @@ mod tests {
             run_time,
             replay,
             minimizer,
-
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
-        
+
         // Create a new thread
         let handle = thread::spawn(move || {
             fuzzer.fuzz();
@@ -437,7 +449,6 @@ mod tests {
         if !handle.is_finished() {
             panic!("Process should not be running");
         }
-
     }
 
     #[test]
@@ -467,11 +478,10 @@ mod tests {
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
-        
+
         fuzzer.replay();
 
         let stats = fuzzer.stats.lock().unwrap();
         assert_ne!(stats.coverage_db.len(), 0);
-
     }
 }

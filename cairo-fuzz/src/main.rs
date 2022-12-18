@@ -32,7 +32,7 @@ fn main() {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }
-    
+
             Config {
                 contract_file: opt.contract,
                 function_name: opt.function,
@@ -56,8 +56,7 @@ fn main() {
     if opt.replay || opt.minimizer {
         fuzzer.replay();
     // launch fuzzing
+    } else {
+        fuzzer.fuzz();
     }
-
-    fuzzer.fuzz();
-
 }

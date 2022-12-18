@@ -50,10 +50,18 @@ pub struct Opt {
     )]
     pub logs: bool,
 
-    #[arg(long, help = "Set a custom seed (only applicable for 1 core run)", name = "SEED")]
+    #[arg(
+        long,
+        help = "Set a custom seed (only applicable for 1 core run)",
+        name = "SEED"
+    )]
     pub seed: Option<u64>,
 
-    #[arg(long, help = "Number of seconds this fuzzing session will last", name = "RUN_TIME")]
+    #[arg(
+        long,
+        help = "Number of seconds this fuzzing session will last",
+        name = "RUN_TIME"
+    )]
     pub run_time: Option<u64>,
 
     #[arg(long, help = "Load config file", name = "CONFIG")]

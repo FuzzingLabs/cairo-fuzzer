@@ -1,13 +1,13 @@
 use crate::cairo_vm::cairo_types::Felt;
+use crate::json::json_parser::Function;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::fs;
 use std::fs::create_dir;
 use std::fs::write;
-use crate::json::json_parser::Function;
 use std::path::Path;
-use std::fs;
-use serde_json::Value;
 
-use std::collections::{HashSet};
+use std::collections::HashSet;
 
 #[derive(Debug, Clone)]
 pub struct Workspace {
@@ -55,7 +55,6 @@ fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
 }
 
 impl InputFile {
-
     pub fn new_from_function(function: &Function) -> Self {
         InputFile {
             path: format!("inputs_corpus/{}_inputs.json", function.name),
@@ -90,11 +89,15 @@ impl InputFile {
         return InputFile {
             path: filename.clone(),
             name: data["name"].as_str().unwrap().to_string(),
-            args: data["args"].as_array().unwrap().iter().map(|input_array| input_array.as_str().unwrap().to_string()).collect(),
+            args: data["args"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|input_array| input_array.as_str().unwrap().to_string())
+                .collect(),
             inputs: inputs,
         };
     }
-
 
     /// Function to dump the inputs corpus
     pub fn dump_json(&self) {
@@ -115,7 +118,6 @@ impl InputFile {
 }
 
 impl CrashFile {
-
     pub fn new_from_function(function: &Function) -> Self {
         CrashFile {
             path: format!("inputs_corpus/{}_inputs.json", function.name),
@@ -127,7 +129,6 @@ impl CrashFile {
 
     /// Function to load a crashes corpus
     pub fn load_from_file(filename: &String) -> Self {
-
         // Try to load the file
         let contents =
             fs::read_to_string(filename).expect("Should have been able to read the file");
@@ -151,10 +152,14 @@ impl CrashFile {
         return CrashFile {
             path: filename.clone(),
             name: data["name"].as_str().unwrap().to_string(),
-            args: data["args"].as_array().unwrap().iter().map(|input_array| input_array.as_str().unwrap().to_string()).collect(),
+            args: data["args"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|input_array| input_array.as_str().unwrap().to_string())
+                .collect(),
             crashes: crashes,
         };
-
     }
 
     /// Function to dump the crashes corpus
@@ -166,7 +171,8 @@ impl CrashFile {
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
         // TODO - Change name of crashes files by adding the date and the time
 
-        let mut crashes_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
+        let mut crashes_ser =
+            serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut crashes_ser).unwrap();
         write(
             &self.path,
