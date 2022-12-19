@@ -5,7 +5,6 @@ use std::{
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
-
 use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
@@ -14,7 +13,7 @@ use crate::{
 };
 
 use super::{
-    corpus::{CrashFile, InputFile, Workspace},
+    corpus::{CrashFile, InputFile},
     stats::Statistics,
 };
 use std::io::Write;
@@ -39,8 +38,8 @@ pub struct Fuzzer {
     pub minimizer: bool,
     /// Seed number
     pub seed: u64,
-    /// Inputs file path
-    pub workspace: Workspace,
+    /// Workspace to use
+    pub workspace: String,
     /// Inputs file path
     pub input_file: Arc<Mutex<InputFile>>,
     /// Crashes file path
@@ -84,14 +83,10 @@ impl Fuzzer {
 
         // Load inputs from the input file if provided
         let inputs: InputFile = match config.input_file.is_empty() {
-            true => InputFile::new_from_function(&function),
-            false => InputFile::load_from_file(&config.input_file),
+            true => InputFile::new_from_function(&function, &config.workspace),
+            false => InputFile::load_from_file(&config.input_file, &config.workspace),
         };
-        println!(
-            "Inputs loaded {} empty file {}",
-            inputs.inputs.len(),
-            config.input_file.is_empty()
-        );
+        println!("Inputs loaded {}", inputs.inputs.len());
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
@@ -108,8 +103,8 @@ impl Fuzzer {
 
         // Load crashes from the crash file if provided
         let crashes: CrashFile = match config.crash_file.is_empty() {
-            true => CrashFile::new_from_function(&function),
-            false => CrashFile::load_from_file(&config.input_file),
+            true => CrashFile::new_from_function(&function, &config.workspace),
+            false => CrashFile::load_from_file(&config.input_file, &config.workspace),
         };
 
         // Load existing crashes in shared database
@@ -142,7 +137,7 @@ impl Fuzzer {
             seed: seed,
             input_file: inputs,
             crash_file: crashes,
-            workspace: Workspace::default(),
+            workspace: config.workspace.clone(),
             running_workers: 0,
         }
     }
@@ -246,6 +241,7 @@ impl Fuzzer {
             let stats = self.stats.lock().unwrap();
             // Init the struct
             let mut dump_inputs = InputFile {
+                workspace: self.workspace.clone(),
                 path: format!("{}_min.json", self.function.name),
                 name: self.function.name.clone(),
                 args: self.function.type_args.clone(),
@@ -376,7 +372,9 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
+        let workspace: String = "seth_workspace".to_string();
         let config = Config {
+            workspace,
             contract_file,
             function_name,
             input_file,
@@ -406,8 +404,10 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
+        let workspace: String = "seth_workspace".to_string();
         // create the config file
         let config = Config {
+            workspace,
             contract_file,
             function_name,
             input_file,
@@ -450,8 +450,11 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "tests/test_symbolic_execution_inputs.json".to_string();
         let crash_file: String = "".to_string();
+        let workspace: String = "seth_workspace".to_string();
+
         // create the config file
         let config = Config {
+            workspace,
             contract_file,
             function_name,
             input_file,

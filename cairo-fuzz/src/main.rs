@@ -32,6 +32,7 @@ fn main() {
             }
 
             Config {
+                workspace: opt.workspace,
                 contract_file: opt.contract,
                 function_name: opt.function,
                 input_file: opt.inputfile,

@@ -5,6 +5,7 @@ use std::fs;
 /// Config struct to use instead of command line
 #[derive(Deserialize, Serialize, Clone, Default)]
 pub struct Config {
+    pub workspace: String,
     pub contract_file: String,
     pub function_name: String,
     pub input_file: String,

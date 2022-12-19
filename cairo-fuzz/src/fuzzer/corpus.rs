@@ -7,11 +7,9 @@ use serde_json::Value;
 use std::fs;
 use std::fs::create_dir;
 use std::fs::write;
-use std::time::Instant;
 use std::time::SystemTime;
-use std::time::{UNIX_EPOCH, Duration};
 
-
+/*
 #[derive(Debug, Clone)]
 pub struct Workspace {
     workspace_folder: String,
@@ -23,15 +21,16 @@ pub struct Workspace {
 impl Default for Workspace {
     fn default() -> Self {
         Workspace {
-            workspace_folder: "ws".to_string(), // use contract name??
+            workspace_folder: "seth_workspace".to_string(),
             input_folder: "inputs_corpus".to_string(),
             crash_folder: "crashes_corpus".to_string(),
         }
     }
-}
+} */
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct InputFile {
+    pub workspace: String,
     pub path: String,
     pub name: String,
     pub args: Vec<String>,
@@ -40,6 +39,7 @@ pub struct InputFile {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct CrashFile {
+    pub workspace: String,
     pub path: String,
     pub name: String,
     pub args: Vec<String>,
@@ -58,14 +58,15 @@ fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
 }
 
 impl InputFile {
-    pub fn new_from_function(function: &Function) -> Self {
-        let d =  SystemTime::now();
+    pub fn new_from_function(function: &Function, workspace: &String) -> Self {
+        let d = SystemTime::now();
         // Create DateTime from SystemTime
         let datetime = DateTime::<Utc>::from(d);
         // Formats the combined date and time with the specified format string.
         let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         InputFile {
-            path: format!("inputs_corpus/{}_{}_inputs.json", function.name, timestamp_str),
+            workspace: workspace.to_string(),
+            path: format!("{}_{}.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
             inputs: Vec::<Vec<Felt>>::new(),
@@ -73,7 +74,7 @@ impl InputFile {
     }
 
     /// Function to load the previous corpus if it exists
-    pub fn load_from_file(filename: &String) -> Self {
+    pub fn load_from_file(filename: &String, workspace: &String) -> Self {
         // Try to load the file
         let contents =
             fs::read_to_string(filename).expect("Should have been able to read the file");
@@ -95,6 +96,7 @@ impl InputFile {
             .collect();
 
         return InputFile {
+            workspace: workspace.to_string(),
             path: filename.clone(),
             name: data["name"].as_str().unwrap().to_string(),
             args: data["args"]
@@ -109,16 +111,23 @@ impl InputFile {
 
     /// Function to dump the inputs corpus
     pub fn dump_json(&self) {
-        let workspace = Workspace::default();
-        let _ = create_dir(&workspace.crash_folder);
-        let _ = create_dir(&workspace.input_folder);
+        let _ = create_dir(&self.workspace);
+        let _ = create_dir(format!("{}/{}", &self.workspace, self.name.clone()));
+        let _ = create_dir(format!("{}/{}/inputs", &self.workspace, self.name.clone()));
+        //let _ = create_dir(self.workspace.input_folder);
         let buf = Vec::new();
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
 
         let mut inputs_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut inputs_ser).unwrap();
+        let dump_file = format!(
+            "{}/{}/inputs/{}",
+            self.workspace,
+            self.name.clone(),
+            self.path
+        );
         write(
-            &self.path,
+            &dump_file,
             String::from_utf8(inputs_ser.into_inner()).unwrap(),
         )
         .expect("Failed to save input to disk");
@@ -126,14 +135,15 @@ impl InputFile {
 }
 
 impl CrashFile {
-    pub fn new_from_function(function: &Function) -> Self {
-        let d =  SystemTime::now();
+    pub fn new_from_function(function: &Function, workspace: &String) -> Self {
+        let d = SystemTime::now();
         // Create DateTime from SystemTime
         let datetime = DateTime::<Utc>::from(d);
         // Formats the combined date and time with the specified format string.
         let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         CrashFile {
-            path: format!("crashes_corpus/{}_{}_crashes.json", function.name, timestamp_str),
+            workspace: workspace.to_string(),
+            path: format!("CRASHES_{}_{}.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
             crashes: Vec::<Vec<Felt>>::new(),
@@ -141,7 +151,7 @@ impl CrashFile {
     }
 
     /// Function to load a crashes corpus
-    pub fn load_from_file(filename: &String) -> Self {
+    pub fn load_from_file(filename: &String, workspace: &String) -> Self {
         // Try to load the file
         let contents =
             fs::read_to_string(filename).expect("Should have been able to read the file");
@@ -163,6 +173,7 @@ impl CrashFile {
             .collect();
 
         return CrashFile {
+            workspace: workspace.to_string(),
             path: filename.clone(),
             name: data["name"].as_str().unwrap().to_string(),
             args: data["args"]
@@ -177,18 +188,17 @@ impl CrashFile {
 
     /// Function to dump the crashes corpus
     pub fn dump_json(&self) {
-        let workspace = Workspace::default();
-        let _ = create_dir(&workspace.crash_folder);
-        let _ = create_dir(&workspace.input_folder);
+        let _ = create_dir(&self.workspace);
+        let _ = create_dir(format!("{}/{}", &self.workspace, self.name.clone()));
         let buf = Vec::new();
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
-        // TODO - Change name of crashes files by adding the date and the time
 
         let mut crashes_ser =
             serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut crashes_ser).unwrap();
+        let dump_file = format!("{}/{}/{}", &self.workspace, self.name.clone(), self.path);
         write(
-            &self.path,
+            &dump_file,
             String::from_utf8(crashes_ser.into_inner()).unwrap(),
         )
         .expect("Failed to save input to disk");
