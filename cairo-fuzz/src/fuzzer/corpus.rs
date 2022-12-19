@@ -6,6 +6,7 @@ use std::fs;
 use std::fs::create_dir;
 use std::fs::write;
 
+
 #[derive(Debug, Clone)]
 pub struct Workspace {
     workspace_folder: String,
@@ -117,7 +118,7 @@ impl InputFile {
 impl CrashFile {
     pub fn new_from_function(function: &Function) -> Self {
         CrashFile {
-            path: format!("inputs_corpus/{}_inputs.json", function.name),
+            path: format!("crashes_corpus/{}_crashes.json", function.name),
             name: function.name.clone(),
             args: function.type_args.clone(),
             crashes: Vec::<Vec<Felt>>::new(),
