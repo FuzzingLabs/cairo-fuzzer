@@ -1,10 +1,15 @@
 use crate::cairo_vm::cairo_types::Felt;
 use crate::json::json_parser::Function;
+use chrono::DateTime;
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::fs;
 use std::fs::create_dir;
 use std::fs::write;
+use std::time::Instant;
+use std::time::SystemTime;
+use std::time::{UNIX_EPOCH, Duration};
 
 
 #[derive(Debug, Clone)]
@@ -54,8 +59,13 @@ fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
 
 impl InputFile {
     pub fn new_from_function(function: &Function) -> Self {
+        let d =  SystemTime::now();
+        // Create DateTime from SystemTime
+        let datetime = DateTime::<Utc>::from(d);
+        // Formats the combined date and time with the specified format string.
+        let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         InputFile {
-            path: format!("inputs_corpus/{}_inputs.json", function.name),
+            path: format!("inputs_corpus/{}_{}_inputs.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
             inputs: Vec::<Vec<Felt>>::new(),
@@ -117,8 +127,13 @@ impl InputFile {
 
 impl CrashFile {
     pub fn new_from_function(function: &Function) -> Self {
+        let d =  SystemTime::now();
+        // Create DateTime from SystemTime
+        let datetime = DateTime::<Utc>::from(d);
+        // Formats the combined date and time with the specified format string.
+        let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         CrashFile {
-            path: format!("crashes_corpus/{}_crashes.json", function.name),
+            path: format!("crashes_corpus/{}_{}_crashes.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
             crashes: Vec::<Vec<Felt>>::new(),
