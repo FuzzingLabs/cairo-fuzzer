@@ -5,9 +5,6 @@ use serde_json::Value;
 use std::fs;
 use std::fs::create_dir;
 use std::fs::write;
-use std::path::Path;
-
-use std::collections::HashSet;
 
 #[derive(Debug, Clone)]
 pub struct Workspace {

@@ -1,17 +1,15 @@
 use std::{
     fs::{self, File},
-    path::Path,
     process,
     sync::{Arc, Mutex},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
-use serde_json::Value;
 
 use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
-    fuzzer::{corpus, worker::Worker},
+    fuzzer::worker::Worker,
     json::json_parser::{parse_json, Function},
 };
 
@@ -19,7 +17,6 @@ use super::{
     corpus::{CrashFile, InputFile, Workspace},
     stats::Statistics,
 };
-use std::collections::HashSet;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -187,16 +184,6 @@ impl Fuzzer {
     /// Replay a given corpus.
     /// If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
-        //let inputs = self.load_inputs_corpus();
-        //let crashes = self.load_crashes_corpus();
-
-        // Select if the corpus should be the inputs one or the crashes one
-        //let corpus = if self.crash_file.clone().len() == 0 && inputs.inputs.len() != 0 {
-        //    inputs.inputs
-        //} else {
-        //    crashes.crashes
-        //};
-
         // Replay all inputs
         let stats_db = self.stats.lock().unwrap();
         // Load inputs
