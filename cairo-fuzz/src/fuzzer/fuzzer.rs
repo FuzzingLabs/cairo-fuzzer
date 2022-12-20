@@ -74,10 +74,11 @@ impl Fuzzer {
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
             None => {
+                println!("Could not parse json artifact properly");
                 process::exit(1);
             }
         };
-
+        println!("parsed");
         // TODO - setup workspace
         // TODO - support multiple inputs and crashes files
 

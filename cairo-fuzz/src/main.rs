@@ -49,7 +49,6 @@ fn main() {
 
     // create the fuzzer
     let mut fuzzer = Fuzzer::new(&config);
-
     // replay, minimizer mode
     if opt.replay || opt.minimizer {
         fuzzer.replay();

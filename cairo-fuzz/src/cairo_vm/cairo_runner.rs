@@ -70,3 +70,7 @@ pub fn runner(
         }
     }
 }
+
+pub fn py_runner() -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+    unimplemented!()
+}
