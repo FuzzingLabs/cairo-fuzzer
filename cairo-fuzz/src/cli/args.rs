@@ -30,7 +30,7 @@ pub struct Opt {
         long,
         help = "Workspace of the fuzzer",
         name = "WORKSPACE",
-        default_value = "seth_workspace"
+        default_value = "fuzzer_workspace"
     )]
     pub workspace: String,
 

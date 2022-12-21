@@ -1,0 +1,1907 @@
+{
+    "attributes": [],
+    "builtins": [
+        "range_check"
+    ],
+    "compiler_version": "0.10.1",
+    "data": [
+        "0x400380007ffc7ffd",
+        "0x482680017ffc8000",
+        "0x1",
+        "0x208b7fff7fff7ffe",
+        "0x400380007ffc7ffd",
+        "0x482680017ffc8000",
+        "0x1",
+        "0x208b7fff7fff7ffe",
+        "0x20780017fff7ffd",
+        "0x5",
+        "0x480a7ffc7fff8000",
+        "0x480a7ffc7fff8000",
+        "0x208b7fff7fff7ffe",
+        "0x482a7ffc7ffb8000",
+        "0x480a7ffc7fff8000",
+        "0x48127ffe7fff8000",
+        "0x482680017ffd8000",
+        "0x800000000000011000000000000000000000000000000000000000000000000",
+        "0x1104800180018000",
+        "0x800000000000010fffffffffffffffffffffffffffffffffffffffffffffff7",
+        "0x208b7fff7fff7ffe",
+        "0x480680017fff8000",
+        "0x1",
+        "0x480680017fff8000",
+        "0x1",
+        "0x480680017fff8000",
+        "0xa",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffee",
+        "0x400680017fff7fff",
+        "0x90",
+        "0x208b7fff7fff7ffe",
+        "0x480680017fff8000",
+        "0x1000",
+        "0x480a7ffd7fff8000",
+        "0x480680017fff8000",
+        "0x1",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffdc",
+        "0x480680017fff8000",
+        "0x40",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd8",
+        "0x48127ff67fff8000",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd5",
+        "0x480680017fff8000",
+        "0x1",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd5",
+        "0x480680017fff8000",
+        "0x40",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd1",
+        "0x48127fea7fff8000",
+        "0x1104800180018000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffce",
+        "0x208b7fff7fff7ffe"
+    ],
+    "debug_info": {
+        "file_contents": {},
+        "instruction_locations": {
+            "0": {
+                "accessible_scopes": [
+                    "starkware.cairo.common.math",
+                    "starkware.cairo.common.math.assert_nn"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "starkware.cairo.common.math.assert_nn.a": 0,
+                        "starkware.cairo.common.math.assert_nn.range_check_ptr": 1
+                    }
+                },
+                "hints": [
+                    {
+                        "location": {
+                            "end_col": 7,
+                            "end_line": 46,
+                            "input_file": {
+                                "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                            },
+                            "start_col": 5,
+                            "start_line": 42
+                        },
+                        "n_prefix_newlines": 1
+                    }
+                ],
+                "inst": {
+                    "end_col": 26,
+                    "end_line": 47,
+                    "input_file": {
+                        "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 47
+                }
+            },
+            "1": {
+                "accessible_scopes": [
+                    "starkware.cairo.common.math",
+                    "starkware.cairo.common.math.assert_nn"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "starkware.cairo.common.math.assert_nn.a": 0,
+                        "starkware.cairo.common.math.assert_nn.range_check_ptr": 2
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 46,
+                    "end_line": 48,
+                    "input_file": {
+                        "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 31,
+                            "end_line": 41,
+                            "input_file": {
+                                "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                            },
+                            "parent_location": [
+                                {
+                                    "end_col": 15,
+                                    "end_line": 49,
+                                    "input_file": {
+                                        "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                                    },
+                                    "start_col": 5,
+                                    "start_line": 49
+                                },
+                                "While trying to retrieve the implicit argument 'range_check_ptr' in:"
+                            ],
+                            "start_col": 16,
+                            "start_line": 41
+                        },
+                        "While expanding the reference 'range_check_ptr' in:"
+                    ],
+                    "start_col": 27,
+                    "start_line": 48
+                }
+            },
+            "3": {
+                "accessible_scopes": [
+                    "starkware.cairo.common.math",
+                    "starkware.cairo.common.math.assert_nn"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 0,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "starkware.cairo.common.math.assert_nn.a": 0,
+                        "starkware.cairo.common.math.assert_nn.range_check_ptr": 2
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 49,
+                    "input_file": {
+                        "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 49
+                }
+            },
+            "4": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.assert_nn_manual_implementation"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.assert_nn_manual_implementation.a": 3,
+                        "__main__.assert_nn_manual_implementation.range_check_ptr": 4
+                    }
+                },
+                "hints": [
+                    {
+                        "location": {
+                            "end_col": 7,
+                            "end_line": 10,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 5,
+                            "start_line": 6
+                        },
+                        "n_prefix_newlines": 1
+                    }
+                ],
+                "inst": {
+                    "end_col": 26,
+                    "end_line": 11,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 11
+                }
+            },
+            "5": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.assert_nn_manual_implementation"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.assert_nn_manual_implementation.a": 3,
+                        "__main__.assert_nn_manual_implementation.range_check_ptr": 5
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 46,
+                    "end_line": 12,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 53,
+                            "end_line": 5,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "parent_location": [
+                                {
+                                    "end_col": 15,
+                                    "end_line": 13,
+                                    "input_file": {
+                                        "filename": "lambdaclass_example.cairo"
+                                    },
+                                    "start_col": 5,
+                                    "start_line": 13
+                                },
+                                "While trying to retrieve the implicit argument 'range_check_ptr' in:"
+                            ],
+                            "start_col": 38,
+                            "start_line": 5
+                        },
+                        "While expanding the reference 'range_check_ptr' in:"
+                    ],
+                    "start_col": 27,
+                    "start_line": 12
+                }
+            },
+            "7": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.assert_nn_manual_implementation"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 1,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.assert_nn_manual_implementation.a": 3,
+                        "__main__.assert_nn_manual_implementation.range_check_ptr": 5
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 13,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 13
+                }
+            },
+            "8": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 27,
+                    "end_line": 17,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 17
+                }
+            },
+            "10": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 16,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 36,
+                            "end_line": 18,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 22,
+                            "start_line": 18
+                        },
+                        "While expanding the reference 'second_element' in:"
+                    ],
+                    "start_col": 25,
+                    "start_line": 16
+                }
+            },
+            "11": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.result": 9,
+                        "__main__.fib.second_element": 7
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 16,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 27,
+                            "end_line": 19,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 13,
+                            "start_line": 19
+                        },
+                        "While expanding the reference 'second_element' in:"
+                    ],
+                    "start_col": 25,
+                    "start_line": 16
+                }
+            },
+            "12": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 2
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.result": 9,
+                        "__main__.fib.second_element": 7
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 30,
+                    "end_line": 19,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 19
+                }
+            },
+            "13": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 47,
+                    "end_line": 22,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 17,
+                    "start_line": 22
+                }
+            },
+            "14": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7,
+                        "__main__.fib.y": 10
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 16,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 30,
+                            "end_line": 23,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 16,
+                            "start_line": 23
+                        },
+                        "While expanding the reference 'second_element' in:"
+                    ],
+                    "start_col": 25,
+                    "start_line": 16
+                }
+            },
+            "15": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 2
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7,
+                        "__main__.fib.y": 10
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 14,
+                    "end_line": 22,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 33,
+                            "end_line": 23,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 32,
+                            "start_line": 23
+                        },
+                        "While expanding the reference 'y' in:"
+                    ],
+                    "start_col": 13,
+                    "start_line": 22
+                }
+            },
+            "16": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 3
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7,
+                        "__main__.fib.y": 10
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 40,
+                    "end_line": 23,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 35,
+                    "start_line": 23
+                }
+            },
+            "18": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 2,
+                        "offset": 4
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7,
+                        "__main__.fib.y": 10
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 41,
+                    "end_line": 23,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 12,
+                    "start_line": 23
+                }
+            },
+            "20": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 3,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.fib.first_element": 6,
+                        "__main__.fib.n": 8,
+                        "__main__.fib.second_element": 7,
+                        "__main__.fib.y": 10
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 42,
+                    "end_line": 23,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 23
+                }
+            },
+            "21": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 4,
+                        "offset": 0
+                    },
+                    "reference_ids": {}
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 29,
+                    "end_line": 28,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 28,
+                    "start_line": 28
+                }
+            },
+            "23": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 4,
+                        "offset": 1
+                    },
+                    "reference_ids": {}
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 32,
+                    "end_line": 28,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 31,
+                    "start_line": 28
+                }
+            },
+            "25": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 4,
+                        "offset": 2
+                    },
+                    "reference_ids": {}
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 36,
+                    "end_line": 28,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 34,
+                    "start_line": 28
+                }
+            },
+            "27": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 4,
+                        "offset": 3
+                    },
+                    "reference_ids": {}
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 37,
+                    "end_line": 28,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 24,
+                    "start_line": 28
+                }
+            },
+            "29": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 5,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.evaluate_fib.result": 11
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 25,
+                    "end_line": 31,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 31
+                }
+            },
+            "31": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.evaluate_fib"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 5,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.evaluate_fib.result": 11
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 32,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 32
+                }
+            },
+            "32": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 12,
+                        "__main__.main.x": 13
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 24,
+                    "end_line": 38,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 17,
+                    "start_line": 38
+                }
+            },
+            "34": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 12,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 32,
+                    "end_line": 36,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 31,
+                            "end_line": 41,
+                            "input_file": {
+                                "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
+                            },
+                            "parent_location": [
+                                {
+                                    "end_col": 17,
+                                    "end_line": 39,
+                                    "input_file": {
+                                        "filename": "lambdaclass_example.cairo"
+                                    },
+                                    "start_col": 5,
+                                    "start_line": 39
+                                },
+                                "While trying to retrieve the implicit argument 'range_check_ptr' in:"
+                            ],
+                            "start_col": 16,
+                            "start_line": 41
+                        },
+                        "While expanding the reference 'range_check_ptr' in:"
+                    ],
+                    "start_col": 11,
+                    "start_line": 36
+                }
+            },
+            "35": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 2
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 12,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 16,
+                    "end_line": 39,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 15,
+                    "start_line": 39
+                }
+            },
+            "37": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 3
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 12,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 17,
+                    "end_line": 39,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 39
+                }
+            },
+            "39": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 6
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 15,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 37,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 16,
+                            "end_line": 40,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 15,
+                            "start_line": 40
+                        },
+                        "While expanding the reference 'x' in:"
+                    ],
+                    "start_col": 13,
+                    "start_line": 37
+                }
+            },
+            "41": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 7
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 15,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 17,
+                    "end_line": 40,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 40
+                }
+            },
+            "43": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 10
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 16,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 14,
+                    "end_line": 38,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 16,
+                            "end_line": 41,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 15,
+                            "start_line": 41
+                        },
+                        "While expanding the reference 'y' in:"
+                    ],
+                    "start_col": 13,
+                    "start_line": 38
+                }
+            },
+            "44": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 11
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 16,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 17,
+                    "end_line": 41,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 41
+                }
+            },
+            "46": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 14
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 17,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 38,
+                    "end_line": 43,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 37,
+                    "start_line": 43
+                }
+            },
+            "48": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 15
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 17,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 43,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 43
+                }
+            },
+            "50": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 18
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 18,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 37,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 38,
+                            "end_line": 44,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 37,
+                            "start_line": 44
+                        },
+                        "While expanding the reference 'x' in:"
+                    ],
+                    "start_col": 13,
+                    "start_line": 37
+                }
+            },
+            "52": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 19
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 18,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 44,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 44
+                }
+            },
+            "54": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 22
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 19,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 14,
+                    "end_line": 38,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 38,
+                            "end_line": 45,
+                            "input_file": {
+                                "filename": "lambdaclass_example.cairo"
+                            },
+                            "start_col": 37,
+                            "start_line": 45
+                        },
+                        "While expanding the reference 'y' in:"
+                    ],
+                    "start_col": 13,
+                    "start_line": 38
+                }
+            },
+            "55": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 23
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 19,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 45,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 45
+                }
+            },
+            "57": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 6,
+                        "offset": 26
+                    },
+                    "reference_ids": {
+                        "__main__.main.range_check_ptr": 20,
+                        "__main__.main.x": 13,
+                        "__main__.main.y": 14
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 47,
+                    "input_file": {
+                        "filename": "lambdaclass_example.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 47
+                }
+            }
+        }
+    },
+    "hints": {
+        "0": [
+            {
+                "accessible_scopes": [
+                    "starkware.cairo.common.math",
+                    "starkware.cairo.common.math.assert_nn"
+                ],
+                "code": "from starkware.cairo.common.math_utils import assert_integer\nassert_integer(ids.a)\nassert 0 <= ids.a % PRIME < range_check_builtin.bound, f'a = {ids.a} is out of range.'",
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "starkware.cairo.common.math.assert_nn.a": 0,
+                        "starkware.cairo.common.math.assert_nn.range_check_ptr": 1
+                    }
+                }
+            }
+        ],
+        "4": [
+            {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.assert_nn_manual_implementation"
+                ],
+                "code": "from starkware.cairo.common.math_utils import assert_integer\nassert_integer(ids.a)\nassert 0 <= ids.a % PRIME < range_check_builtin.bound, f'a = {ids.a} is out of range.'",
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.assert_nn_manual_implementation.a": 3,
+                        "__main__.assert_nn_manual_implementation.range_check_ptr": 4
+                    }
+                }
+            }
+        ]
+    },
+    "identifiers": {
+        "__main__.assert_nn": {
+            "destination": "starkware.cairo.common.math.assert_nn",
+            "type": "alias"
+        },
+        "__main__.assert_nn_manual_implementation": {
+            "decorators": [],
+            "pc": 4,
+            "type": "function"
+        },
+        "__main__.assert_nn_manual_implementation.Args": {
+            "full_name": "__main__.assert_nn_manual_implementation.Args",
+            "members": {
+                "a": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "__main__.assert_nn_manual_implementation.ImplicitArgs": {
+            "full_name": "__main__.assert_nn_manual_implementation.ImplicitArgs",
+            "members": {
+                "range_check_ptr": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "__main__.assert_nn_manual_implementation.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "__main__.assert_nn_manual_implementation.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.assert_nn_manual_implementation.a": {
+            "cairo_type": "felt",
+            "full_name": "__main__.assert_nn_manual_implementation.a",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "pc": 4,
+                    "value": "[cast(fp + (-3), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.assert_nn_manual_implementation.range_check_ptr": {
+            "cairo_type": "felt",
+            "full_name": "__main__.assert_nn_manual_implementation.range_check_ptr",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "pc": 4,
+                    "value": "[cast(fp + (-4), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 1,
+                        "offset": 0
+                    },
+                    "pc": 5,
+                    "value": "cast([fp + (-4)] + 1, felt)"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.evaluate_fib": {
+            "decorators": [],
+            "pc": 21,
+            "type": "function"
+        },
+        "__main__.evaluate_fib.Args": {
+            "full_name": "__main__.evaluate_fib.Args",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.evaluate_fib.ImplicitArgs": {
+            "full_name": "__main__.evaluate_fib.ImplicitArgs",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.evaluate_fib.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "__main__.evaluate_fib.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.evaluate_fib.result": {
+            "cairo_type": "felt",
+            "full_name": "__main__.evaluate_fib.result",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 5,
+                        "offset": 0
+                    },
+                    "pc": 29,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.fib": {
+            "decorators": [],
+            "pc": 8,
+            "type": "function"
+        },
+        "__main__.fib.Args": {
+            "full_name": "__main__.fib.Args",
+            "members": {
+                "first_element": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                },
+                "n": {
+                    "cairo_type": "felt",
+                    "offset": 2
+                },
+                "second_element": {
+                    "cairo_type": "felt",
+                    "offset": 1
+                }
+            },
+            "size": 3,
+            "type": "struct"
+        },
+        "__main__.fib.ImplicitArgs": {
+            "full_name": "__main__.fib.ImplicitArgs",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.fib.Return": {
+            "cairo_type": "(res: felt)",
+            "type": "type_definition"
+        },
+        "__main__.fib.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.fib.fib_body": {
+            "pc": 13,
+            "type": "label"
+        },
+        "__main__.fib.first_element": {
+            "cairo_type": "felt",
+            "full_name": "__main__.fib.first_element",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 8,
+                    "value": "[cast(fp + (-5), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.fib.n": {
+            "cairo_type": "felt",
+            "full_name": "__main__.fib.n",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 8,
+                    "value": "[cast(fp + (-3), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.fib.result": {
+            "cairo_type": "felt",
+            "full_name": "__main__.fib.result",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 1
+                    },
+                    "pc": 11,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.fib.second_element": {
+            "cairo_type": "felt",
+            "full_name": "__main__.fib.second_element",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 0
+                    },
+                    "pc": 8,
+                    "value": "[cast(fp + (-4), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.fib.y": {
+            "cairo_type": "felt",
+            "full_name": "__main__.fib.y",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 2,
+                        "offset": 1
+                    },
+                    "pc": 14,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.main": {
+            "decorators": [],
+            "pc": 32,
+            "type": "function"
+        },
+        "__main__.main.Args": {
+            "full_name": "__main__.main.Args",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.main.ImplicitArgs": {
+            "full_name": "__main__.main.ImplicitArgs",
+            "members": {
+                "range_check_ptr": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "__main__.main.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "__main__.main.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.main.range_check_ptr": {
+            "cairo_type": "felt",
+            "full_name": "__main__.main.range_check_ptr",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 0
+                    },
+                    "pc": 32,
+                    "value": "[cast(fp + (-3), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 6
+                    },
+                    "pc": 39,
+                    "value": "[cast(ap + (-1), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 10
+                    },
+                    "pc": 43,
+                    "value": "[cast(ap + (-1), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 14
+                    },
+                    "pc": 46,
+                    "value": "[cast(ap + (-1), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 18
+                    },
+                    "pc": 50,
+                    "value": "[cast(ap + (-1), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 22
+                    },
+                    "pc": 54,
+                    "value": "[cast(ap + (-1), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 26
+                    },
+                    "pc": 57,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.main.x": {
+            "cairo_type": "felt",
+            "full_name": "__main__.main.x",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 0
+                    },
+                    "pc": 32,
+                    "value": "cast(64, felt)"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.main.y": {
+            "cairo_type": "felt",
+            "full_name": "__main__.main.y",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 6,
+                        "offset": 1
+                    },
+                    "pc": 34,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "starkware.cairo.common.bool.FALSE": {
+            "type": "const",
+            "value": 0
+        },
+        "starkware.cairo.common.bool.TRUE": {
+            "type": "const",
+            "value": 1
+        },
+        "starkware.cairo.common.math.FALSE": {
+            "destination": "starkware.cairo.common.bool.FALSE",
+            "type": "alias"
+        },
+        "starkware.cairo.common.math.TRUE": {
+            "destination": "starkware.cairo.common.bool.TRUE",
+            "type": "alias"
+        },
+        "starkware.cairo.common.math.assert_nn": {
+            "decorators": [],
+            "pc": 0,
+            "type": "function"
+        },
+        "starkware.cairo.common.math.assert_nn.Args": {
+            "full_name": "starkware.cairo.common.math.assert_nn.Args",
+            "members": {
+                "a": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "starkware.cairo.common.math.assert_nn.ImplicitArgs": {
+            "full_name": "starkware.cairo.common.math.assert_nn.ImplicitArgs",
+            "members": {
+                "range_check_ptr": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "starkware.cairo.common.math.assert_nn.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "starkware.cairo.common.math.assert_nn.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "starkware.cairo.common.math.assert_nn.a": {
+            "cairo_type": "felt",
+            "full_name": "starkware.cairo.common.math.assert_nn.a",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "pc": 0,
+                    "value": "[cast(fp + (-3), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "starkware.cairo.common.math.assert_nn.range_check_ptr": {
+            "cairo_type": "felt",
+            "full_name": "starkware.cairo.common.math.assert_nn.range_check_ptr",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "pc": 0,
+                    "value": "[cast(fp + (-4), felt*)]"
+                },
+                {
+                    "ap_tracking_data": {
+                        "group": 0,
+                        "offset": 0
+                    },
+                    "pc": 1,
+                    "value": "cast([fp + (-4)] + 1, felt)"
+                }
+            ],
+            "type": "reference"
+        }
+    },
+    "main_scope": "__main__",
+    "prime": "0x800000000000011000000000000000000000000000000000000000000000001",
+    "reference_manager": {
+        "references": [
+            {
+                "ap_tracking_data": {
+                    "group": 0,
+                    "offset": 0
+                },
+                "pc": 0,
+                "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 0,
+                    "offset": 0
+                },
+                "pc": 0,
+                "value": "[cast(fp + (-4), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 0,
+                    "offset": 0
+                },
+                "pc": 1,
+                "value": "cast([fp + (-4)] + 1, felt)"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 1,
+                    "offset": 0
+                },
+                "pc": 4,
+                "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 1,
+                    "offset": 0
+                },
+                "pc": 4,
+                "value": "[cast(fp + (-4), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 1,
+                    "offset": 0
+                },
+                "pc": 5,
+                "value": "cast([fp + (-4)] + 1, felt)"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 8,
+                "value": "[cast(fp + (-5), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 8,
+                "value": "[cast(fp + (-4), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 0
+                },
+                "pc": 8,
+                "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 1
+                },
+                "pc": 11,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 2,
+                    "offset": 1
+                },
+                "pc": 14,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 5,
+                    "offset": 0
+                },
+                "pc": 29,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 0
+                },
+                "pc": 32,
+                "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 0
+                },
+                "pc": 32,
+                "value": "cast(64, felt)"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 1
+                },
+                "pc": 34,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 6
+                },
+                "pc": 39,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 10
+                },
+                "pc": 43,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 14
+                },
+                "pc": 46,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 18
+                },
+                "pc": 50,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 22
+                },
+                "pc": 54,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 6,
+                    "offset": 26
+                },
+                "pc": 57,
+                "value": "[cast(ap + (-1), felt*)]"
+            }
+        ]
+    }
+}

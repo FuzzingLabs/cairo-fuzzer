@@ -369,7 +369,7 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
-        let workspace: String = "seth_workspace".to_string();
+        let workspace: String = "fuzzer_workspace".to_string();
         let config = Config {
             workspace,
             contract_file,
@@ -401,7 +401,7 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
-        let workspace: String = "seth_workspace".to_string();
+        let workspace: String = "fuzzer_workspace".to_string();
         // create the config file
         let config = Config {
             workspace,
@@ -447,7 +447,7 @@ mod tests {
         let function_name: String = "test_symbolic_execution".to_string();
         let input_file: String = "tests/test_symbolic_execution_inputs.json".to_string();
         let crash_file: String = "".to_string();
-        let workspace: String = "seth_workspace".to_string();
+        let workspace: String = "fuzzer_workspace".to_string();
 
         // create the config file
         let config = Config {
