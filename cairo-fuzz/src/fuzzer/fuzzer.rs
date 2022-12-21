@@ -78,8 +78,6 @@ impl Fuzzer {
             }
         };
 
-        // TODO - support multiple inputs and crashes files
-
         // Load inputs from the input file if provided
         let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
@@ -383,10 +381,10 @@ mod tests {
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
-        let crash_folder:String = "".to_string();
+        let crash_folder: String = "".to_string();
         let config = Config {
-            input_folder:input_folder,
-            crash_folder:crash_folder,
+            input_folder: input_folder,
+            crash_folder: crash_folder,
             workspace,
             contract_file,
             function_name,
@@ -419,10 +417,10 @@ mod tests {
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
-        let crash_folder:String = "".to_string();
+        let crash_folder: String = "".to_string();
         let config = Config {
-            input_folder:input_folder,
-            crash_folder:crash_folder,
+            input_folder: input_folder,
+            crash_folder: crash_folder,
             workspace,
             contract_file,
             function_name,
@@ -468,10 +466,10 @@ mod tests {
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
-        let crash_folder:String = "".to_string();
+        let crash_folder: String = "".to_string();
         let config = Config {
-            input_folder:input_folder,
-            crash_folder:crash_folder,
+            input_folder: input_folder,
+            crash_folder: crash_folder,
             workspace,
             contract_file,
             function_name,
