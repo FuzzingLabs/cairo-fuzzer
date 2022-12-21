@@ -46,7 +46,7 @@ pub struct CrashFile {
     pub crashes: Vec<Vec<Felt>>,
 }
 
-/// TODO - Load all inputs files
+/* /// TODO - Load all inputs files
 fn load_inputs(folder_path: &String) -> Vec<InputFile> {
     // if Path::new(&filename).is_file() {
     unimplemented!();
@@ -55,7 +55,7 @@ fn load_inputs(folder_path: &String) -> Vec<InputFile> {
 /// TODO - Load all crashes files
 fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
     unimplemented!();
-}
+} */
 
 impl InputFile {
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {

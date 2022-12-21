@@ -14,7 +14,7 @@ pub fn runner(
     func_name: &String,
     data: &Vec<u8>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
-    let program = Program::from_string(json, Some(&func_name)).unwrap();
+    let program = Program::from_reader(json.as_bytes(), Some(&func_name)).unwrap();
     let mut cairo_runner = CairoRunner::new(&program, "all", false).unwrap();
     let mut vm = VirtualMachine::new(
         BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
@@ -57,7 +57,6 @@ pub fn runner(
             let trace = vm.get_trace().unwrap();
             let mut ret = Vec::<(Relocatable, Relocatable)>::new();
             for i in trace {
-                //println!("{:?}", i.fp.clone());
                 ret.push((i.fp.clone(), i.pc.clone()));
             }
             let mut stdout = Vec::<u8>::new();
