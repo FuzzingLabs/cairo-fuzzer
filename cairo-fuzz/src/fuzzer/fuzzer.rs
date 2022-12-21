@@ -81,9 +81,15 @@ impl Fuzzer {
         // TODO - support multiple inputs and crashes files
 
         // Load inputs from the input file if provided
-        let inputs: InputFile = match config.input_file.is_empty() {
+        let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty() {
             true => InputFile::new_from_function(&function, &config.workspace),
-            false => InputFile::load_from_file(&config.input_file, &config.workspace),
+            false => {
+                if config.input_folder.is_empty() {
+                    InputFile::load_from_file(&config.input_file, &config.workspace)
+                } else {
+                    InputFile::load_from_folder(&config.input_folder, &config.workspace)
+                }
+            }
         };
         println!("Inputs loaded {}", inputs.inputs.len());
 
@@ -97,8 +103,6 @@ impl Fuzzer {
                 }
             }
         }
-
-        println!("");
 
         // Load crashes from the crash file if provided
         let crashes: CrashFile = match config.crash_file.is_empty() {

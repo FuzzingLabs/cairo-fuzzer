@@ -36,6 +36,22 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Path to the inputs folder to load",
+        name = "INPUTFOLDER",
+        default_value = ""
+    )]
+    pub inputfolder: String,
+
+    #[arg(
+        long,
+        help = "Path to the crashes folder to load",
+        name = "CRASHFOLDER",
+        default_value = ""
+    )]
+    pub crashfolder: String,
+
+    #[arg(
+        long,
         help = "Path to the inputs file to load",
         name = "INPUTFILE",
         default_value = ""

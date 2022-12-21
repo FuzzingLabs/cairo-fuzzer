@@ -10,6 +10,8 @@ pub struct Config {
     pub function_name: String,
     pub input_file: String,
     pub crash_file: String,
+    pub input_folder: String,
+    pub crash_folder: String,
     pub cores: i32,
     pub logs: bool,
     pub seed: Option<u64>,

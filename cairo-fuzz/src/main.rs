@@ -37,6 +37,8 @@ fn main() {
                 function_name: opt.function,
                 input_file: opt.inputfile,
                 crash_file: opt.crashfile,
+                input_folder: opt.inputfolder,
+                crash_folder: opt.crashfolder,
                 cores: opt.cores,
                 logs: opt.logs,
                 seed: opt.seed,
