@@ -81,7 +81,8 @@ impl Fuzzer {
         // TODO - support multiple inputs and crashes files
 
         // Load inputs from the input file if provided
-        let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty() {
+        let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
+        {
             true => InputFile::new_from_function(&function, &config.workspace),
             false => {
                 if config.input_folder.is_empty() {
@@ -105,10 +106,17 @@ impl Fuzzer {
         }
 
         // Load crashes from the crash file if provided
-        let crashes: CrashFile = match config.crash_file.is_empty() {
-            true => CrashFile::new_from_function(&function, &config.workspace),
-            false => CrashFile::load_from_file(&config.input_file, &config.workspace),
-        };
+        let crashes: CrashFile =
+            match config.crash_file.is_empty() && config.crash_folder.is_empty() {
+                true => CrashFile::new_from_function(&function, &config.workspace),
+                false => {
+                    if config.input_folder.is_empty() {
+                        CrashFile::load_from_file(&config.input_file, &config.workspace)
+                    } else {
+                        CrashFile::load_from_folder(&config.input_folder, &config.workspace)
+                    }
+                }
+            };
 
         // Load existing crashes in shared database
         if crashes.crashes.len() > 0 {

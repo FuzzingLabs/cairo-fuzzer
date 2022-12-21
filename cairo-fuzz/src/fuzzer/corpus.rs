@@ -120,11 +120,11 @@ impl InputFile {
                     let data: Value =
                         serde_json::from_str(&contents).expect("JSON was not well-formatted");
                     let args_data: Vec<String> = data["args"]
-                            .as_array()
-                            .unwrap()
-                            .iter()
-                            .map(|input_array| input_array.as_str().unwrap().to_string())
-                            .collect();
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|input_array| input_array.as_str().unwrap().to_string())
+                        .collect();
                     if args.is_none() {
                         args = Some(args_data);
                     } else {
@@ -136,18 +136,18 @@ impl InputFile {
                         }
                     }
                     let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
-                    .as_array()
-                    .unwrap()
-                    .iter()
-                    .map(|input_array| {
-                        input_array
-                            .as_array()
-                            .unwrap()
-                            .iter()
-                            .map(|input| input.as_u64().unwrap() as Felt)
-                            .collect()
-                    })
-                    .collect();
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|input_array| {
+                            input_array
+                                .as_array()
+                                .unwrap()
+                                .iter()
+                                .map(|input| input.as_u64().unwrap() as Felt)
+                                .collect()
+                        })
+                        .collect();
                     inputs.append(&mut data_inputs);
                 }
             }
@@ -157,7 +157,11 @@ impl InputFile {
         let datetime = DateTime::<Utc>::from(d);
         // Formats the combined date and time with the specified format string.
         let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
-        let data_args = if let Some(content) = args {content} else {Vec::new()};
+        let data_args = if let Some(content) = args {
+            content
+        } else {
+            Vec::new()
+        };
         return InputFile {
             workspace: workspace.to_string(),
             path: format!("{}_{}.json", function_name.clone(), timestamp_str),
@@ -249,6 +253,75 @@ impl CrashFile {
                 .map(|input_array| input_array.as_str().unwrap().to_string())
                 .collect(),
             crashes: crashes,
+        };
+    }
+
+    pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
+        let folder = Path::new(&foldername);
+        let function_name = foldername.clone().split('/').last().unwrap().to_string();
+        let mut args: Option<Vec<String>> = None;
+        let mut inputs: Vec<Vec<Felt>> = Vec::new();
+        // Check if the path is a directory
+        if folder.is_dir() {
+            // Iterate over the entries in the directory
+            for entry in fs::read_dir(folder).unwrap() {
+                let entry = entry.unwrap();
+                let path = entry.path();
+                // Check if the entry is a file
+                if path.is_file() {
+                    // Read the file and do something with its contents
+                    let contents = fs::read_to_string(&path).unwrap();
+                    let data: Value =
+                        serde_json::from_str(&contents).expect("JSON was not well-formatted");
+                    let args_data: Vec<String> = data["args"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|input_array| input_array.as_str().unwrap().to_string())
+                        .collect();
+                    if args.is_none() {
+                        args = Some(args_data);
+                    } else {
+                        if let Some(args_to_compare) = args.clone() {
+                            if args_to_compare != args_data {
+                                println!("Uncompatible inputs files");
+                                process::exit(1);
+                            }
+                        }
+                    }
+                    let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|input_array| {
+                            input_array
+                                .as_array()
+                                .unwrap()
+                                .iter()
+                                .map(|input| input.as_u64().unwrap() as Felt)
+                                .collect()
+                        })
+                        .collect();
+                    inputs.append(&mut data_inputs);
+                }
+            }
+        }
+        let d = SystemTime::now();
+        // Create DateTime from SystemTime
+        let datetime = DateTime::<Utc>::from(d);
+        // Formats the combined date and time with the specified format string.
+        let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
+        let data_args = if let Some(content) = args {
+            content
+        } else {
+            Vec::new()
+        };
+        return CrashFile {
+            workspace: workspace.to_string(),
+            path: format!("{}_{}.json", function_name.clone(), timestamp_str),
+            name: function_name.clone(),
+            args: data_args,
+            crashes: inputs,
         };
     }
 
