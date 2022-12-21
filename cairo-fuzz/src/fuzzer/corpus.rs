@@ -28,24 +28,6 @@ impl Default for Workspace {
     }
 } */
 
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct InputFile {
-    pub workspace: String,
-    pub path: String,
-    pub name: String,
-    pub args: Vec<String>,
-    pub inputs: Vec<Vec<Felt>>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct CrashFile {
-    pub workspace: String,
-    pub path: String,
-    pub name: String,
-    pub args: Vec<String>,
-    pub crashes: Vec<Vec<Felt>>,
-}
-
 /* /// TODO - Load all inputs files
 fn load_inputs(folder_path: &String) -> Vec<InputFile> {
     // if Path::new(&filename).is_file() {
@@ -56,6 +38,15 @@ fn load_inputs(folder_path: &String) -> Vec<InputFile> {
 fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
     unimplemented!();
 } */
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct InputFile {
+    pub workspace: String,
+    pub path: String,
+    pub name: String,
+    pub args: Vec<String>,
+    pub inputs: Vec<Vec<Felt>>,
+}
 
 impl InputFile {
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {
@@ -132,6 +123,16 @@ impl InputFile {
         )
         .expect("Failed to save input to disk");
     }
+}
+
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct CrashFile {
+    pub workspace: String,
+    pub path: String,
+    pub name: String,
+    pub args: Vec<String>,
+    pub crashes: Vec<Vec<Felt>>,
 }
 
 impl CrashFile {
