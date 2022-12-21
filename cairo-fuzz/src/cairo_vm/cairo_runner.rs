@@ -60,21 +60,15 @@ pub fn runner(
         args.push(val)
     }
     // This function is a wrapper Fuzzinglabs made to pass the vector of MaybeRelocatable easily
-    match cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &hint_processor) {
-        Ok(()) => {
-            cairo_runner.relocate(&mut vm).unwrap();
-            let trace = vm.get_trace().unwrap();
-            let mut ret = Vec::<(Relocatable, Relocatable)>::new();
-            for i in trace {
-                ret.push((i.fp.clone(), i.pc.clone()));
-            }
-            let mut stdout = Vec::<u8>::new();
-            cairo_runner.write_output(&mut vm, &mut stdout).unwrap();
-
-            return Ok(Some(ret));
-        }
-        Err(e) => {
-            return Err(e);
-        }
+    cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &hint_processor)?;
+    cairo_runner.relocate(&mut vm).unwrap(); // TO CHECK
+    let trace = vm.get_trace().unwrap(); // TO CHECK
+    let mut ret = Vec::<(Relocatable, Relocatable)>::new();
+    for i in trace {
+        ret.push((i.fp.clone(), i.pc.clone()));
     }
+    let mut stdout = Vec::<u8>::new();
+    cairo_runner.write_output(&mut vm, &mut stdout).unwrap(); // TO CHECK
+
+    return Ok(Some(ret));
 }
