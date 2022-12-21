@@ -28,6 +28,14 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Workspace of the fuzzer",
+        name = "WORKSPACE",
+        default_value = "seth_workspace"
+    )]
+    pub workspace: String,
+
+    #[arg(
+        long,
         help = "Path to the inputs file to load",
         name = "INPUTFILE",
         default_value = ""

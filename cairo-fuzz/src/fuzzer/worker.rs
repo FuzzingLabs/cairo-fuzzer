@@ -7,7 +7,7 @@ use super::stats::*;
 
 use crate::cairo_vm::cairo_runner::runner;
 use crate::custom_rand::rng::Rng;
-use crate::json::json_parser::{parse_json, Function};
+use crate::json::json_parser::Function;
 
 use thiserror::Error;
 
@@ -41,7 +41,7 @@ impl Worker {
             worker_id,
             contents,
             function,
-            seed: seed, // 0x12640367f4b7ea35
+            seed: seed,
             input_file,
             crash_file,
         }
@@ -160,8 +160,6 @@ impl Worker {
                         // Update crash counters
                         local_stats.crashes += 1;
                         stats.crashes += 1;
-
-                        //let mut crashes_corpus = crashes_corpus.lock().unwrap();
 
                         // Check if this case ended due to a crash
                         // Add the crashing input to the input databases

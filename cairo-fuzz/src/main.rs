@@ -11,8 +11,6 @@ mod mutator;
 
 use cli::args::Opt;
 use cli::config::Config;
-use fuzzer::corpus::CrashFile;
-use fuzzer::corpus::InputFile;
 use fuzzer::fuzzer::Fuzzer;
 
 use log::error;
@@ -34,6 +32,7 @@ fn main() {
             }
 
             Config {
+                workspace: opt.workspace,
                 contract_file: opt.contract,
                 function_name: opt.function,
                 input_file: opt.inputfile,
@@ -52,7 +51,6 @@ fn main() {
     let mut fuzzer = Fuzzer::new(&config);
 
     // replay, minimizer mode
-    // TODO - also when input file are provided, need to be replayed before fuzzing?  || (!&config.input_file.is_empty())
     if opt.replay || opt.minimizer {
         fuzzer.replay();
     // launch fuzzing
