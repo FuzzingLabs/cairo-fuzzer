@@ -23,12 +23,7 @@ pub struct Statistics {
     /// List of inputs
     pub input_list: Vec<FuzzInput>,
 
-    // add counter of size
-    /// Unique set of fuzzer actions
-    ///pub unique_action_set: HashSet<FuzzerAction>,
-
     /// List of all unique fuzzer actions
-    ///pub unique_actions: Vec<FuzzerAction>,
 
     /// Counter of crashes
     pub crashes: u64,
@@ -36,10 +31,6 @@ pub struct Statistics {
     /// Set of all unique crashes
     pub crash_db: HashSet<FuzzInput>,
 
-    /// Database of crash file names to `FuzzInput`s
-    // pub crash_db: HashMap<String, FuzzInput>,
-
-    // TODO Add counter of unique crashes
     pub threads_finished: u64,
 }
 

@@ -78,7 +78,6 @@ impl Fuzzer {
             }
         };
 
-        // TODO - setup workspace
         // TODO - support multiple inputs and crashes files
 
         // Load inputs from the input file if provided
@@ -175,7 +174,6 @@ impl Fuzzer {
         self.monitor();
     }
 
-    /// TODO - fix
     /// Replay a given corpus.
     /// If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
@@ -205,7 +203,6 @@ impl Fuzzer {
         for i in 0..chunks.len() {
             // Spawn threads
             let stats_thread = self.stats.clone();
-            //let fuzzing_data = Arc::new(self.clone()).clone();
             let contract_content = self.contract_content.clone();
             let function = self.function.clone();
             let seed = self.seed;
