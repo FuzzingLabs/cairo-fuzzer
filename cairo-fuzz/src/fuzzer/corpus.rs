@@ -125,7 +125,6 @@ impl InputFile {
     }
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct CrashFile {
     pub workspace: String,
