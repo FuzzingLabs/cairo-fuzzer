@@ -382,7 +382,11 @@ mod tests {
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
+        let input_folder: String = "".to_string();
+        let crash_folder:String = "".to_string();
         let config = Config {
+            input_folder:input_folder,
+            crash_folder:crash_folder,
             workspace,
             contract_file,
             function_name,
@@ -414,8 +418,11 @@ mod tests {
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
-        // create the config file
+        let input_folder: String = "".to_string();
+        let crash_folder:String = "".to_string();
         let config = Config {
+            input_folder:input_folder,
+            crash_folder:crash_folder,
             workspace,
             contract_file,
             function_name,
@@ -460,9 +467,11 @@ mod tests {
         let input_file: String = "tests/test_symbolic_execution_inputs.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
-
-        // create the config file
+        let input_folder: String = "".to_string();
+        let crash_folder:String = "".to_string();
         let config = Config {
+            input_folder:input_folder,
+            crash_folder:crash_folder,
             workspace,
             contract_file,
             function_name,
