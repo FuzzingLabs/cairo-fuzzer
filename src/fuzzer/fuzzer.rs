@@ -192,10 +192,9 @@ impl Fuzzer {
         corpus.append(&mut crashes);
         drop(stats_db);
         // Split the inputs into chunks
-        let chunk_size = if corpus.len() > (self.cores as usize) {
-            corpus.len() / (self.cores as usize)
-        } else {
-            1
+        let chunk_size = match corpus.len() > (self.cores as usize) {
+            true => corpus.len() / (self.cores as usize),
+            false => 1,
         };
         let mut chunks = Vec::new();
         for chunk in corpus.chunks(chunk_size) {
