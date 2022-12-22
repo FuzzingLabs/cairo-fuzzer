@@ -82,13 +82,10 @@ impl Fuzzer {
         let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
             true => InputFile::new_from_function(&function, &config.workspace),
-            false => {
-                if config.input_folder.is_empty() {
-                    InputFile::load_from_file(&config.input_file, &config.workspace)
-                } else {
-                    InputFile::load_from_folder(&config.input_folder, &config.workspace)
-                }
-            }
+            false => match config.input_folder.is_empty() {
+                true => InputFile::load_from_file(&config.input_file, &config.workspace),
+                false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
+            },
         };
         println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
@@ -107,13 +104,10 @@ impl Fuzzer {
         let crashes: CrashFile =
             match config.crash_file.is_empty() && config.crash_folder.is_empty() {
                 true => CrashFile::new_from_function(&function, &config.workspace),
-                false => {
-                    if config.input_folder.is_empty() {
-                        CrashFile::load_from_file(&config.input_file, &config.workspace)
-                    } else {
-                        CrashFile::load_from_folder(&config.input_folder, &config.workspace)
-                    }
-                }
+                false => match config.input_folder.is_empty() {
+                    true => CrashFile::load_from_file(&config.input_file, &config.workspace),
+                    false => CrashFile::load_from_folder(&config.input_folder, &config.workspace),
+                },
             };
 
         // Load existing crashes in shared database

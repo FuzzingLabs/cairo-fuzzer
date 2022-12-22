@@ -15,9 +15,11 @@ pub fn runner(
     data: &Vec<u8>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
     // Init program from the json content
-    let program = Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
+    let program =
+        Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
     // Init the cairo_runner, the VM and the hint_processor
-    let mut cairo_runner = CairoRunner::new(&program, "all", false).expect("Failed to init the CairoRunner");
+    let mut cairo_runner =
+        CairoRunner::new(&program, "all", false).expect("Failed to init the CairoRunner");
     let mut vm = VirtualMachine::new(
         BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
         true,
@@ -37,7 +39,9 @@ pub fn runner(
     };
 
     // Init builtins and segments
-    cairo_runner.initialize_builtins(&mut vm).expect("Failed to initialize builtins");
+    cairo_runner
+        .initialize_builtins(&mut vm)
+        .expect("Failed to initialize builtins");
     cairo_runner.initialize_segments(&mut vm, None);
 
     // Init the vector of arguments
@@ -61,14 +65,20 @@ pub fn runner(
     }
     // This function is a wrapper Fuzzinglabs made to pass the vector of MaybeRelocatable easily
     cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &hint_processor)?;
-    cairo_runner.relocate(&mut vm).expect("Failed to relocate VM");
-    let trace = vm.get_trace().expect("Failed to get running trace from the VM");
+    cairo_runner
+        .relocate(&mut vm)
+        .expect("Failed to relocate VM");
+    let trace = vm
+        .get_trace()
+        .expect("Failed to get running trace from the VM");
     let mut ret = Vec::<(Relocatable, Relocatable)>::new();
     for i in trace {
         ret.push((i.fp.clone(), i.pc.clone()));
     }
     let mut stdout = Vec::<u8>::new();
-    cairo_runner.write_output(&mut vm, &mut stdout).expect("Failed to get running output from the VM");
+    cairo_runner
+        .write_output(&mut vm, &mut stdout)
+        .expect("Failed to get running output from the VM");
 
     return Ok(Some(ret));
 }
