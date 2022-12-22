@@ -1,0 +1,17 @@
+[package]
+name = "cairo-fuzzer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
+chrono = "0.4.19"
+rand = "0.8.5"
+num-bigint = { version = "0.4", features = ["serde"] }
+serde_json = "1.0"
+serde = "*"
+clap = { version = " 4.0.29", features = ["derive"] }
+log = "*"
+thiserror = "1.0.32"
