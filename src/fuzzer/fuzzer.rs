@@ -92,7 +92,7 @@ impl Fuzzer {
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
             let mut stats_db = stats.lock().unwrap();
-            for input in inputs.inputs.clone() {
+            for input in &inputs.inputs {
                 if stats_db.input_db.insert(Arc::new(input.clone())) {
                     stats_db.input_list.push(Arc::new(input.clone()));
                     stats_db.input_len += 1;
@@ -113,7 +113,7 @@ impl Fuzzer {
         // Load existing crashes in shared database
         if crashes.crashes.len() > 0 {
             let mut stats_db = stats.lock().unwrap();
-            for input in crashes.crashes.clone() {
+            for input in &crashes.crashes {
                 stats_db.crash_db.insert(Arc::new(input.clone()));
                 stats_db.crashes += 1;
             }
@@ -250,7 +250,7 @@ impl Fuzzer {
                 inputs: Vec::<Vec<Felt>>::new(),
             };
             // Push every input to the struct
-            for input in stats.input_db.clone() {
+            for input in &stats.input_db {
                 dump_inputs.inputs.push(input.clone().to_vec());
             }
             println!("Size after minimization : {}", dump_inputs.inputs.len());
