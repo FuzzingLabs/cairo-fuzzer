@@ -24,6 +24,11 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 - Run Cairo-fuzzer using a config file instead of CLI
 - Workspace architecture
 
+## Usage:
+```
+cargo run --release -- --cores 4 --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
+```
+
 ## CMDLINE (--help):
 
 ```
