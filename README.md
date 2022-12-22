@@ -66,4 +66,4 @@ cargo test
 
 # License
 
-Cairo-Fuzzer is licensed and distributed under the AGPLv3 license. Contact us if you're looking for an exception to the terms.
+Cairo-Fuzzer is licensed and distributed under the AGPLv3 license. [Contact us](mailto:contact@fuzzinglabs.com) if you're looking for an exception to the terms.
