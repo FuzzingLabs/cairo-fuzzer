@@ -96,16 +96,16 @@ impl Worker {
             match runner(&self.contents, &self.function.name, &mutator.input) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.unwrap() {
+                    for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
-                            trace.0.offset.try_into().unwrap(),
-                            trace.1.offset.try_into().unwrap(),
+                            trace.0.offset.try_into().expect("Failed to transform offset into u32"),
+                            trace.1.offset.try_into().expect("Failed to transform offset into u32"),
                         ));
                     }
 
                     // Mutex locking is limited to this scope
                     {
-                        let stats = self.stats.lock().unwrap();
+                        let stats = self.stats.lock().expect("Failed to get mutex");
                         // verify if new input has been found by other fuzzers
                         // if so, update our statistics
                         if local_stats.input_len != stats.input_len {
@@ -130,7 +130,7 @@ impl Worker {
                                 .insert(vec_trace.clone(), fuzz_input.clone());
 
                             // Get access to global stats
-                            let mut stats = self.stats.lock().unwrap();
+                            let mut stats = self.stats.lock().expect("Failed to get mutex");
 
                             if !stats.coverage_db.contains_key(&vec_trace) {
                                 // Save input to global input database
@@ -139,7 +139,7 @@ impl Worker {
                                     stats.input_list.push(fuzz_input.clone());
                                     stats.input_len += 1;
                                     // Copy locally
-                                    let mut input_file_lock = self.input_file.lock().unwrap();
+                                    let mut input_file_lock = self.input_file.lock().expect("Failed to get mutex");
                                     input_file_lock.inputs.push(fuzz_input.to_vec());
                                     input_file_lock.dump_json();
                                 }
@@ -155,7 +155,7 @@ impl Worker {
                     // Mutex locking is limited to this scope
                     {
                         // Get access to global stats
-                        let mut stats = self.stats.lock().unwrap();
+                        let mut stats = self.stats.lock().expect("Failed to get mutex");
 
                         // Update crash counters
                         local_stats.crashes += 1;
@@ -175,7 +175,7 @@ impl Worker {
                         if stats.crash_db.insert(fuzz_input.clone()) {
                             // add input to the crash corpus
                             // New crashing input, we dump the crash on the disk
-                            let mut crash_file_lock = self.crash_file.lock().unwrap();
+                            let mut crash_file_lock = self.crash_file.lock().expect("Failed to get mutex");
                             crash_file_lock.crashes.push(fuzz_input.to_vec());
                             crash_file_lock.dump_json();
 
@@ -192,7 +192,7 @@ impl Worker {
             let counter_update = 1000;
             if local_stats.fuzz_cases % counter_update == 1 {
                 // Get access to global stats
-                let mut stats = self.stats.lock().unwrap();
+                let mut stats = self.stats.lock().expect("Failed to get mutex");
                 // Update fuzz case count
                 stats.fuzz_cases += counter_update;
             }
@@ -209,15 +209,15 @@ impl Worker {
             match runner(&self.contents, &self.function.name, &input.clone()) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.unwrap() {
+                    for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
-                            trace.0.offset.try_into().unwrap(),
-                            trace.1.offset.try_into().unwrap(),
+                            trace.0.offset.try_into().expect("Failed to transform offset into u32"),
+                            trace.1.offset.try_into().expect("Failed to transform offset into u32"),
                         ));
                     }
                     // Mutex locking is limited to this scope
                     {
-                        let stats = self.stats.lock().unwrap();
+                        let stats = self.stats.lock().expect("Failed to get mutex");
                         // verify if new input has been found by other fuzzers
                         // if so, update our statistics
                         if local_stats.input_db.len() != stats.input_db.len() {
@@ -239,7 +239,7 @@ impl Worker {
                         // Mutex locking is limited to this scope
                         {
                             // Get access to global stats
-                            let mut stats = self.stats.lock().unwrap();
+                            let mut stats = self.stats.lock().expect("Failed to get mutex");
 
                             if !stats.coverage_db.contains_key(&vec_trace) {
                                 // Save input to global input database
@@ -259,7 +259,7 @@ impl Worker {
                     // Mutex locking is limited to this scope
                     {
                         // Get access to global stats
-                        let mut stats = self.stats.lock().unwrap();
+                        let mut stats = self.stats.lock().expect("Failed to get mutex");
                         local_stats.crashes += 1;
                         stats.crashes += 1;
                         // Check if this case ended due to a crash
@@ -284,14 +284,14 @@ impl Worker {
             }
 
             // Get access to global stats
-            let mut stats = self.stats.lock().unwrap();
+            let mut stats = self.stats.lock().expect("Failed to get mutex");
             // Update fuzz case count
             stats.fuzz_cases += 1;
             local_stats.fuzz_cases += 1;
         }
 
         // Update the threads_finished when the worker executes all the corpus chunk
-        let mut stats = self.stats.lock().unwrap();
+        let mut stats = self.stats.lock().expect("Failed to get mutex");
         stats.threads_finished += 1;
     }
 }
