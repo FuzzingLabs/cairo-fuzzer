@@ -55,6 +55,10 @@ Cairo-Fuzzer supports cairo compilation artifact (json file) generated after com
 
 ## How to run the tests?
 
+```
+cargo test
+```
+
 # License
 
 Cairo-Fuzzer is licensed and distributed under the AGPLv3 license. Contact us if you're looking for an exception to the terms.
