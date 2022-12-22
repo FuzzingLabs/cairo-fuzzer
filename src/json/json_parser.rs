@@ -10,7 +10,7 @@ pub struct Function {
 /// Function that returns a vector of the args type of the function the user want to fuzz
 fn get_type_args(members: &Value) -> Vec<String> {
     let mut type_args = Vec::<String>::new();
-    for (_key, value) in members.as_object().unwrap() {
+    for (_, value) in members.as_object().expect("Failed get member type_args as object from json") {
         type_args.push(value["cairo_type"].to_string().replace("\"", ""));
     }
     return type_args;
@@ -18,21 +18,21 @@ fn get_type_args(members: &Value) -> Vec<String> {
 
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(_field) = data.get("identifiers") {
+    if let Some(_) = data.get("identifiers") {
         let identifiers = &data["identifiers"];
-        for (key, value) in identifiers.as_object().unwrap() {
+        for (key, value) in identifiers.as_object().expect("Failed to get identifier from json") {
             let name = key.split(".").last().unwrap().to_string();
             if value["type"] == "function" && &name == function_name {
-                if let Some(_field) = identifiers.get(format!("{}.Args", key)) {
-                    if let Some(_field) = identifiers[format!("{}.Args", key)].get("size") {
-                        if let Some(_field) = identifiers[format!("{}.Args", key)].get("members") {
+                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
+                    if let Some(_) = identifiers_key.get("size") {
+                        if let Some(_) = identifiers_key.get("members") {
                             let new_function = Function {
                                 name: name,
-                                num_args: identifiers[format!("{}.Args", key)]["size"]
+                                num_args: identifiers_key["size"]
                                     .as_u64()
-                                    .unwrap(),
+                                    .expect("Failed to get number of arguments from json"),
                                 type_args: get_type_args(
-                                    &identifiers[format!("{}.Args", key)]["members"],
+                                    &identifiers_key["members"],
                                 ),
                             };
                             return Some(new_function);
