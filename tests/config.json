@@ -6,5 +6,8 @@
     "contract_file": "tests/fuzzinglabs.json",
     "function_name": "test_symbolic_execution",
     "input_file": "",
-    "crash_file": ""
+    "crash_file": "",
+    "input_folder": "",
+    "crash_folder": "",
+    "workspace": "fuzzer_workspace"
 }

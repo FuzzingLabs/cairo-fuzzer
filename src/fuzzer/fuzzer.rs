@@ -456,7 +456,8 @@ mod tests {
         let minimizer: bool = false;
         let contract_file: String = "tests/fuzzinglabs.json".to_string();
         let function_name: String = "test_symbolic_execution".to_string();
-        let input_file: String = "tests/test_symbolic_execution_inputs.json".to_string();
+        let input_file: String =
+            "tests/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
