@@ -1,7 +1,7 @@
 # Cairo-Fuzzer -- Cairo Smart Contract Fuzzer
 
 Release version 1.0 
-Developped and maintained by @FuzzingLabs
+Developped and maintained by [@FuzzingLabs](https://github.com/FuzzingLabs)
 
 ## Description:
 
@@ -57,4 +57,4 @@ Cairo-Fuzzer supports cairo compilation artifact (json file) generated after com
 
 # License
 
-Thoth is licensed and distributed under the AGPLv3 license. Contact us if you're looking for an exception to the terms.
+Cairo-Fuzzer is licensed and distributed under the AGPLv3 license. Contact us if you're looking for an exception to the terms.
