@@ -76,14 +76,14 @@ impl InputFile {
         // Load inputs
         let inputs: Vec<Vec<Felt>> = data["inputs"]
             .as_array()
-            .unwrap()
+            .expect("Failed to get inputs from inputfile")
             .iter()
             .map(|input_array| {
                 input_array
                     .as_array()
-                    .unwrap()
+                    .expect("Failed to get input as array")
                     .iter()
-                    .map(|input| input.as_u64().unwrap() as Felt)
+                    .map(|input| input.as_u64().expect("Failed to get input as u64") as Felt)
                     .collect()
             })
             .collect();
@@ -91,12 +91,20 @@ impl InputFile {
         return InputFile {
             workspace: workspace.to_string(),
             path: filename.clone(),
-            name: data["name"].as_str().unwrap().to_string(),
+            name: data["name"]
+                .as_str()
+                .expect("Failed to get name from inputfile")
+                .to_string(),
             args: data["args"]
                 .as_array()
-                .unwrap()
+                .expect("Failed to get args from input file as array")
                 .iter()
-                .map(|input_array| input_array.as_str().unwrap().to_string())
+                .map(|input_array| {
+                    input_array
+                        .as_str()
+                        .expect("Failed to get input array as string")
+                        .to_string()
+                })
                 .collect(),
             inputs: inputs,
         };
@@ -104,26 +112,37 @@ impl InputFile {
 
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
-        let function_name = foldername.clone().split('/').last().unwrap().to_string();
+        let function_name = foldername
+            .clone()
+            .split('/')
+            .last()
+            .expect("Failed to split foldername")
+            .to_string();
         let mut args: Option<Vec<String>> = None;
         let mut inputs: Vec<Vec<Felt>> = Vec::new();
         // Check if the path is a directory
         if folder.is_dir() {
             // Iterate over the entries in the directory
-            for entry in fs::read_dir(folder).unwrap() {
-                let entry = entry.unwrap();
+            for entry in fs::read_dir(folder).expect("Failed to read directory") {
+                let entry = entry.expect("Failed to get entry");
                 let path = entry.path();
                 // Check if the entry is a file
                 if path.is_file() {
                     // Read the file and do something with its contents
-                    let contents = fs::read_to_string(&path).unwrap();
+                    let contents =
+                        fs::read_to_string(&path).expect("Failed to read string from the file");
                     let data: Value =
                         serde_json::from_str(&contents).expect("JSON was not well-formatted");
                     let args_data: Vec<String> = data["args"]
                         .as_array()
-                        .unwrap()
+                        .expect("Failed to get args from input file as array")
                         .iter()
-                        .map(|input_array| input_array.as_str().unwrap().to_string())
+                        .map(|input_array| {
+                            input_array
+                                .as_str()
+                                .expect("Failed to get input array as string")
+                                .to_string()
+                        })
                         .collect();
                     if args.is_none() {
                         args = Some(args_data);
@@ -137,14 +156,16 @@ impl InputFile {
                     }
                     let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
                         .as_array()
-                        .unwrap()
+                        .expect("Failed to get inputs from inputfile")
                         .iter()
                         .map(|input_array| {
                             input_array
                                 .as_array()
-                                .unwrap()
+                                .expect("Failed to get input as array")
                                 .iter()
-                                .map(|input| input.as_u64().unwrap() as Felt)
+                                .map(|input| {
+                                    input.as_u64().expect("Failed to get input as u64") as Felt
+                                })
                                 .collect()
                         })
                         .collect();
@@ -180,7 +201,8 @@ impl InputFile {
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
 
         let mut inputs_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
-        self.serialize(&mut inputs_ser).unwrap();
+        self.serialize(&mut inputs_ser)
+            .expect("Failed to serialize");
         let dump_file = format!(
             "{}/{}/inputs/{}",
             self.workspace,
@@ -189,7 +211,7 @@ impl InputFile {
         );
         write(
             &dump_file,
-            String::from_utf8(inputs_ser.into_inner()).unwrap(),
+            String::from_utf8(inputs_ser.into_inner()).expect("Failed to dump string as utf8"),
         )
         .expect("Failed to save input to disk");
     }
@@ -230,14 +252,14 @@ impl CrashFile {
         // Load old crashes to prevent overwriting and to use it as a dictionary for the mutator
         let crashes: Vec<Vec<Felt>> = data["crashes"]
             .as_array()
-            .unwrap()
+            .expect("Failed to get inputs from crashfile")
             .iter()
             .map(|input_array| {
                 input_array
                     .as_array()
-                    .unwrap()
+                    .expect("Failed to get input as array")
                     .iter()
-                    .map(|input| input.as_u64().unwrap() as Felt)
+                    .map(|input| input.as_u64().expect("Failed to get input as u64") as Felt)
                     .collect()
             })
             .collect();
@@ -245,12 +267,20 @@ impl CrashFile {
         return CrashFile {
             workspace: workspace.to_string(),
             path: filename.clone(),
-            name: data["name"].as_str().unwrap().to_string(),
+            name: data["name"]
+                .as_str()
+                .expect("Failed to get name from crashfile")
+                .to_string(),
             args: data["args"]
                 .as_array()
-                .unwrap()
+                .expect("Failed to get args from input file as array")
                 .iter()
-                .map(|input_array| input_array.as_str().unwrap().to_string())
+                .map(|input_array| {
+                    input_array
+                        .as_str()
+                        .expect("Failed to get input array as string")
+                        .to_string()
+                })
                 .collect(),
             crashes: crashes,
         };
@@ -258,26 +288,37 @@ impl CrashFile {
 
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
-        let function_name = foldername.clone().split('/').last().unwrap().to_string();
+        let function_name = foldername
+            .clone()
+            .split('/')
+            .last()
+            .expect("Failed to split foldername")
+            .to_string();
         let mut args: Option<Vec<String>> = None;
         let mut inputs: Vec<Vec<Felt>> = Vec::new();
         // Check if the path is a directory
         if folder.is_dir() {
             // Iterate over the entries in the directory
-            for entry in fs::read_dir(folder).unwrap() {
-                let entry = entry.unwrap();
+            for entry in fs::read_dir(folder).expect("Failed to read directory") {
+                let entry = entry.expect("Failed to get entry");
                 let path = entry.path();
                 // Check if the entry is a file
                 if path.is_file() {
                     // Read the file and do something with its contents
-                    let contents = fs::read_to_string(&path).unwrap();
+                    let contents =
+                        fs::read_to_string(&path).expect("Failed to read string from the file");
                     let data: Value =
                         serde_json::from_str(&contents).expect("JSON was not well-formatted");
                     let args_data: Vec<String> = data["args"]
                         .as_array()
-                        .unwrap()
+                        .expect("Failed to get args from input file as array")
                         .iter()
-                        .map(|input_array| input_array.as_str().unwrap().to_string())
+                        .map(|input_array| {
+                            input_array
+                                .as_str()
+                                .expect("Failed to get input array as string")
+                                .to_string()
+                        })
                         .collect();
                     if args.is_none() {
                         args = Some(args_data);
@@ -291,14 +332,16 @@ impl CrashFile {
                     }
                     let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
                         .as_array()
-                        .unwrap()
+                        .expect("Failed to get inputs from inputfile")
                         .iter()
                         .map(|input_array| {
                             input_array
                                 .as_array()
-                                .unwrap()
+                                .expect("Failed to get input as array")
                                 .iter()
-                                .map(|input| input.as_u64().unwrap() as Felt)
+                                .map(|input| {
+                                    input.as_u64().expect("Failed to get input as u64") as Felt
+                                })
                                 .collect()
                         })
                         .collect();
@@ -334,11 +377,12 @@ impl CrashFile {
 
         let mut crashes_ser =
             serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
-        self.serialize(&mut crashes_ser).unwrap();
+        self.serialize(&mut crashes_ser)
+            .expect("Failed to serialize");
         let dump_file = format!("{}/{}/{}", &self.workspace, self.name.clone(), self.path);
         write(
             &dump_file,
-            String::from_utf8(crashes_ser.into_inner()).unwrap(),
+            String::from_utf8(crashes_ser.into_inner()).expect("Failed to dump string as utf8"),
         )
         .expect("Failed to save input to disk");
     }
