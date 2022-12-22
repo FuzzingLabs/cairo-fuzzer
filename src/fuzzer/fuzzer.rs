@@ -61,7 +61,7 @@ impl Fuzzer {
             Some(val) => val,
             None => SystemTime::now()
                 .duration_since(UNIX_EPOCH)
-                .unwrap()
+                .expect("Failed to get actual time")
                 .as_millis() as u64,
         };
         println!("\t\t\t\t\t\t\tSeed: {}", seed);
@@ -91,7 +91,7 @@ impl Fuzzer {
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
-            let mut stats_db = stats.lock().unwrap();
+            let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &inputs.inputs {
                 if stats_db.input_db.insert(Arc::new(input.clone())) {
                     stats_db.input_list.push(Arc::new(input.clone()));
@@ -112,7 +112,7 @@ impl Fuzzer {
 
         // Load existing crashes in shared database
         if crashes.crashes.len() > 0 {
-            let mut stats_db = stats.lock().unwrap();
+            let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &crashes.crashes {
                 stats_db.crash_db.insert(Arc::new(input.clone()));
                 stats_db.crashes += 1;
@@ -183,7 +183,7 @@ impl Fuzzer {
     /// If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
         // Replay all inputs
-        let stats_db = self.stats.lock().unwrap();
+        let stats_db = self.stats.lock().expect("Failed to lock stats mutex");
         // Load inputs
         let mut corpus = stats_db.input_list.clone();
         println!("Total inputs to replay => {}", corpus.len());
@@ -239,7 +239,7 @@ impl Fuzzer {
 
         // If minimizer is set, dump the new corpus
         if self.minimizer {
-            let stats = self.stats.lock().unwrap();
+            let stats = self.stats.lock().expect("Failed to lock stats mutex");
             // Init the struct
             let mut dump_inputs = InputFile {
                 workspace: self.workspace.clone(),
@@ -262,7 +262,7 @@ impl Fuzzer {
     fn monitor(&self) {
         let mut log = None;
         if self.logs {
-            log = Some(File::create("fuzz_stats.txt").unwrap());
+            log = Some(File::create("fuzz_stats.txt").expect("Failed to lock stats mutex"));
         }
 
         // Monitoring loop
@@ -275,7 +275,7 @@ impl Fuzzer {
 
             // Get access to the global stats
             {
-                let stats = self.stats.lock().unwrap();
+                let stats = self.stats.lock().expect("Failed to lock stats mutex");
 
                 // number of executions
                 let fuzz_case = stats.fuzz_cases;
@@ -302,8 +302,8 @@ impl Fuzzer {
                         stats.crashes,
                         stats.crash_db.len()
                     )
-                    .unwrap();
-                    file.flush().unwrap();
+                    .expect("Failed to write logs in log file");
+                    file.flush().expect("Failed to flush the file");
                 }
 
                 // Only for replay: all thread are finished
@@ -481,7 +481,7 @@ mod tests {
 
         fuzzer.replay();
 
-        let stats = fuzzer.stats.lock().unwrap();
+        let stats = fuzzer.stats.lock().expect("Failed to lock stats mutex");
         assert_ne!(stats.coverage_db.len(), 0);
     }
 }
