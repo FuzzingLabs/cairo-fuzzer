@@ -98,8 +98,16 @@ impl Worker {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
-                            trace.0.offset.try_into().expect("Failed to transform offset into u32"),
-                            trace.1.offset.try_into().expect("Failed to transform offset into u32"),
+                            trace
+                                .0
+                                .offset
+                                .try_into()
+                                .expect("Failed to transform offset into u32"),
+                            trace
+                                .1
+                                .offset
+                                .try_into()
+                                .expect("Failed to transform offset into u32"),
                         ));
                     }
 
@@ -139,7 +147,8 @@ impl Worker {
                                     stats.input_list.push(fuzz_input.clone());
                                     stats.input_len += 1;
                                     // Copy locally
-                                    let mut input_file_lock = self.input_file.lock().expect("Failed to get mutex");
+                                    let mut input_file_lock =
+                                        self.input_file.lock().expect("Failed to get mutex");
                                     input_file_lock.inputs.push(fuzz_input.to_vec());
                                     input_file_lock.dump_json();
                                 }
@@ -175,7 +184,8 @@ impl Worker {
                         if stats.crash_db.insert(fuzz_input.clone()) {
                             // add input to the crash corpus
                             // New crashing input, we dump the crash on the disk
-                            let mut crash_file_lock = self.crash_file.lock().expect("Failed to get mutex");
+                            let mut crash_file_lock =
+                                self.crash_file.lock().expect("Failed to get mutex");
                             crash_file_lock.crashes.push(fuzz_input.to_vec());
                             crash_file_lock.dump_json();
 
@@ -211,8 +221,16 @@ impl Worker {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
-                            trace.0.offset.try_into().expect("Failed to transform offset into u32"),
-                            trace.1.offset.try_into().expect("Failed to transform offset into u32"),
+                            trace
+                                .0
+                                .offset
+                                .try_into()
+                                .expect("Failed to transform offset into u32"),
+                            trace
+                                .1
+                                .offset
+                                .try_into()
+                                .expect("Failed to transform offset into u32"),
                         ));
                     }
                     // Mutex locking is limited to this scope

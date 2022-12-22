@@ -22,21 +22,24 @@ fn get_type_args(members: &Value) -> Vec<String> {
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     if let Some(identifiers) = data.get("identifiers") {
-        for (key, value) in identifiers.as_object().expect("Failed to get identifier from json") {
+        for (key, value) in identifiers
+            .as_object()
+            .expect("Failed to get identifier from json")
+        {
             let name = key.split(".").last().unwrap().to_string();
             if value["type"] == "function" && &name == function_name {
                 if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
-                    if let (Some(size), Some(members)) = (identifiers_key.get("size"), identifiers_key.get("members")) {
+                    if let (Some(size), Some(members)) =
+                        (identifiers_key.get("size"), identifiers_key.get("members"))
+                    {
                         let new_function = Function {
                             name: name,
                             num_args: size
                                 .as_u64()
                                 .expect("Failed to get number of arguments from json"),
-                            type_args: get_type_args(
-                                members,
-                            ),
+                            type_args: get_type_args(members),
                         };
-                        return Some(new_function);  
+                        return Some(new_function);
                     }
                 }
             }
