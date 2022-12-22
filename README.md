@@ -5,7 +5,7 @@ Developped and maintained by [@FuzzingLabs](https://github.com/FuzzingLabs)
 
 ## Description:
 
-Cairo-fuzzer is a tool designed for smart contract developers to test the security and push the complex test cases of their program. It can be used as an independent tool or used as a library.
+Cairo-fuzzer is a tool designed for smart contract developers to test the security. It can be used as an independent tool or as a library.
 
 ## Features:
 
