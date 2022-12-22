@@ -8,7 +8,9 @@ Developped and maintained by @FuzzingLabs
 Cairo-fuzzer is a tool designed for smart contract developers to test the security and push the complex test cases of their program. It can be used as an independent tool or used as a library.
 
 ## Features:
-
+<p align="center">
+	<img src="cairo-fuzzer.png"/>
+</p>
 - Run cairo contract
 - Run cairo contract with hints implemented in cairo-rs
 - Replayer of fuzzing corpus
