@@ -64,7 +64,7 @@ impl Fuzzer {
                 .unwrap()
                 .as_millis() as u64,
         };
-        println!("Seed: {}", seed);
+        println!("\t\t\t\t\t\t\tSeed: {}", seed);
 
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
@@ -90,7 +90,7 @@ impl Fuzzer {
                 }
             }
         };
-        println!("Inputs loaded {}", inputs.inputs.len());
+        println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
@@ -176,10 +176,11 @@ impl Fuzzer {
                 );
                 worker.fuzz();
             });
-            println!("Thread {} Spawned", i);
+            //println!("Thread {} Spawned", i);
             self.running_workers += 1;
         }
-
+        println!("\t\t\t\t\t\t\tRunning {} threads", self.running_workers);
+        println!("        =========================================================================================================================");
         // Call the stats monitoring/printer
         self.monitor();
     }
