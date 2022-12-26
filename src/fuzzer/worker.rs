@@ -5,7 +5,7 @@ use std::sync::{Arc, Mutex};
 use super::corpus::{CrashFile, InputFile};
 use super::stats::*;
 
-use crate::cairo_vm::cairo_runner::runner;
+use crate::cairo_vm::cairo_runner::{py_runner, runner};
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
 
@@ -93,7 +93,11 @@ impl Worker {
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
-            match runner(&self.contents, &self.function.name, &mutator.input) {
+            match if !self.function.hints {
+                runner(&self.contents, &self.function.name, &mutator.input)
+            } else {
+                py_runner(&self.contents, &self.function.name, &mutator.input)
+            }  {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {

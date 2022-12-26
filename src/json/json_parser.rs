@@ -5,6 +5,7 @@ pub struct Function {
     pub name: String,
     pub num_args: u64,
     pub type_args: Vec<String>,
+    pub hints: bool,
 }
 
 /// Function that returns a vector of the args type of the function the user want to fuzz
@@ -21,6 +22,11 @@ fn get_type_args(members: &Value) -> Vec<String> {
 
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    let hints = if let Some(field) = data.get("hints") {
+        field.as_object().unwrap().len() != 0
+    } else {
+        false
+    };
     if let Some(identifiers) = data.get("identifiers") {
         for (key, value) in identifiers
             .as_object()
@@ -33,6 +39,7 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
                         (identifiers_key.get("size"), identifiers_key.get("members"))
                     {
                         let new_function = Function {
+                            hints:hints,
                             name: name,
                             num_args: size
                                 .as_u64()

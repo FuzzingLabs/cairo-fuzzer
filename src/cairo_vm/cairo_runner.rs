@@ -5,9 +5,12 @@ use cairo_rs::types::relocatable::Relocatable;
 use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
-
+use cairo_rs_py::cairo_runner::PyCairoRunner;
 use num_bigint::BigInt;
 use num_bigint::Sign;
+use pyo3::PyAny;
+use pyo3::ToPyObject;
+use pyo3::marker::Python;
 
 pub fn runner(
     json: &String,
@@ -80,5 +83,37 @@ pub fn runner(
         .write_output(&mut vm, &mut stdout)
         .expect("Failed to get running output from the VM");
 
+    return Ok(Some(ret));
+}
+
+
+pub fn py_runner(json: &String,
+    func_name: &String,
+    data: &Vec<u8>,) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+    let mut runner = PyCairoRunner::new(
+        json.clone(),
+        Some(func_name.clone()),
+        Some("all".to_string()),
+        false,
+    )
+    .unwrap();
+    runner.initialize_segments();
+    let mut ret = Vec::<(Relocatable, Relocatable)>::new();
+
+    Python::with_gil(|py| {
+        runner
+            .run_from_entrypoint(
+                py,
+                py.eval("0", None, None).unwrap(),
+                Vec::<&PyAny>::new().to_object(py),
+                None,
+                None,
+                Some(false),
+                None,
+                None,
+            )
+            .unwrap();
+            //runner.write_output();
+    });
     return Ok(Some(ret));
 }

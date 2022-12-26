@@ -15,3 +15,9 @@ serde = "*"
 clap = { version = " 4.0.29", features = ["derive"] }
 log = "*"
 thiserror = "1.0.32"
+cairo-rs-py = {git = "https://github.com/FuzzingLabs/cairo-rs-py"}
+pyo3 = { version = "0.16.5" }
+
+[features]
+extension = ["pyo3/num-bigint", "pyo3/extension-module"]
+default = ["pyo3/num-bigint", "pyo3/auto-initialize"]
