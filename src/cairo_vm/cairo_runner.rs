@@ -11,6 +11,8 @@ use num_bigint::Sign;
 use pyo3::PyAny;
 use pyo3::ToPyObject;
 use pyo3::marker::Python;
+use pyo3::types::PyFloat;
+use pyo3::types::PyInt;
 
 pub fn runner(
     json: &String,
@@ -93,26 +95,29 @@ pub fn py_runner(json: &String,
     let mut runner = PyCairoRunner::new(
         json.clone(),
         Some(func_name.clone()),
-        Some("all".to_string()),
+        Some("plain".to_string()),
         false,
     )
     .unwrap();
     runner.initialize_segments();
     let mut ret = Vec::<(Relocatable, Relocatable)>::new();
-
     Python::with_gil(|py| {
-        runner
+        let mut args = data.to_object(py);
+        match runner
             .run_from_entrypoint(
                 py,
-                py.eval("0", None, None).unwrap(),
-                Vec::<&PyAny>::new().to_object(py),
+                py.eval("1", None, None).unwrap(),
+                args,
                 None,
                 None,
                 Some(false),
                 None,
                 None,
             )
-            .unwrap();
+            {
+                Ok(_val) => println!("good"),
+                Err(e) => println!("bad {:?}", e),
+            }
             //runner.write_output();
     });
     return Ok(Some(ret));
