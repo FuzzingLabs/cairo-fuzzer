@@ -39,7 +39,7 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
                         (identifiers_key.get("size"), identifiers_key.get("members"))
                     {
                         let new_function = Function {
-                            hints:hints,
+                            hints: hints,
                             name: name,
                             num_args: size
                                 .as_u64()

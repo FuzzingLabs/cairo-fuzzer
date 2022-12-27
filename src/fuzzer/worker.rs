@@ -97,7 +97,7 @@ impl Worker {
                 runner(&self.contents, &self.function.name, &mutator.input)
             } else {
                 py_runner(&self.contents, &self.function.name, &mutator.input)
-            }  {
+            } {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
