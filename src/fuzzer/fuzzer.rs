@@ -16,7 +16,7 @@ use super::{
     corpus::{CrashFile, InputFile},
     stats::Statistics,
 };
-use std::io::Write;
+use std::io::{self, Write};
 
 #[derive(Clone)]
 pub struct Fuzzer {

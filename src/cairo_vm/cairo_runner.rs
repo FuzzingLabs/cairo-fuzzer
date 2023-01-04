@@ -8,11 +8,9 @@ use cairo_rs::vm::vm_core::VirtualMachine;
 use cairo_rs_py::cairo_runner::PyCairoRunner;
 use num_bigint::BigInt;
 use num_bigint::Sign;
-use pyo3::PyAny;
-use pyo3::ToPyObject;
 use pyo3::marker::Python;
-use pyo3::types::PyFloat;
-use pyo3::types::PyInt;
+use pyo3::ToPyObject;
+use std::{thread, time};
 
 pub fn runner(
     json: &String,
@@ -88,10 +86,12 @@ pub fn runner(
     return Ok(Some(ret));
 }
 
-
-pub fn py_runner(json: &String,
+pub fn py_runner(
+    json: &String,
     func_name: &String,
-    data: &Vec<u8>,) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+    entrypoint: &String,
+    data: &Vec<u8>,
+) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
     let mut runner = PyCairoRunner::new(
         json.clone(),
         Some(func_name.clone()),
@@ -101,24 +101,33 @@ pub fn py_runner(json: &String,
     .unwrap();
     runner.initialize_segments();
     let mut ret = Vec::<(Relocatable, Relocatable)>::new();
-    Python::with_gil(|py| {
-        let mut args = data.to_object(py);
-        match runner
-            .run_from_entrypoint(
-                py,
-                py.eval("1", None, None).unwrap(),
-                args,
-                None,
-                None,
-                Some(false),
-                None,
-                None,
-            )
-            {
-                Ok(_val) => println!("good"),
-                Err(e) => println!("bad {:?}", e),
+    return Python::with_gil(
+        |py| -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+            let args = data.to_object(py);
+            // builtin init // add this to the beginning of the args
+            let builtins = runner.get_program_builtins_initial_stack(py);
+            runner
+                .run_from_entrypoint(
+                    py,
+                    py.eval(&entrypoint, None, None).unwrap(),
+                    args,
+                    None,
+                    None,
+                    Some(false),
+                    None,
+                    None,
+                )
+                .expect("Failed to run from entrypoint");
+            let pyvm = runner.pyvm;
+            let get_vm = pyvm.get_vm().clone();
+            let vm = get_vm.try_borrow().expect("Failed to get the VM");
+            let trace = vm
+                .get_trace()
+                .expect("Failed to get running trace from the VM");
+            for i in trace {
+                ret.push((i.fp.clone(), i.pc.clone()));
             }
-            //runner.write_output();
-    });
-    return Ok(Some(ret));
+            return Ok(Some(ret));
+        },
+    );
 }
