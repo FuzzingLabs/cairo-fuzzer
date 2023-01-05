@@ -61,6 +61,9 @@ impl Fuzzer {
     pub fn new(config: &Config) -> Self {
         let stats = Arc::new(Mutex::new(Statistics::default()));
         // Set seed if provided or generate a new seed using `SystemTime`
+        println!("\t\t\t\t\t\t\tStdout: {}", config.stdout);
+        println!("\t\t\t\t\t\t\tLog file: {}", config.logs);
+
         let seed = match config.seed {
             Some(val) => val,
             None => SystemTime::now()

@@ -44,6 +44,7 @@ Options:
       --inputfile <INPUTFILE>      Path to the inputs file to load [default: ]
       --crashfile <CRASHFILE>      Path to the crashes file to load [default: ]
       --logs                       Enable fuzzer logs in file
+      --stdout                     Enable fuzzer logs in STDOUT
       --seed <SEED>                Set a custom seed (only applicable for 1 core run)
       --run-time <RUN_TIME>        Number of seconds this fuzzing session will last
       --config <CONFIG>            Load config file
@@ -57,6 +58,7 @@ Options:
 ## How to find a Cairo/Starknet compilation artifact (json file)?
 
 Cairo-Fuzzer supports cairo compilation artifact (json file) generated after compilation using `cairo-compile`.
+Contracts containing pure cairo are executed with cairo-rs. Cairo contracts containing hints are executed with cairo-rs-py.
 
 ## How to run the tests?
 

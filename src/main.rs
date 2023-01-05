@@ -42,7 +42,6 @@ fn main() {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }
-            println!("{} {}", opt.logs, opt.stdout);
             Config {
                 workspace: opt.workspace,
                 contract_file: opt.contract,
