@@ -101,6 +101,7 @@ impl Worker {
                     &self.function.name,
                     &self.function.entrypoint,
                     &mutator.input,
+                    self.function.starknet
                 )
             } {
                 Ok(traces) => {

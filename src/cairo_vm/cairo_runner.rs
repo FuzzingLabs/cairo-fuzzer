@@ -11,6 +11,7 @@ use num_bigint::Sign;
 use pyo3::marker::Python;
 use pyo3::ToPyObject;
 use std::{thread, time};
+use serde_json::Value;
 
 pub fn runner(
     json: &String,
@@ -87,15 +88,23 @@ pub fn runner(
 }
 
 pub fn py_runner(
-    json: &String,
+    mut json: &String,
     func_name: &String,
     entrypoint: &String,
     data: &Vec<u8>,
+    starknet: bool,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+    let mut content: String = json.to_string();
+    if starknet {
+        let data: Value = serde_json::from_str(&json).expect("JSON was not well-formatted");
+        if let Some(program) = data.get("program") {
+            content = program.to_string();
+        }
+    }
     let mut runner = PyCairoRunner::new(
-        json.clone(),
+        content.clone(),
         Some(func_name.clone()),
-        Some("plain".to_string()),
+        Some("all".to_string()),
         false,
     )
     .unwrap();
