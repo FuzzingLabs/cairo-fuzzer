@@ -93,7 +93,7 @@ impl Worker {
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
-            match if !self.function.hints && !self.function.starknet {
+            match if !self.function.hints && !self.function._starknet {
                 runner(&self.contents, &self.function.name, &mutator.input)
             } else {
                 py_runner(
@@ -101,7 +101,7 @@ impl Worker {
                     &self.function.name,
                     &self.function.entrypoint,
                     &mutator.input,
-                    self.function.starknet
+                    self.function._starknet,
                 )
             } {
                 Ok(traces) => {

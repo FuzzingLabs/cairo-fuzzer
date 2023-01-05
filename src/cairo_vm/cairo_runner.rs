@@ -10,8 +10,6 @@ use num_bigint::BigInt;
 use num_bigint::Sign;
 use pyo3::marker::Python;
 use pyo3::ToPyObject;
-use std::{thread, time};
-use serde_json::Value;
 
 pub fn runner(
     json: &String,
@@ -88,21 +86,14 @@ pub fn runner(
 }
 
 pub fn py_runner(
-    mut json: &String,
+    json: &String,
     func_name: &String,
     entrypoint: &String,
     data: &Vec<u8>,
-    starknet: bool,
+    _starknet: bool,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
-    let mut content: String = json.to_string();
-    if starknet {
-        let data: Value = serde_json::from_str(&json).expect("JSON was not well-formatted");
-        if let Some(program) = data.get("program") {
-            content = program.to_string();
-        }
-    }
     let mut runner = PyCairoRunner::new(
-        content.clone(),
+        json.clone(),
         Some(func_name.clone()),
         Some("all".to_string()),
         false,
@@ -114,7 +105,7 @@ pub fn py_runner(
         |py| -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
             let args = data.to_object(py);
             // builtin init // add this to the beginning of the args
-            let builtins = runner.get_program_builtins_initial_stack(py);
+            let _builtins = runner.get_program_builtins_initial_stack(py);
             runner
                 .run_from_entrypoint(
                     py,

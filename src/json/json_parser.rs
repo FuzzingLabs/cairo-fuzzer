@@ -1,6 +1,5 @@
-use cairo_rs::types::program;
 use serde_json::Value;
-
+use std::process;
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
@@ -9,7 +8,7 @@ pub struct Function {
     pub num_args: u64,
     pub type_args: Vec<String>,
     pub hints: bool,
-    pub starknet: bool,
+    pub _starknet: bool,
 }
 
 /// Function that returns a vector of the args type of the function the user want to fuzz
@@ -25,11 +24,14 @@ fn get_type_args(members: &Value) -> Vec<String> {
 }
 
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
-    let mut starknet = false;
-    let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(program) = data.get("program") {
-        data = program.clone();
-        starknet = true;
+    let starknet = false;
+    let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    if let Some(_program) = data.get("program") {
+        // Useless for now
+        println!("Cairo-fuzzer does not support starknet contract.");
+        process::exit(1);
+        /* data = program.clone();
+        starknet = true; */
     }
     let hints = if let Some(field) = data.get("hints") {
         field.as_object().unwrap().len() != 0
@@ -49,7 +51,7 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
                         (identifiers_key.get("size"), identifiers_key.get("members"))
                     {
                         let new_function = Function {
-                            starknet: starknet,
+                            _starknet: starknet,
                             entrypoint: pc,
                             hints: hints,
                             name: name,
