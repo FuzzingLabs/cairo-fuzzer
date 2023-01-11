@@ -1,6 +1,6 @@
 # Cairo-Fuzzer -- Cairo Smart Contract Fuzzer
 
-Release version 1.0 
+Release version 1.1
 Developped and maintained by [@FuzzingLabs](https://github.com/FuzzingLabs)
 
 ## Description:
