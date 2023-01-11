@@ -16,7 +16,7 @@ use fuzzer::fuzzer::Fuzzer;
 use log::error;
 fn main() {
     let header = r###"
-                _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
+                 _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
                 (  ____ \(  ___  )\__   __/(  ____ )(  ___  )       (  ____ \|\     /|/ ___   )/ ___   )(  ____ \(  ____ )
                 | (    \/| (   ) |   ) (   | (    )|| (   ) |       | (    \/| )   ( |\/   )  |\/   )  || (    \/| (    )|
                 | |      | (___) |   | |   | (____)|| |   | | _____ | (__    | |   | |    /   )    /   )| (__    | (____)|
@@ -42,7 +42,6 @@ fn main() {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }
-
             Config {
                 workspace: opt.workspace,
                 contract_file: opt.contract,
@@ -53,6 +52,7 @@ fn main() {
                 crash_folder: opt.crashfolder,
                 cores: opt.cores,
                 logs: opt.logs,
+                stdout: opt.stdout,
                 seed: opt.seed,
                 run_time: opt.run_time,
                 replay: opt.replay,

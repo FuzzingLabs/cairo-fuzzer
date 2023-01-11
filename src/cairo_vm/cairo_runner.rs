@@ -5,9 +5,11 @@ use cairo_rs::types::relocatable::Relocatable;
 use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
-
+use cairo_rs_py::cairo_runner::PyCairoRunner;
 use num_bigint::BigInt;
 use num_bigint::Sign;
+use pyo3::marker::Python;
+use pyo3::ToPyObject;
 
 pub fn runner(
     json: &String,
@@ -81,4 +83,51 @@ pub fn runner(
         .expect("Failed to get running output from the VM");
 
     return Ok(Some(ret));
+}
+
+pub fn py_runner(
+    json: &String,
+    func_name: &String,
+    entrypoint: &String,
+    data: &Vec<u8>,
+    _starknet: bool,
+) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+    let mut runner = PyCairoRunner::new(
+        json.clone(),
+        Some(func_name.clone()),
+        Some("all".to_string()),
+        false,
+    )
+    .unwrap();
+    runner.initialize_segments();
+    let mut ret = Vec::<(Relocatable, Relocatable)>::new();
+    return Python::with_gil(
+        |py| -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+            let args = data.to_object(py);
+            // builtin init // add this to the beginning of the args
+            let _builtins = runner.get_program_builtins_initial_stack(py);
+            runner
+                .run_from_entrypoint(
+                    py,
+                    py.eval(&entrypoint, None, None).unwrap(),
+                    args,
+                    None,
+                    None,
+                    Some(false),
+                    None,
+                    None,
+                )
+                .expect("Failed to run from entrypoint");
+            let pyvm = runner.pyvm;
+            let get_vm = pyvm.get_vm().clone();
+            let vm = get_vm.try_borrow().expect("Failed to get the VM");
+            let trace = vm
+                .get_trace()
+                .expect("Failed to get running trace from the VM");
+            for i in trace {
+                ret.push((i.fp.clone(), i.pc.clone()));
+            }
+            return Ok(Some(ret));
+        },
+    );
 }
