@@ -149,7 +149,7 @@ pub fn deploy_contract(port: &String, rnd_account: &String, contract_path: &Stri
         }
         let contract_address = get_contract_address(deploy_contract.clone());
         return Contract {
-            address: contract_address
+            address: contract_address,
         };
         //display_tx_status(deploy_hash, port);
     } else {
@@ -201,7 +201,13 @@ pub fn deploy_account(port: &String, rnd_account: &String) {
     }
 }
 
-pub fn call_contract(port: &String, rnd_account: &String, abi_path: &String, contract_data: &Contract, function_name: &String) {
+pub fn call_contract(
+    port: &String,
+    rnd_account: &String,
+    abi_path: &String,
+    contract_data: &Contract,
+    function_name: &String,
+) {
     let address = format!("http://127.0.0.1:{}", port).to_string();
     let call_contract = Command::new("starknet")
         .env(
@@ -227,7 +233,14 @@ pub fn call_contract(port: &String, rnd_account: &String, abi_path: &String, con
     display_output(call_contract.clone());
 }
 
-pub fn invoke_contract(port: &String, rnd_account: &String, abi_path: &String, contract_data: &Contract, function_name: &String, inputs: &String) {
+pub fn invoke_contract(
+    port: &String,
+    rnd_account: &String,
+    abi_path: &String,
+    contract_data: &Contract,
+    function_name: &String,
+    inputs: &String,
+) {
     let address = format!("http://127.0.0.1:{}", port).to_string();
     let invoke_contract = Command::new("starknet")
         .env(
@@ -280,12 +293,31 @@ pub fn main() {
     });
     deploy_account(&port.to_string(), rnd_account);
     println!("Account deployed successfully");
-    let contract_data= deploy_contract(&port.to_string(), rnd_account, contract_path);
+    let contract_data = deploy_contract(&port.to_string(), rnd_account, contract_path);
     println!("Contract deployed successfully");
     println!("First call");
-    call_contract(&port.to_string(), rnd_account, abi_path, &contract_data, &"get_balance".to_string());
-    invoke_contract(&port.to_string(), rnd_account, abi_path, &contract_data, &"increase_balance".to_string(), &"1".to_string());
-    call_contract(&port.to_string(), rnd_account, abi_path, &contract_data, &"get_balance".to_string());
+    call_contract(
+        &port.to_string(),
+        rnd_account,
+        abi_path,
+        &contract_data,
+        &"get_balance".to_string(),
+    );
+    invoke_contract(
+        &port.to_string(),
+        rnd_account,
+        abi_path,
+        &contract_data,
+        &"increase_balance".to_string(),
+        &"1".to_string(),
+    );
+    call_contract(
+        &port.to_string(),
+        rnd_account,
+        abi_path,
+        &contract_data,
+        &"get_balance".to_string(),
+    );
     println!("Contract invoked");
     while true {}
 }
