@@ -1,11 +1,25 @@
+use rand::seq::SliceRandom;
 use rand::{distributions::Alphanumeric, Rng};
 use regex::Regex;
+use serde_json::Value;
+use std::fs;
 use std::process;
 use std::process::Command;
 use std::process::Output;
 use std::sync::Arc;
 use std::thread;
 
+#[derive(Debug, Clone)]
+pub struct Function {
+    pub name: String,
+    /// parse entrypoint number in the json
+    pub entrypoint: String,
+    pub num_args: u64,
+    pub type_args: Vec<String>,
+    pub hints: bool,
+    pub decorators: Vec<String>,
+    pub _starknet: bool,
+}
 pub struct Contract {
     address: String,
 }
@@ -65,34 +79,37 @@ pub fn get_account_address(out: Output) -> String {
 pub fn get_class_hash(out: Output) -> String {
     let cmd_output = &String::from_utf8(out.stdout).unwrap();
     let regex_class_hash = Regex::new(r"Contract class hash: (.*)").unwrap();
-    let class_hash = regex_class_hash
-        .captures(&cmd_output)
-        .unwrap()
-        .get(1)
-        .map_or("", |m| m.as_str());
-    return class_hash.to_string();
+    if let Some(class_hash) = regex_class_hash.captures(&cmd_output) {
+        class_hash.get(1).map_or("", |m| m.as_str()).to_string();
+    }
+    let cmd_err = &String::from_utf8(out.stderr).unwrap();
+    println!("{}", cmd_err);
+    process::exit(1);
 }
 
 pub fn get_contract_address(out: Output) -> String {
     let cmd_output = &String::from_utf8(out.stdout).unwrap();
     let regex_contract_address = Regex::new(r"Contract address: (.*)").unwrap();
-    let contract_address = regex_contract_address
-        .captures(&cmd_output)
-        .unwrap()
-        .get(1)
-        .map_or("", |m| m.as_str());
-    return contract_address.to_string();
+    if let Some(contract_address) = regex_contract_address.captures(&cmd_output) {
+        return contract_address
+            .get(1)
+            .map_or("", |m| m.as_str())
+            .to_string();
+    }
+    let cmd_err = &String::from_utf8(out.stderr).unwrap();
+    println!("{}", cmd_err);
+    process::exit(1);
 }
 
 pub fn get_tx_hash(out: Output) -> String {
     let cmd_output = &String::from_utf8(out.stdout).unwrap();
     let regex_tx_hash = Regex::new(r"Transaction hash: (.*)").unwrap();
-    let tx_hash = regex_tx_hash
-        .captures(&cmd_output)
-        .unwrap()
-        .get(1)
-        .map_or("", |m| m.as_str());
-    return tx_hash.to_string();
+    if let Some(tx_hash) = regex_tx_hash.captures(&cmd_output) {
+        return tx_hash.get(1).map_or("", |m| m.as_str()).to_string();
+    }
+    let cmd_err = &String::from_utf8(out.stderr).unwrap();
+    println!("{}", cmd_err);
+    process::exit(1);
 }
 
 pub fn display_output(out: Output) {
@@ -272,10 +289,128 @@ pub fn invoke_contract(
     }
 }
 
+/// Function that returns a vector of the args type of the function the user want to fuzz
+fn get_type_args(members: &Value) -> Vec<String> {
+    let mut type_args = Vec::<String>::new();
+    for (_, value) in members
+        .as_object()
+        .expect("Failed get member type_args as object from json")
+    {
+        type_args.push(value["cairo_type"].to_string().replace("\"", ""));
+    }
+    return type_args;
+}
+
+fn get_decorators(decorators: &Value) -> Vec<String> {
+    let mut decorators_list = Vec::<String>::new();
+    if let Some(data) = decorators.as_array() {
+        for elem in data {
+            decorators_list.push(elem.to_string().replace("\"", ""));
+        }
+    }
+    /*for (_, value) in decorators
+        .as_object()
+        .expect("Failed get decorators as object from json")
+    {
+        decorators_list.push(value["cairo_type"].to_string().replace("\"", ""));
+    }*/
+    return decorators_list;
+}
+
+pub fn parse_json(data: &String) -> Vec<Function> {
+    let mut vec = Vec::new();
+    let mut starknet = false;
+    let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    if let Some(program) = data.get("program") {
+        data = program.clone();
+        starknet = true;
+    }
+    let hints = if let Some(field) = data.get("hints") {
+        field.as_object().unwrap().len() != 0
+    } else {
+        false
+    };
+    if let Some(identifiers) = data.get("identifiers") {
+        for (key, value) in identifiers
+            .as_object()
+            .expect("Failed to get identifier from json")
+        {
+            let key_split = key.split(".").collect::<Vec<&str>>();
+            if value["type"] == "function" && key.contains("main") && key_split.len() == 2 {
+                let name = key_split[key_split.len() - 1];
+                let pc = value["pc"].to_string();
+                let mut decorators = Vec::<String>::new();
+                if let Some(decorators_data) = value.get("decorators") {
+                    println!("{:?}", decorators_data);
+                    decorators.append(&mut get_decorators(decorators_data));
+                }
+                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
+                    if let (Some(size), Some(members)) =
+                        (identifiers_key.get("size"), identifiers_key.get("members"))
+                    {
+                        let new_function = Function {
+                            _starknet: starknet,
+                            entrypoint: pc,
+                            hints: hints,
+                            name: name.to_string(),
+                            num_args: size
+                                .as_u64()
+                                .expect("Failed to get number of arguments from json"),
+                            decorators: decorators,
+                            type_args: get_type_args(members),
+                        };
+                        vec.push(new_function);
+                    }
+                }
+            }
+        }
+    }
+    return vec;
+}
+
+pub fn generate_tx_sequence(
+    all_func: &Vec<Function>,
+    port: &String,
+    rnd_account: &String,
+    abi_path: &String,
+    contract_data: &Contract,
+) {
+    let mut rng = rand::thread_rng();
+    let n1: u8 = rng.gen();
+    let mut tx_sequence: Vec<Function> = Vec::new();
+    for _i in 0..n1 {
+        tx_sequence.push(all_func.choose(&mut rng).unwrap().clone());
+    }
+    for func in tx_sequence {
+        if func.decorators.contains(&"view".to_string()) {
+            call_contract(port, rnd_account, abi_path, contract_data, &func.name);
+        } else {
+            let mut inputs: String = "".to_string();
+            for _i in 0..func.num_args {
+                let value: u8 = rng.gen();
+                inputs += &format!("{} ", value).to_string();
+            }
+            invoke_contract(
+                port,
+                rnd_account,
+                abi_path,
+                contract_data,
+                &func.name,
+                &inputs,
+            )
+        }
+    }
+}
+
 pub fn main() {
     let port = "5051";
     let contract_path = &"/home/nabih/cairo-fuzzer/tests/increase_balance.json".to_string();
     let abi_path = &"/home/nabih/cairo-fuzzer/tests/increase_balance_abi.json".to_string();
+
+    let contents = fs::read_to_string(contract_path).expect("Failed to read string from the file");
+
+    let all_func = parse_json(&contents);
+    println!("{:?}", all_func);
     let rnd_account: &String = &rand::thread_rng()
         .sample_iter(&Alphanumeric)
         .take(7)
@@ -319,5 +454,13 @@ pub fn main() {
         &"get_balance".to_string(),
     );
     println!("Contract invoked");
-    while true {}
+    while true {
+        generate_tx_sequence(
+            &all_func,
+            &port.to_string(),
+            rnd_account,
+            abi_path,
+            &contract_data,
+        )
+    }
 }
