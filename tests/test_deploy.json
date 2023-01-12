@@ -28,88 +28,24 @@
         "CONSTRUCTOR": [],
         "EXTERNAL": [
             {
-                "offset": "0x94",
+                "offset": "0x3a",
                 "selector": "0x362398bec32bc0ebb411203221a35a0301193a96f317ebe5e40be9f60d15320"
             },
             {
-                "offset": "0xb5",
+                "offset": "0x5b",
                 "selector": "0x39e11d48192e4333233c7eb19d10ad67c362bb28580c604d67884c85da39695"
             }
         ],
         "L1_HANDLER": []
     },
     "program": {
-        "attributes": [
-            {
-                "accessible_scopes": [
-                    "__main__",
-                    "__main__",
-                    "__main__.increase_balance"
-                ],
-                "end_pc": 141,
-                "flow_tracking_data": {
-                    "ap_tracking": {
-                        "group": 8,
-                        "offset": 23
-                    },
-                    "reference_ids": {}
-                },
-                "name": "error_message",
-                "start_pc": 134,
-                "value": "More than 5"
-            }
-        ],
+        "attributes": [],
         "builtins": [
             "pedersen",
             "range_check"
         ],
         "compiler_version": "0.10.3",
         "data": [
-            "0x480280007ffb8000",
-            "0x480280017ffb8000",
-            "0x484480017fff8000",
-            "0x2aaaaaaaaaaaab05555555555555556",
-            "0x48307fff7ffd8000",
-            "0x480280027ffb8000",
-            "0x480280037ffb8000",
-            "0x484480017fff8000",
-            "0x4000000000000088000000000000001",
-            "0x48307fff7ffd8000",
-            "0xa0680017fff8000",
-            "0xe",
-            "0x480680017fff8000",
-            "0x800000000000011000000000000000000000000000000000000000000000000",
-            "0x48287ffc80007fff",
-            "0x40307ffc7ff87fff",
-            "0x48297ffd80007ffc",
-            "0x482680017ffd8000",
-            "0x1",
-            "0x48507fff7ffe8000",
-            "0x40507ff97ff57fff",
-            "0x482680017ffb8000",
-            "0x4",
-            "0x208b7fff7fff7ffe",
-            "0xa0680017fff8000",
-            "0xc",
-            "0x480680017fff8000",
-            "0x800000000000011000000000000000000000000000000000000000000000000",
-            "0x48287ffd80007fff",
-            "0x48327fff7ffc8000",
-            "0x40307ffa7ff67fff",
-            "0x48527ffe7ffc8000",
-            "0x40507ff97ff57fff",
-            "0x482680017ffb8000",
-            "0x4",
-            "0x208b7fff7fff7ffe",
-            "0x40317ffd7ff97ffd",
-            "0x48297ffc80007ffd",
-            "0x48527fff7ffc8000",
-            "0x40507ffb7ff77fff",
-            "0x40780017fff7fff",
-            "0x2",
-            "0x482680017ffb8000",
-            "0x4",
-            "0x208b7fff7fff7ffe",
             "0x480680017fff8000",
             "0x53746f7261676552656164",
             "0x400280007ffc7fff",
@@ -126,44 +62,6 @@
             "0x482680017ffb8000",
             "0x3",
             "0x208b7fff7fff7ffe",
-            "0xa0680017fff8000",
-            "0xa",
-            "0x400380007ffc7ffd",
-            "0x40780017fff7fff",
-            "0x14",
-            "0x482680017ffc8000",
-            "0x1",
-            "0x480680017fff8000",
-            "0x1",
-            "0x208b7fff7fff7ffe",
-            "0xa0680017fff8000",
-            "0xe",
-            "0x484680017ffd8000",
-            "0x800000000000011000000000000000000000000000000000000000000000000",
-            "0x482480017fff8000",
-            "0x800000000000011000000000000000000000000000000000000000000000000",
-            "0x400280007ffc7fff",
-            "0x40780017fff7fff",
-            "0x11",
-            "0x482680017ffc8000",
-            "0x1",
-            "0x480680017fff8000",
-            "0x0",
-            "0x208b7fff7fff7ffe",
-            "0x480a7ffc7fff8000",
-            "0x480680017fff8000",
-            "0x100000000000000000000000000000000",
-            "0x480a7ffd7fff8000",
-            "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffa8",
-            "0x480680017fff8000",
-            "0x0",
-            "0x208b7fff7fff7ffe",
-            "0x480a7ffb7fff8000",
-            "0x48297ffc80007ffd",
-            "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffde",
-            "0x208b7fff7fff7ffe",
             "0x480a7ffc7fff8000",
             "0x480a7ffd7fff8000",
             "0x480680017fff8000",
@@ -176,7 +74,7 @@
             "0x480a7ffb7fff8000",
             "0x48127ffe7fff8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffc0",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe6",
             "0x48127ffe7fff8000",
             "0x48127ff57fff8000",
             "0x48127ff57fff8000",
@@ -190,7 +88,7 @@
             "0x48127ffe7fff8000",
             "0x480a7ffd7fff8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffba",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe0",
             "0x48127ff67fff8000",
             "0x48127ff67fff8000",
             "0x208b7fff7fff7ffe",
@@ -199,19 +97,12 @@
             "0x480a7ffc7fff8000",
             "0x1104800180018000",
             "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe5",
-            "0x480680017fff8000",
-            "0x5",
+            "0x48127ffc7fff8000",
+            "0x48127ffc7fff8000",
+            "0x48127ffc7fff8000",
+            "0x48287ffd7ffc8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd7",
-            "0x480680017fff8000",
-            "0x1",
-            "0x40127fff7fff7ffe",
-            "0x48127fdd7fff8000",
-            "0x48127fdd7fff8000",
-            "0x48127ffb7fff8000",
-            "0x48287ffd7fdd8000",
-            "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe5",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffec",
             "0x208b7fff7fff7ffe",
             "0x482680017ffd8000",
             "0x1",
@@ -221,7 +112,7 @@
             "0x480280027ffb8000",
             "0x480280007ffd8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe7",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffee",
             "0x40780017fff7fff",
             "0x1",
             "0x48127ffc7fff8000",
@@ -235,7 +126,7 @@
             "0x480a7ffc7fff8000",
             "0x480a7ffd7fff8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffc0",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffc7",
             "0x208b7fff7fff7ffe",
             "0x40780017fff7fff",
             "0x1",
@@ -285,708 +176,6 @@
             "instruction_locations": {
                 "0": {
                     "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 7,
-                                "end_line": 184,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 164
-                            },
-                            "n_prefix_newlines": 1
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 42,
-                        "end_line": 186,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 25,
-                        "start_line": 186
-                    }
-                },
-                "1": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 66,
-                        "end_line": 186,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 45,
-                        "start_line": 186
-                    }
-                },
-                "2": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 86,
-                        "end_line": 186,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 45,
-                        "start_line": 186
-                    }
-                },
-                "4": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 86,
-                        "end_line": 186,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 25,
-                        "start_line": 186
-                    }
-                },
-                "5": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 45,
-                        "end_line": 187,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 24,
-                        "start_line": 187
-                    }
-                },
-                "6": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 69,
-                        "end_line": 187,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 48,
-                        "start_line": 187
-                    }
-                },
-                "7": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 89,
-                        "end_line": 187,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 48,
-                        "start_line": 187
-                    }
-                },
-                "9": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 89,
-                        "end_line": 187,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 24,
-                        "start_line": 187
-                    }
-                },
-                "10": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 49,
-                                "end_line": 196,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 196
-                            },
-                            "n_prefix_newlines": 0
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 42,
-                        "end_line": 197,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 197
-                    }
-                },
-                "12": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 25,
-                        "end_line": 198,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 23,
-                        "start_line": 198
-                    }
-                },
-                "14": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 30,
-                        "end_line": 198,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 22,
-                        "start_line": 198
-                    }
-                },
-                "15": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 31,
-                        "end_line": 198,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 198
-                    }
-                },
-                "16": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 29,
-                        "end_line": 199,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 24,
-                        "start_line": 199
-                    }
-                },
-                "17": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 39,
-                        "end_line": 199,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 34,
-                        "start_line": 199
-                    }
-                },
-                "19": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 40,
-                        "end_line": 199,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 23,
-                        "start_line": 199
-                    }
-                },
-                "20": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 41,
-                        "end_line": 199,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 199
-                    }
-                },
-                "21": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 46,
-                        "end_line": 188,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 36,
-                                "end_line": 154,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 15,
-                                        "end_line": 200,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 200
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 21,
-                                "start_line": 154
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 27,
-                        "start_line": 188
-                    }
-                },
-                "23": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 15,
-                        "end_line": 200,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 200
-                    }
-                },
-                "24": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 49,
-                                "end_line": 204,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 204
-                            },
-                            "n_prefix_newlines": 0
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 50,
-                        "end_line": 205,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 205
-                    }
-                },
-                "26": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 23,
-                        "end_line": 206,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 21,
-                        "start_line": 206
-                    }
-                },
-                "28": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 28,
-                        "end_line": 206,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 20,
-                        "start_line": 206
-                    }
-                },
-                "29": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 30,
-                        "end_line": 207,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 22,
-                        "start_line": 207
-                    }
-                },
-                "30": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 31,
-                        "end_line": 207,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 207
-                    }
-                },
-                "31": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 31,
-                        "end_line": 208,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 23,
-                        "start_line": 208
-                    }
-                },
-                "32": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 32,
-                        "end_line": 208,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 208
-                    }
-                },
-                "33": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 46,
-                        "end_line": 188,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 36,
-                                "end_line": 154,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 15,
-                                        "end_line": 209,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 209
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 21,
-                                "start_line": 154
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 27,
-                        "start_line": 188
-                    }
-                },
-                "35": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 15,
-                        "end_line": 209,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 209
-                    }
-                },
-                "36": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 31,
-                                "end_line": 213,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 213
-                            },
-                            "n_prefix_newlines": 0
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 24,
-                        "end_line": 214,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 214
-                    }
-                },
-                "37": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 33,
-                        "end_line": 215,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 28,
-                        "start_line": 215
-                    }
-                },
-                "38": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 34,
-                        "end_line": 215,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 23,
-                        "start_line": 215
-                    }
-                },
-                "39": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 35,
-                        "end_line": 215,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 215
-                    }
-                },
-                "40": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 12,
-                        "end_line": 216,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 216
-                    }
-                },
-                "42": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 46,
-                        "end_line": 188,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 36,
-                                "end_line": 154,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 15,
-                                        "end_line": 217,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 217
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 21,
-                                "start_line": 154
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 27,
-                        "start_line": 188
-                    }
-                },
-                "44": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 15,
-                        "end_line": 217,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 217
-                    }
-                },
-                "45": {
-                    "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
                     ],
@@ -1002,7 +191,7 @@
                         "start_line": 354
                     }
                 },
-                "47": {
+                "2": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
@@ -1019,7 +208,7 @@
                         "start_line": 354
                     }
                 },
-                "48": {
+                "3": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
@@ -1036,7 +225,7 @@
                         "start_line": 354
                     }
                 },
-                "49": {
+                "4": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
@@ -1090,7 +279,7 @@
                         "start_line": 357
                     }
                 },
-                "51": {
+                "6": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
@@ -1107,7 +296,7 @@
                         "start_line": 358
                     }
                 },
-                "52": {
+                "7": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_read"
@@ -1124,7 +313,7 @@
                         "start_line": 358
                     }
                 },
-                "53": {
+                "8": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1141,7 +330,7 @@
                         "start_line": 372
                     }
                 },
-                "55": {
+                "10": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1158,7 +347,7 @@
                         "start_line": 371
                     }
                 },
-                "56": {
+                "11": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1175,7 +364,7 @@
                         "start_line": 371
                     }
                 },
-                "57": {
+                "12": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1192,7 +381,7 @@
                         "start_line": 371
                     }
                 },
-                "58": {
+                "13": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1246,7 +435,7 @@
                         "start_line": 375
                     }
                 },
-                "60": {
+                "15": {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
                         "starkware.starknet.common.syscalls.storage_write"
@@ -1263,549 +452,7 @@
                         "start_line": 376
                     }
                 },
-                "61": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 84,
-                                "end_line": 19,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 19
-                            },
-                            "n_prefix_newlines": 0
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 40,
-                        "end_line": 20,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 20
-                    }
-                },
-                "63": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 26,
-                        "end_line": 21,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 21
-                    }
-                },
-                "64": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 13,
-                        "end_line": 22,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 22
-                    }
-                },
-                "66": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 46,
-                        "end_line": 23,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 27,
-                                "end_line": 18,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 14,
-                                        "end_line": 24,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 24
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 12,
-                                "start_line": 18
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 27,
-                        "start_line": 23
-                    }
-                },
-                "68": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 13,
-                        "end_line": 24,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 12,
-                        "start_line": 24
-                    }
-                },
-                "70": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 14,
-                        "end_line": 24,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 24
-                    }
-                },
-                "71": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [
-                        {
-                            "location": {
-                                "end_col": 91,
-                                "end_line": 27,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "start_col": 5,
-                                "start_line": 27
-                            },
-                            "n_prefix_newlines": 0
-                        }
-                    ],
-                    "inst": {
-                        "end_col": 48,
-                        "end_line": 28,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 28
-                    }
-                },
-                "73": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 35,
-                        "end_line": 29,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 33,
-                        "start_line": 29
-                    }
-                },
-                "75": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 40,
-                        "end_line": 29,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 32,
-                        "start_line": 29
-                    }
-                },
-                "77": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 41,
-                        "end_line": 29,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 29
-                    }
-                },
-                "78": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 13,
-                        "end_line": 30,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 30
-                    }
-                },
-                "80": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 46,
-                        "end_line": 31,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 27,
-                                "end_line": 18,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 14,
-                                        "end_line": 32,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 32
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 12,
-                                "start_line": 18
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 27,
-                        "start_line": 31
-                    }
-                },
-                "82": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 13,
-                        "end_line": 32,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 12,
-                        "start_line": 32
-                    }
-                },
-                "84": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 14,
-                        "end_line": 32,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 32
-                    }
-                },
-                "85": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 27,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 36,
-                                "end_line": 154,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 32,
-                                        "end_line": 35,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                        },
-                                        "start_col": 5,
-                                        "start_line": 35
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 21,
-                                "start_line": 154
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 12,
-                        "start_line": 18
-                    }
-                },
-                "86": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 28,
-                        "end_line": 35,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 20,
-                        "start_line": 35
-                    }
-                },
-                "88": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 30,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 31,
-                                "end_line": 35,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "start_col": 30,
-                                "start_line": 35
-                            },
-                            "While expanding the reference 'a' in:"
-                        ],
-                        "start_col": 29,
-                        "start_line": 18
-                    }
-                },
-                "89": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 32,
-                        "end_line": 35,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 35
-                    }
-                },
-                "91": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 13,
-                        "end_line": 36,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 12,
-                        "start_line": 36
-                    }
-                },
-                "93": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 14,
-                        "end_line": 36,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 36
-                    }
-                },
-                "94": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_le"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 27,
-                        "end_line": 42,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "parent_location": [
-                            {
-                                "end_col": 27,
-                                "end_line": 18,
-                                "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                },
-                                "parent_location": [
-                                    {
-                                        "end_col": 24,
-                                        "end_line": 43,
-                                        "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                                        },
-                                        "start_col": 12,
-                                        "start_line": 43
-                                    },
-                                    "While trying to retrieve the implicit argument 'range_check_ptr' in:"
-                                ],
-                                "start_col": 12,
-                                "start_line": 18
-                            },
-                            "While expanding the reference 'range_check_ptr' in:"
-                        ],
-                        "start_col": 12,
-                        "start_line": 42
-                    }
-                },
-                "95": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_le"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 23,
-                        "end_line": 43,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 18,
-                        "start_line": 43
-                    }
-                },
-                "96": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_le"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 24,
-                        "end_line": 43,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 12,
-                        "start_line": 43
-                    }
-                },
-                "98": {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_le"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 25,
-                        "end_line": 43,
-                        "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
-                        },
-                        "start_col": 5,
-                        "start_line": 43
-                    }
-                },
-                "99": {
+                "16": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -1847,7 +494,7 @@
                         "start_line": 7
                     }
                 },
-                "100": {
+                "17": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -1889,7 +536,7 @@
                         "start_line": 7
                     }
                 },
-                "101": {
+                "18": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -1919,7 +566,7 @@
                         "start_line": 8
                     }
                 },
-                "103": {
+                "20": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -1937,7 +584,7 @@
                         "start_line": 9
                     }
                 },
-                "104": {
+                "21": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -1979,7 +626,7 @@
                         "start_line": 12
                     }
                 },
-                "105": {
+                "22": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2021,7 +668,7 @@
                         "start_line": 12
                     }
                 },
-                "106": {
+                "23": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2039,7 +686,7 @@
                         "start_line": 13
                     }
                 },
-                "108": {
+                "25": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2081,7 +728,7 @@
                         "start_line": 12
                     }
                 },
-                "109": {
+                "26": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2111,7 +758,7 @@
                         "start_line": 13
                     }
                 },
-                "110": {
+                "27": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2129,7 +776,7 @@
                         "start_line": 14
                     }
                 },
-                "112": {
+                "29": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2171,7 +818,7 @@
                         "start_line": 352
                     }
                 },
-                "113": {
+                "30": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2213,7 +860,7 @@
                         "start_line": 7
                     }
                 },
-                "114": {
+                "31": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2255,7 +902,7 @@
                         "start_line": 7
                     }
                 },
-                "115": {
+                "32": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2285,7 +932,7 @@
                         "start_line": 14
                     }
                 },
-                "116": {
+                "33": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2303,7 +950,7 @@
                         "start_line": 20
                     }
                 },
-                "117": {
+                "34": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2345,7 +992,7 @@
                         "start_line": 23
                     }
                 },
-                "118": {
+                "35": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2387,7 +1034,7 @@
                         "start_line": 23
                     }
                 },
-                "119": {
+                "36": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2405,7 +1052,7 @@
                         "start_line": 24
                     }
                 },
-                "121": {
+                "38": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2447,7 +1094,7 @@
                         "start_line": 23
                     }
                 },
-                "122": {
+                "39": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2477,7 +1124,7 @@
                         "start_line": 24
                     }
                 },
-                "123": {
+                "40": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2495,7 +1142,7 @@
                         "start_line": 25
                     }
                 },
-                "124": {
+                "41": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2513,7 +1160,7 @@
                         "start_line": 25
                     }
                 },
-                "126": {
+                "43": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2567,7 +1214,7 @@
                         "start_line": 7
                     }
                 },
-                "127": {
+                "44": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2621,7 +1268,7 @@
                         "start_line": 7
                     }
                 },
-                "128": {
+                "45": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__.balance",
@@ -2639,7 +1286,7 @@
                         "start_line": 26
                     }
                 },
-                "129": {
+                "46": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2651,7 +1298,7 @@
                         "end_col": 41,
                         "end_line": 13,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -2665,7 +1312,7 @@
                                         "end_col": 31,
                                         "end_line": 16,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
                                         "start_line": 16
@@ -2681,7 +1328,7 @@
                         "start_line": 13
                     }
                 },
-                "130": {
+                "47": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2693,7 +1340,7 @@
                         "end_col": 69,
                         "end_line": 13,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -2707,7 +1354,7 @@
                                         "end_col": 31,
                                         "end_line": 16,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
                                         "start_line": 16
@@ -2723,7 +1370,7 @@
                         "start_line": 13
                     }
                 },
-                "131": {
+                "48": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2735,7 +1382,7 @@
                         "end_col": 86,
                         "end_line": 13,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -2749,7 +1396,7 @@
                                         "end_col": 31,
                                         "end_line": 16,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
                                         "start_line": 16
@@ -2765,7 +1412,7 @@
                         "start_line": 13
                     }
                 },
-                "132": {
+                "49": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2777,85 +1424,13 @@
                         "end_col": 31,
                         "end_line": 16,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 17,
                         "start_line": 16
                     }
                 },
-                "134": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 27,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 26,
-                        "start_line": 18
-                    }
-                },
-                "136": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 28,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 16,
-                        "start_line": 18
-                    }
-                },
-                "138": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 32,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 31,
-                        "start_line": 18
-                    }
-                },
-                "140": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 33,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 9,
-                        "start_line": 18
-                    }
-                },
-                "141": {
+                "51": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2874,7 +1449,7 @@
                                 "end_col": 31,
                                 "end_line": 16,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -2886,12 +1461,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'syscall_ptr' in:"
                                         ],
@@ -2909,7 +1484,7 @@
                         "start_line": 13
                     }
                 },
-                "142": {
+                "52": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2928,7 +1503,7 @@
                                 "end_col": 31,
                                 "end_line": 16,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -2940,12 +1515,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'pedersen_ptr' in:"
                                         ],
@@ -2963,7 +1538,7 @@
                         "start_line": 13
                     }
                 },
-                "143": {
+                "53": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2972,17 +1547,17 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 27,
-                        "end_line": 42,
+                        "end_col": 78,
+                        "end_line": 13,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
+                            "filename": "autogen/starknet/storage_var/balance/decl.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 28,
-                                "end_line": 18,
+                                "end_col": 31,
+                                "end_line": 16,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -2994,12 +1569,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'range_check_ptr' in:"
                                         ],
@@ -3008,16 +1583,16 @@
                                     },
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
-                                "start_col": 16,
-                                "start_line": 18
+                                "start_col": 17,
+                                "start_line": 16
                             },
                             "While trying to update the implicit return value 'range_check_ptr' in:"
                         ],
-                        "start_col": 12,
-                        "start_line": 42
+                        "start_col": 63,
+                        "start_line": 13
                     }
                 },
-                "144": {
+                "54": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3027,15 +1602,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 31,
-                        "end_line": 20,
+                        "end_line": 17,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 19,
-                        "start_line": 20
+                        "start_line": 17
                     }
                 },
-                "145": {
+                "55": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3045,15 +1620,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 32,
-                        "end_line": 20,
+                        "end_line": 17,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 20
+                        "start_line": 17
                     }
                 },
-                "147": {
+                "57": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3063,15 +1638,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 15,
-                        "end_line": 21,
+                        "end_line": 18,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 21
+                        "start_line": 18
                     }
                 },
-                "148": {
+                "58": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3091,7 +1666,7 @@
                                 "end_col": 17,
                                 "end_line": 14,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3105,7 +1680,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "parent_location": [
                                                     {
@@ -3119,7 +1694,7 @@
                                                                 "end_col": 22,
                                                                 "end_line": 13,
                                                                 "input_file": {
-                                                                    "filename": "increase_balance.cairo"
+                                                                    "filename": "test_deploy.cairo"
                                                                 },
                                                                 "start_col": 6,
                                                                 "start_line": 13
@@ -3150,7 +1725,7 @@
                         "start_line": 2
                     }
                 },
-                "150": {
+                "60": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3170,7 +1745,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 13
@@ -3181,7 +1756,7 @@
                         "start_line": 1
                     }
                 },
-                "151": {
+                "61": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3201,7 +1776,7 @@
                                 "end_col": 41,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3215,7 +1790,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3236,7 +1811,7 @@
                         "start_line": 1
                     }
                 },
-                "152": {
+                "62": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3256,7 +1831,7 @@
                                 "end_col": 69,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3270,7 +1845,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3291,7 +1866,7 @@
                         "start_line": 1
                     }
                 },
-                "153": {
+                "63": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3311,7 +1886,7 @@
                                 "end_col": 86,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3325,7 +1900,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3346,7 +1921,7 @@
                         "start_line": 1
                     }
                 },
-                "154": {
+                "64": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3366,7 +1941,7 @@
                                 "end_col": 17,
                                 "end_line": 14,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3380,7 +1955,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3401,7 +1976,7 @@
                         "start_line": 1
                     }
                 },
-                "155": {
+                "65": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3414,13 +1989,13 @@
                         "end_col": 22,
                         "end_line": 13,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 6,
                         "start_line": 13
                     }
                 },
-                "157": {
+                "67": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3441,7 +2016,7 @@
                                         "end_col": 22,
                                         "end_line": 13,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 6,
                                         "start_line": 13
@@ -3465,7 +2040,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 13
@@ -3476,7 +2051,7 @@
                         "start_line": 3
                     }
                 },
-                "159": {
+                "69": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3496,7 +2071,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3510,7 +2085,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3531,7 +2106,7 @@
                         "start_line": 1
                     }
                 },
-                "160": {
+                "70": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3551,7 +2126,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3565,7 +2140,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3586,7 +2161,7 @@
                         "start_line": 1
                     }
                 },
-                "161": {
+                "71": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3606,7 +2181,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3620,7 +2195,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3641,7 +2216,7 @@
                         "start_line": 1
                     }
                 },
-                "162": {
+                "72": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3661,7 +2236,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3675,7 +2250,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3696,7 +2271,7 @@
                         "start_line": 4
                     }
                 },
-                "164": {
+                "74": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3716,7 +2291,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -3730,7 +2305,7 @@
                                                 "end_col": 22,
                                                 "end_line": 13,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 13
@@ -3751,7 +2326,7 @@
                         "start_line": 3
                     }
                 },
-                "165": {
+                "75": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3771,7 +2346,7 @@
                                 "end_col": 22,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 13
@@ -3782,7 +2357,7 @@
                         "start_line": 1
                     }
                 },
-                "166": {
+                "76": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3792,9 +2367,9 @@
                     "hints": [],
                     "inst": {
                         "end_col": 36,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -3806,12 +2381,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'syscall_ptr' in:"
                                 ],
@@ -3821,10 +2396,10 @@
                             "While expanding the reference 'syscall_ptr' in:"
                         ],
                         "start_col": 18,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "167": {
+                "77": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3834,9 +2409,9 @@
                     "hints": [],
                     "inst": {
                         "end_col": 64,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -3848,12 +2423,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'pedersen_ptr' in:"
                                 ],
@@ -3863,10 +2438,10 @@
                             "While expanding the reference 'pedersen_ptr' in:"
                         ],
                         "start_col": 38,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "168": {
+                "78": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3876,9 +2451,9 @@
                     "hints": [],
                     "inst": {
                         "end_col": 81,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "parent_location": [
                             {
@@ -3890,12 +2465,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'range_check_ptr' in:"
                                 ],
@@ -3905,10 +2480,10 @@
                             "While expanding the reference 'range_check_ptr' in:"
                         ],
                         "start_col": 66,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "169": {
+                "79": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3918,15 +2493,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 31,
-                        "end_line": 27,
+                        "end_line": 24,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 17,
-                        "start_line": 27
+                        "start_line": 24
                     }
                 },
-                "171": {
+                "81": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3935,16 +2510,16 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 19,
-                        "end_line": 28,
+                        "end_col": 22,
+                        "end_line": 25,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 28
+                        "start_line": 25
                     }
                 },
-                "172": {
+                "82": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3963,12 +2538,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 17,
-                                        "end_line": 26,
+                                        "end_line": 23,
                                         "input_file": {
-                                            "filename": "increase_balance.cairo"
+                                            "filename": "test_deploy.cairo"
                                         },
                                         "start_col": 6,
-                                        "start_line": 26
+                                        "start_line": 23
                                     },
                                     "While handling return value of"
                                 ],
@@ -3987,12 +2562,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4000,7 +2575,7 @@
                         "start_line": 4
                     }
                 },
-                "174": {
+                "84": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4018,12 +2593,12 @@
                         "parent_location": [
                             {
                                 "end_col": 98,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 89,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value 'res'"
                         ],
@@ -4031,7 +2606,7 @@
                         "start_line": 1
                     }
                 },
-                "175": {
+                "85": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4049,9 +2624,9 @@
                         "parent_location": [
                             {
                                 "end_col": 98,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4063,12 +2638,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4078,7 +2653,7 @@
                                     "While expanding the reference '__return_value_ptr' in:"
                                 ],
                                 "start_col": 89,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value 'res'"
                         ],
@@ -4086,7 +2661,7 @@
                         "start_line": 2
                     }
                 },
-                "177": {
+                "87": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4104,9 +2679,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4118,12 +2693,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4133,7 +2708,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4141,7 +2716,7 @@
                         "start_line": 1
                     }
                 },
-                "178": {
+                "88": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4159,12 +2734,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4172,7 +2747,7 @@
                         "start_line": 11
                     }
                 },
-                "179": {
+                "89": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4190,9 +2765,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4204,12 +2779,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4219,7 +2794,7 @@
                                     "While expanding the reference '__return_value_ptr_start' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4227,7 +2802,7 @@
                         "start_line": 5
                     }
                 },
-                "180": {
+                "90": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4245,12 +2820,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4258,7 +2833,7 @@
                         "start_line": 9
                     }
                 },
-                "181": {
+                "91": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4276,12 +2851,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling calldata of"
                         ],
@@ -4289,7 +2864,7 @@
                         "start_line": 1
                     }
                 },
-                "182": {
+                "92": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4307,9 +2882,9 @@
                         "parent_location": [
                             {
                                 "end_col": 36,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4321,12 +2896,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4336,7 +2911,7 @@
                                     "While expanding the reference 'syscall_ptr' in:"
                                 ],
                                 "start_col": 18,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4344,7 +2919,7 @@
                         "start_line": 1
                     }
                 },
-                "183": {
+                "93": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4362,9 +2937,9 @@
                         "parent_location": [
                             {
                                 "end_col": 64,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4376,12 +2951,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4391,7 +2966,7 @@
                                     "While expanding the reference 'pedersen_ptr' in:"
                                 ],
                                 "start_col": 38,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4399,7 +2974,7 @@
                         "start_line": 1
                     }
                 },
-                "184": {
+                "94": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4417,9 +2992,9 @@
                         "parent_location": [
                             {
                                 "end_col": 81,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4431,12 +3006,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4446,7 +3021,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 66,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4454,7 +3029,7 @@
                         "start_line": 1
                     }
                 },
-                "185": {
+                "95": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4465,15 +3040,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 17,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
-                            "filename": "increase_balance.cairo"
+                            "filename": "test_deploy.cairo"
                         },
                         "start_col": 6,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "187": {
+                "97": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4491,9 +3066,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4505,12 +3080,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4520,7 +3095,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4528,7 +3103,7 @@
                         "start_line": 1
                     }
                 },
-                "188": {
+                "98": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4546,12 +3121,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4559,7 +3134,7 @@
                         "start_line": 2
                     }
                 },
-                "190": {
+                "100": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4577,9 +3152,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4591,12 +3166,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4606,7 +3181,7 @@
                                     "While expanding the reference 'syscall_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4614,7 +3189,7 @@
                         "start_line": 1
                     }
                 },
-                "191": {
+                "101": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4632,9 +3207,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4646,12 +3221,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4661,7 +3236,7 @@
                                     "While expanding the reference 'pedersen_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4669,7 +3244,7 @@
                         "start_line": 1
                     }
                 },
-                "192": {
+                "102": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4687,9 +3262,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4701,12 +3276,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4716,7 +3291,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4724,7 +3299,7 @@
                         "start_line": 2
                     }
                 },
-                "193": {
+                "103": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4742,9 +3317,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4756,12 +3331,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4771,7 +3346,7 @@
                                     "While expanding the reference 'retdata_size' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4779,7 +3354,7 @@
                         "start_line": 2
                     }
                 },
-                "194": {
+                "104": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4797,9 +3372,9 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -4811,12 +3386,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
-                                                    "filename": "increase_balance.cairo"
+                                                    "filename": "test_deploy.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4826,7 +3401,7 @@
                                     "While expanding the reference 'retdata' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4834,7 +3409,7 @@
                         "start_line": 2
                     }
                 },
-                "195": {
+                "105": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4852,12 +3427,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
-                                    "filename": "increase_balance.cairo"
+                                    "filename": "test_deploy.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4868,75 +3443,7 @@
             }
         },
         "hints": {
-            "0": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "code": "import itertools\n\nfrom starkware.cairo.common.math_utils import assert_integer\nassert_integer(ids.a)\nassert_integer(ids.b)\na = ids.a % PRIME\nb = ids.b % PRIME\nassert a <= b, f'a = {a} is not less than or equal to b = {b}.'\n\n# Find an arc less than PRIME / 3, and another less than PRIME / 2.\nlengths_and_indices = [(a, 0), (b - a, 1), (PRIME - 1 - b, 2)]\nlengths_and_indices.sort()\nassert lengths_and_indices[0][0] <= PRIME // 3 and lengths_and_indices[1][0] <= PRIME // 2\nexcluded = lengths_and_indices[2][1]\n\nmemory[ids.range_check_ptr + 1], memory[ids.range_check_ptr + 0] = (\n    divmod(lengths_and_indices[0][0], ids.PRIME_OVER_3_HIGH))\nmemory[ids.range_check_ptr + 3], memory[ids.range_check_ptr + 2] = (\n    divmod(lengths_and_indices[1][0], ids.PRIME_OVER_2_HIGH))",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 0,
-                            "offset": 0
-                        },
-                        "reference_ids": {
-                            "starkware.cairo.common.math.assert_le_felt.a": 0,
-                            "starkware.cairo.common.math.assert_le_felt.b": 1,
-                            "starkware.cairo.common.math.assert_le_felt.range_check_ptr": 2
-                        }
-                    }
-                }
-            ],
-            "10": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "code": "memory[ap] = 1 if excluded != 0 else 0",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 0,
-                            "offset": 8
-                        },
-                        "reference_ids": {}
-                    }
-                }
-            ],
-            "24": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "code": "memory[ap] = 1 if excluded != 1 else 0",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 0,
-                            "offset": 9
-                        },
-                        "reference_ids": {}
-                    }
-                }
-            ],
-            "36": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math",
-                        "starkware.cairo.common.math.assert_le_felt"
-                    ],
-                    "code": "assert excluded == 2",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 0,
-                            "offset": 10
-                        },
-                        "reference_ids": {}
-                    }
-                }
-            ],
-            "49": [
+            "4": [
                 {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
@@ -4945,16 +3452,16 @@
                     "code": "syscall_handler.storage_read(segments=segments, syscall_ptr=ids.syscall_ptr)",
                     "flow_tracking_data": {
                         "ap_tracking": {
-                            "group": 1,
+                            "group": 0,
                             "offset": 1
                         },
                         "reference_ids": {
-                            "starkware.starknet.common.syscalls.storage_read.syscall_ptr": 3
+                            "starkware.starknet.common.syscalls.storage_read.syscall_ptr": 0
                         }
                     }
                 }
             ],
-            "58": [
+            "13": [
                 {
                     "accessible_scopes": [
                         "starkware.starknet.common.syscalls",
@@ -4963,52 +3470,16 @@
                     "code": "syscall_handler.storage_write(segments=segments, syscall_ptr=ids.syscall_ptr)",
                     "flow_tracking_data": {
                         "ap_tracking": {
-                            "group": 2,
+                            "group": 1,
                             "offset": 1
                         },
                         "reference_ids": {
-                            "starkware.starknet.common.syscalls.storage_write.syscall_ptr": 4
+                            "starkware.starknet.common.syscalls.storage_write.syscall_ptr": 1
                         }
                     }
                 }
             ],
-            "61": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "code": "memory[ap] = 0 if 0 <= (ids.a % PRIME) < range_check_builtin.bound else 1",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 3,
-                            "offset": 0
-                        },
-                        "reference_ids": {
-                            "starkware.cairo.common.math_cmp.is_nn.a": 5
-                        }
-                    }
-                }
-            ],
-            "71": [
-                {
-                    "accessible_scopes": [
-                        "starkware.cairo.common.math_cmp",
-                        "starkware.cairo.common.math_cmp.is_nn"
-                    ],
-                    "code": "memory[ap] = 0 if 0 <= ((-ids.a - 1) % PRIME) < range_check_builtin.bound else 1",
-                    "flow_tracking_data": {
-                        "ap_tracking": {
-                            "group": 3,
-                            "offset": 1
-                        },
-                        "reference_ids": {
-                            "starkware.cairo.common.math_cmp.is_nn.a": 5
-                        }
-                    }
-                }
-            ],
-            "157": [
+            "67": [
                 {
                     "accessible_scopes": [
                         "__main__",
@@ -5019,14 +3490,14 @@
                     "code": "memory[ap] = segments.add()",
                     "flow_tracking_data": {
                         "ap_tracking": {
-                            "group": 9,
-                            "offset": 83
+                            "group": 6,
+                            "offset": 52
                         },
                         "reference_ids": {}
                     }
                 }
             ],
-            "172": [
+            "82": [
                 {
                     "accessible_scopes": [
                         "__main__",
@@ -5037,7 +3508,7 @@
                     "code": "memory[ap] = segments.add()",
                     "flow_tracking_data": {
                         "ap_tracking": {
-                            "group": 11,
+                            "group": 8,
                             "offset": 0
                         },
                         "reference_ids": {}
@@ -5079,7 +3550,7 @@
             },
             "__main__.balance.addr": {
                 "decorators": [],
-                "pc": 99,
+                "pc": 16,
                 "type": "function"
             },
             "__main__.balance.addr.Args": {
@@ -5121,7 +3592,7 @@
             },
             "__main__.balance.read": {
                 "decorators": [],
-                "pc": 104,
+                "pc": 21,
                 "type": "function"
             },
             "__main__.balance.read.Args": {
@@ -5167,7 +3638,7 @@
             },
             "__main__.balance.write": {
                 "decorators": [],
-                "pc": 117,
+                "pc": 34,
                 "type": "function"
             },
             "__main__.balance.write.Args": {
@@ -5212,7 +3683,7 @@
                 "decorators": [
                     "view"
                 ],
-                "pc": 166,
+                "pc": 76,
                 "type": "function"
             },
             "__main__.get_balance.Args": {
@@ -5252,7 +3723,7 @@
                 "decorators": [
                     "external"
                 ],
-                "pc": 129,
+                "pc": 46,
                 "type": "function"
             },
             "__main__.increase_balance.Args": {
@@ -5293,15 +3764,11 @@
                 "type": "const",
                 "value": 0
             },
-            "__main__.is_le": {
-                "destination": "starkware.cairo.common.math_cmp.is_le",
-                "type": "alias"
-            },
             "__wrappers__.get_balance": {
                 "decorators": [
                     "view"
                 ],
-                "pc": 181,
+                "pc": 91,
                 "type": "function"
             },
             "__wrappers__.get_balance.Args": {
@@ -5330,7 +3797,7 @@
             },
             "__wrappers__.get_balance_encode_return": {
                 "decorators": [],
-                "pc": 172,
+                "pc": 82,
                 "type": "function"
             },
             "__wrappers__.get_balance_encode_return.Args": {
@@ -5370,7 +3837,7 @@
                 "decorators": [
                     "external"
                 ],
-                "pc": 148,
+                "pc": 58,
                 "type": "function"
             },
             "__wrappers__.increase_balance.Args": {
@@ -5600,229 +4067,6 @@
             "starkware.cairo.common.math.TRUE": {
                 "destination": "starkware.cairo.common.bool.TRUE",
                 "type": "alias"
-            },
-            "starkware.cairo.common.math.assert_le_felt": {
-                "decorators": [
-                    "known_ap_change"
-                ],
-                "pc": 0,
-                "type": "function"
-            },
-            "starkware.cairo.common.math.assert_le_felt.Args": {
-                "full_name": "starkware.cairo.common.math.assert_le_felt.Args",
-                "members": {
-                    "a": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    },
-                    "b": {
-                        "cairo_type": "felt",
-                        "offset": 1
-                    }
-                },
-                "size": 2,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math.assert_le_felt.ImplicitArgs": {
-                "full_name": "starkware.cairo.common.math.assert_le_felt.ImplicitArgs",
-                "members": {
-                    "range_check_ptr": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    }
-                },
-                "size": 1,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math.assert_le_felt.PRIME_OVER_2_HIGH": {
-                "type": "const",
-                "value": 5316911983139663648412552867652567041
-            },
-            "starkware.cairo.common.math.assert_le_felt.PRIME_OVER_3_HIGH": {
-                "type": "const",
-                "value": 3544607988759775765608368578435044694
-            },
-            "starkware.cairo.common.math.assert_le_felt.Return": {
-                "cairo_type": "()",
-                "type": "type_definition"
-            },
-            "starkware.cairo.common.math.assert_le_felt.SIZEOF_LOCALS": {
-                "type": "const",
-                "value": 0
-            },
-            "starkware.cairo.common.math.assert_le_felt.a": {
-                "cairo_type": "felt",
-                "full_name": "starkware.cairo.common.math.assert_le_felt.a",
-                "references": [
-                    {
-                        "ap_tracking_data": {
-                            "group": 0,
-                            "offset": 0
-                        },
-                        "pc": 0,
-                        "value": "[cast(fp + (-4), felt*)]"
-                    }
-                ],
-                "type": "reference"
-            },
-            "starkware.cairo.common.math.assert_le_felt.b": {
-                "cairo_type": "felt",
-                "full_name": "starkware.cairo.common.math.assert_le_felt.b",
-                "references": [
-                    {
-                        "ap_tracking_data": {
-                            "group": 0,
-                            "offset": 0
-                        },
-                        "pc": 0,
-                        "value": "[cast(fp + (-3), felt*)]"
-                    }
-                ],
-                "type": "reference"
-            },
-            "starkware.cairo.common.math.assert_le_felt.range_check_ptr": {
-                "cairo_type": "felt",
-                "full_name": "starkware.cairo.common.math.assert_le_felt.range_check_ptr",
-                "references": [
-                    {
-                        "ap_tracking_data": {
-                            "group": 0,
-                            "offset": 0
-                        },
-                        "pc": 0,
-                        "value": "[cast(fp + (-5), felt*)]"
-                    },
-                    {
-                        "ap_tracking_data": {
-                            "group": 0,
-                            "offset": 8
-                        },
-                        "pc": 10,
-                        "value": "cast([fp + (-5)] + 4, felt)"
-                    }
-                ],
-                "type": "reference"
-            },
-            "starkware.cairo.common.math.assert_le_felt.skip_exclude_a": {
-                "pc": 24,
-                "type": "label"
-            },
-            "starkware.cairo.common.math.assert_le_felt.skip_exclude_b_minus_a": {
-                "pc": 36,
-                "type": "label"
-            },
-            "starkware.cairo.common.math_cmp.RC_BOUND": {
-                "type": "const",
-                "value": 340282366920938463463374607431768211456
-            },
-            "starkware.cairo.common.math_cmp.assert_le_felt": {
-                "destination": "starkware.cairo.common.math.assert_le_felt",
-                "type": "alias"
-            },
-            "starkware.cairo.common.math_cmp.assert_lt_felt": {
-                "destination": "starkware.cairo.common.math.assert_lt_felt",
-                "type": "alias"
-            },
-            "starkware.cairo.common.math_cmp.is_le": {
-                "decorators": [
-                    "known_ap_change"
-                ],
-                "pc": 94,
-                "type": "function"
-            },
-            "starkware.cairo.common.math_cmp.is_le.Args": {
-                "full_name": "starkware.cairo.common.math_cmp.is_le.Args",
-                "members": {
-                    "a": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    },
-                    "b": {
-                        "cairo_type": "felt",
-                        "offset": 1
-                    }
-                },
-                "size": 2,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math_cmp.is_le.ImplicitArgs": {
-                "full_name": "starkware.cairo.common.math_cmp.is_le.ImplicitArgs",
-                "members": {
-                    "range_check_ptr": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    }
-                },
-                "size": 1,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math_cmp.is_le.Return": {
-                "cairo_type": "felt",
-                "type": "type_definition"
-            },
-            "starkware.cairo.common.math_cmp.is_le.SIZEOF_LOCALS": {
-                "type": "const",
-                "value": 0
-            },
-            "starkware.cairo.common.math_cmp.is_nn": {
-                "decorators": [
-                    "known_ap_change"
-                ],
-                "pc": 61,
-                "type": "function"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.Args": {
-                "full_name": "starkware.cairo.common.math_cmp.is_nn.Args",
-                "members": {
-                    "a": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    }
-                },
-                "size": 1,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.ImplicitArgs": {
-                "full_name": "starkware.cairo.common.math_cmp.is_nn.ImplicitArgs",
-                "members": {
-                    "range_check_ptr": {
-                        "cairo_type": "felt",
-                        "offset": 0
-                    }
-                },
-                "size": 1,
-                "type": "struct"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.Return": {
-                "cairo_type": "felt",
-                "type": "type_definition"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.SIZEOF_LOCALS": {
-                "type": "const",
-                "value": 0
-            },
-            "starkware.cairo.common.math_cmp.is_nn.a": {
-                "cairo_type": "felt",
-                "full_name": "starkware.cairo.common.math_cmp.is_nn.a",
-                "references": [
-                    {
-                        "ap_tracking_data": {
-                            "group": 3,
-                            "offset": 0
-                        },
-                        "pc": 61,
-                        "value": "[cast(fp + (-3), felt*)]"
-                    }
-                ],
-                "type": "reference"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.need_felt_comparison": {
-                "pc": 85,
-                "type": "label"
-            },
-            "starkware.cairo.common.math_cmp.is_nn.out_of_range": {
-                "pc": 71,
-                "type": "label"
             },
             "starkware.starknet.common.storage.ADDR_BOUND": {
                 "type": "const",
@@ -6486,7 +4730,7 @@
             },
             "starkware.starknet.common.syscalls.storage_read": {
                 "decorators": [],
-                "pc": 45,
+                "pc": 0,
                 "type": "function"
             },
             "starkware.starknet.common.syscalls.storage_read.Args": {
@@ -6525,18 +4769,18 @@
                 "references": [
                     {
                         "ap_tracking_data": {
-                            "group": 1,
+                            "group": 0,
                             "offset": 0
                         },
-                        "pc": 45,
+                        "pc": 0,
                         "value": "[cast(fp + (-4), felt**)]"
                     },
                     {
                         "ap_tracking_data": {
-                            "group": 1,
+                            "group": 0,
                             "offset": 1
                         },
-                        "pc": 49,
+                        "pc": 4,
                         "value": "cast([fp + (-4)] + 3, felt*)"
                     }
                 ],
@@ -6544,7 +4788,7 @@
             },
             "starkware.starknet.common.syscalls.storage_write": {
                 "decorators": [],
-                "pc": 53,
+                "pc": 8,
                 "type": "function"
             },
             "starkware.starknet.common.syscalls.storage_write.Args": {
@@ -6587,18 +4831,18 @@
                 "references": [
                     {
                         "ap_tracking_data": {
-                            "group": 2,
+                            "group": 1,
                             "offset": 0
                         },
-                        "pc": 53,
+                        "pc": 8,
                         "value": "[cast(fp + (-5), felt**)]"
                     },
                     {
                         "ap_tracking_data": {
-                            "group": 2,
+                            "group": 1,
                             "offset": 1
                         },
-                        "pc": 58,
+                        "pc": 13,
                         "value": "cast([fp + (-5)] + 3, felt*)"
                     }
                 ],
@@ -6615,47 +4859,15 @@
                         "offset": 0
                     },
                     "pc": 0,
-                    "value": "[cast(fp + (-4), felt*)]"
-                },
-                {
-                    "ap_tracking_data": {
-                        "group": 0,
-                        "offset": 0
-                    },
-                    "pc": 0,
-                    "value": "[cast(fp + (-3), felt*)]"
-                },
-                {
-                    "ap_tracking_data": {
-                        "group": 0,
-                        "offset": 0
-                    },
-                    "pc": 0,
-                    "value": "[cast(fp + (-5), felt*)]"
+                    "value": "[cast(fp + (-4), felt**)]"
                 },
                 {
                     "ap_tracking_data": {
                         "group": 1,
                         "offset": 0
                     },
-                    "pc": 45,
-                    "value": "[cast(fp + (-4), felt**)]"
-                },
-                {
-                    "ap_tracking_data": {
-                        "group": 2,
-                        "offset": 0
-                    },
-                    "pc": 53,
+                    "pc": 8,
                     "value": "[cast(fp + (-5), felt**)]"
-                },
-                {
-                    "ap_tracking_data": {
-                        "group": 3,
-                        "offset": 0
-                    },
-                    "pc": 61,
-                    "value": "[cast(fp + (-3), felt*)]"
                 }
             ]
         }
