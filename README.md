@@ -14,7 +14,7 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 </p>
 
 - Run cairo contract
-- Run cairo contract with hints implemented in cairo-rs
+- Run cairo contract with python hints
 - Replayer of fuzzing corpus
 - Minimizer of fuzzing corpus
 - Load old corpus
@@ -58,7 +58,8 @@ Options:
 ## How to find a Cairo/Starknet compilation artifact (json file)?
 
 Cairo-Fuzzer supports cairo compilation artifact (json file) generated after compilation using `cairo-compile`.
-Contracts containing pure cairo are executed with cairo-rs. Cairo contracts containing hints are executed with cairo-rs-py.
+Contracts containing pure cairo are executed with cairo-rs.
+Cairo contracts containing hints are executed with cairo-rs-py.
 
 ## How to run the tests?
 
