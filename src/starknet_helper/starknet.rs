@@ -33,6 +33,12 @@ impl StarknetFuzzer {
         println!("Contract deployed");
         return fuzzer;
     }
+
+    pub fn crash_check(&self, out: Output) -> bool {
+        let out_to_str = &String::from_utf8(out.stderr).unwrap();
+        return out_to_str.is_empty();
+    }
+
     pub fn display_tx_status(&self, hash: &String) {
         let status = Command::new("starknet")
             .env(
@@ -219,7 +225,7 @@ impl StarknetFuzzer {
         }
     }
 
-    pub fn call_contract(&self, function_name: &String) {
+    pub fn call_contract(&self, function_name: &String) -> bool {
         let call_contract = Command::new("starknet")
             .env(
                 "STARKNET_WALLET",
@@ -241,10 +247,13 @@ impl StarknetFuzzer {
             .arg(&self.devnet_address)
             .output()
             .expect("failed to execute process");
+            //self.display_output(call_contract.clone());
+            return self.crash_check(call_contract);
+
         //self.display_output(call_contract.clone());
     }
 
-    pub fn invoke_contract(&self, function_name: &String, inputs: &String) {
+    pub fn invoke_contract(&self, function_name: &String, inputs: &String) -> bool {
         let invoke_contract = Command::new("starknet")
             .env(
                 "STARKNET_WALLET",
@@ -268,11 +277,13 @@ impl StarknetFuzzer {
             .arg(&self.devnet_address)
             .output()
             .expect("failed to execute process");
+            //self.display_output(invoke_contract.clone());
+
         //self.display_output(invoke_contract.clone());
-        let invoke_hash = &self.get_tx_hash(invoke_contract);
+        let invoke_hash = &self.get_tx_hash(invoke_contract.clone());
         if !self.check_tx_status(invoke_hash) {
-            println!("Error while invoking contract");
-            process::exit(1);
+            return false;
         }
+        return self.crash_check(invoke_contract.clone());
     }
 }
