@@ -9,6 +9,12 @@ use std::{
 
 use chrono::{DateTime, Utc};
 
+use curl::easy::Easy;
+
+use crate::json::json_parser::parse_starknet_json;
+use crate::starknet_helper;
+use crate::starknet_helper::devnet::deploy_devnet;
+use crate::starknet_helper::starknet_worker::StarknetWorker;
 use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
@@ -29,10 +35,16 @@ pub struct Fuzzer {
     pub cores: i32,
     /// Contract JSON path
     pub contract_file: String,
+    /// Contract ABI JSON path
+    pub contract_abi_file: Option<String>,
+    /// Devnet Host
+    pub devnet_host: Option<String>,
+    // Devnet port
+    pub devnet_port: Option<String>,
     /// Contract JSON content
     pub contract_content: String,
     /// Contract function to fuzz
-    pub function: Function,
+    pub functions: Vec<Function>,
     /// Store local/on-disk logs
     pub logs: Option<String>,
     pub stdout: bool,
@@ -77,19 +89,23 @@ impl Fuzzer {
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
 
-        // TODO - remove when support multiple txs
-        let function = match parse_json(&contents, &config.function_name) {
-            Some(func) => func,
-            None => {
-                println!("Could not parse json artifact properly");
-                process::exit(1);
+        let functions = if config.cairo {
+            match parse_json(&contents, &config.function_name) {
+                Some(func) => vec![func],
+                None => {
+                    println!("Could not parse json artifact properly");
+                    process::exit(1);
+                }
             }
+        } else {
+            parse_starknet_json(&contents)
         };
 
         // Load inputs from the input file if provided
+        // TODO need to fix for multiple functions
         let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
-            true => InputFile::new_from_function(&function, &config.workspace),
+            true => InputFile::new_from_function(&functions[0], &config.workspace),
             false => match config.input_folder.is_empty() {
                 true => InputFile::load_from_file(&config.input_file, &config.workspace),
                 false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
@@ -109,9 +125,10 @@ impl Fuzzer {
         }
 
         // Load crashes from the crash file if provided
+        // TODO need to fix for multiple functions
         let crashes: CrashFile =
             match config.crash_file.is_empty() && config.crash_folder.is_empty() {
-                true => CrashFile::new_from_function(&function, &config.workspace),
+                true => CrashFile::new_from_function(&functions[0], &config.workspace),
                 false => match config.input_folder.is_empty() {
                     true => CrashFile::load_from_file(&config.input_file, &config.workspace),
                     false => CrashFile::load_from_folder(&config.input_folder, &config.workspace),
@@ -146,6 +163,9 @@ impl Fuzzer {
         // Setup the fuzzer
         Fuzzer {
             // Init stats struct
+            contract_abi_file: config.abi_path.clone(),
+            devnet_host: config.devnet_host.clone(),
+            devnet_port: config.devnet_port.clone(),
             stats: stats,
             cores: config.cores,
             logs: file,
@@ -155,7 +175,7 @@ impl Fuzzer {
             minimizer: config.minimizer,
             contract_file: config.contract_file.clone(),
             contract_content: contents,
-            function: function,
+            functions: functions,
             // Init starting time
             start_time: Instant::now(),
             seed: seed,
@@ -166,6 +186,48 @@ impl Fuzzer {
         }
     }
 
+    pub fn starknet_fuzz(&mut self) {
+        if let (Some(contract_abi_file), Some(devnet_host), Some(devnet_port)) = (
+            &self.contract_abi_file,
+            &self.devnet_host,
+            &self.devnet_port,
+        ) {
+            let mut easy = Easy::new();
+            easy.url(&format!("http://{}:{}", &devnet_host, &devnet_port))
+                .unwrap();
+            match easy.perform() {
+                Ok(()) => {
+                    println!("DEVNET IS UP AT {}:{}", &devnet_host, &devnet_port);
+                }
+                Err(_) => {
+                    println!(
+                        "Running another devnet AT {}:{}",
+                        &devnet_host, &devnet_port
+                    );
+                    deploy_devnet(devnet_host.to_string(), devnet_port.to_string());
+                }
+            }
+            let starknet_fuzzer: starknet_helper::starknet::StarknetFuzzer =
+                starknet_helper::starknet::StarknetFuzzer::new(
+                    &self.contract_file,
+                    contract_abi_file,
+                    &format!("http://{}:{}", &devnet_host, &devnet_port),
+                );
+            let stats = self.stats.clone();
+            let starknet_fuzzer_clone = starknet_fuzzer.clone();
+            let all_functions = self.functions.clone();
+            let seed = self.seed + (1 as u64); // create unique seed per worker
+
+            let _ = std::thread::spawn(move || {
+                let worker =
+                    StarknetWorker::new(stats, 1, starknet_fuzzer_clone, all_functions, seed);
+                worker.fuzz();
+            });
+            self.running_workers += 1;
+            self.monitor();
+        }
+    }
+
     /// Fuzz
     pub fn fuzz(&mut self) {
         // Running all the threads
@@ -173,7 +235,7 @@ impl Fuzzer {
             // create dedicated statistics per thread
             let stats = self.stats.clone();
             let contract_content = self.contract_content.clone();
-            let function = self.function.clone();
+            let function = self.functions[0].clone();
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
             let seed = self.seed + (i as u64); // create unique seed per worker
@@ -228,7 +290,7 @@ impl Fuzzer {
             // Spawn threads
             let stats_thread = self.stats.clone();
             let contract_content = self.contract_content.clone();
-            let function = self.function.clone();
+            let function = self.functions[0].clone();
             let seed = self.seed;
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
@@ -263,9 +325,9 @@ impl Fuzzer {
             // Init the struct
             let mut dump_inputs = InputFile {
                 workspace: self.workspace.clone(),
-                path: format!("{}_min.json", self.function.name),
-                name: self.function.name.clone(),
-                args: self.function.type_args.clone(),
+                path: format!("{}_min.json", self.functions[0].name),
+                name: self.functions[0].name.clone(),
+                args: self.functions[0].type_args.clone(),
                 inputs: Vec::<Vec<Felt>>::new(),
             };
             // Push every input to the struct

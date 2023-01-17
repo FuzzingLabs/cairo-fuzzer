@@ -18,6 +18,7 @@ thiserror = "1.0.32"
 cairo-rs-py = {git = "https://github.com/FuzzingLabs/cairo-rs-py", rev="c168a767ea41fd04570c3d33874c0f442fca092d"}
 pyo3 = { version = "0.16.5" }
 regex = "*"
+curl = "*"
 
 [features]
 extension = ["pyo3/num-bigint", "pyo3/extension-module"]

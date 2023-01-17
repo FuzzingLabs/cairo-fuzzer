@@ -28,11 +28,11 @@
         "CONSTRUCTOR": [],
         "EXTERNAL": [
             {
-                "offset": "0x94",
+                "offset": "0x8d",
                 "selector": "0x362398bec32bc0ebb411203221a35a0301193a96f317ebe5e40be9f60d15320"
             },
             {
-                "offset": "0xb5",
+                "offset": "0xb9",
                 "selector": "0x39e11d48192e4333233c7eb19d10ad67c362bb28580c604d67884c85da39695"
             }
         ],
@@ -44,19 +44,19 @@
                 "accessible_scopes": [
                     "__main__",
                     "__main__",
-                    "__main__.increase_balance"
+                    "__main__.get_balance"
                 ],
-                "end_pc": 141,
+                "end_pc": 171,
                 "flow_tracking_data": {
                     "ap_tracking": {
-                        "group": 8,
+                        "group": 10,
                         "offset": 23
                     },
                     "reference_ids": {}
                 },
                 "name": "error_message",
-                "start_pc": 134,
-                "value": "More than 5"
+                "start_pc": 164,
+                "value": "More than 5000"
             }
         ],
         "builtins": [
@@ -199,19 +199,12 @@
             "0x480a7ffc7fff8000",
             "0x1104800180018000",
             "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe5",
-            "0x480680017fff8000",
-            "0x5",
+            "0x48127ffc7fff8000",
+            "0x48127ffc7fff8000",
+            "0x48127ffc7fff8000",
+            "0x48287ffd7ffc8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffd7",
-            "0x480680017fff8000",
-            "0x1",
-            "0x40127fff7fff7ffe",
-            "0x48127fdd7fff8000",
-            "0x48127fdd7fff8000",
-            "0x48127ffb7fff8000",
-            "0x48287ffd7fdd8000",
-            "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe5",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffec",
             "0x208b7fff7fff7ffe",
             "0x482680017ffd8000",
             "0x1",
@@ -221,7 +214,7 @@
             "0x480280027ffb8000",
             "0x480280007ffd8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe7",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffee",
             "0x40780017fff7fff",
             "0x1",
             "0x48127ffc7fff8000",
@@ -235,7 +228,18 @@
             "0x480a7ffc7fff8000",
             "0x480a7ffd7fff8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffc0",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffc7",
+            "0x480680017fff8000",
+            "0x1388",
+            "0x1104800180018000",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffb9",
+            "0x480680017fff8000",
+            "0x1",
+            "0x40127fff7fff7ffe",
+            "0x48127fdd7fff8000",
+            "0x48127fdd7fff8000",
+            "0x48127ffb7fff8000",
+            "0x48127fdd7fff8000",
             "0x208b7fff7fff7ffe",
             "0x40780017fff7fff",
             "0x1",
@@ -251,7 +255,7 @@
             "0x480280017ffb8000",
             "0x480280027ffb8000",
             "0x1104800180018000",
-            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffee",
+            "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffe3",
             "0x48127ffe7fff8000",
             "0x1104800180018000",
             "0x800000000000010fffffffffffffffffffffffffffffffffffffffffffffff1",
@@ -2792,78 +2796,6 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 27,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 26,
-                        "start_line": 18
-                    }
-                },
-                "136": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 28,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 16,
-                        "start_line": 18
-                    }
-                },
-                "138": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 32,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 31,
-                        "start_line": 18
-                    }
-                },
-                "140": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
-                        "end_col": 33,
-                        "end_line": 18,
-                        "input_file": {
-                            "filename": "increase_balance.cairo"
-                        },
-                        "start_col": 9,
-                        "start_line": 18
-                    }
-                },
-                "141": {
-                    "accessible_scopes": [
-                        "__main__",
-                        "__main__",
-                        "__main__.increase_balance"
-                    ],
-                    "flow_tracking_data": null,
-                    "hints": [],
-                    "inst": {
                         "end_col": 33,
                         "end_line": 13,
                         "input_file": {
@@ -2886,12 +2818,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'syscall_ptr' in:"
                                         ],
@@ -2909,7 +2841,7 @@
                         "start_line": 13
                     }
                 },
-                "142": {
+                "135": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2940,12 +2872,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'pedersen_ptr' in:"
                                         ],
@@ -2963,7 +2895,7 @@
                         "start_line": 13
                     }
                 },
-                "143": {
+                "136": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -2972,15 +2904,15 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 27,
-                        "end_line": 42,
+                        "end_col": 78,
+                        "end_line": 13,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
+                            "filename": "autogen/starknet/storage_var/balance/decl.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 28,
-                                "end_line": 18,
+                                "end_col": 31,
+                                "end_line": 16,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -2994,12 +2926,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 32,
-                                                "end_line": 20,
+                                                "end_line": 17,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 20
+                                                "start_line": 17
                                             },
                                             "While trying to retrieve the implicit argument 'range_check_ptr' in:"
                                         ],
@@ -3008,16 +2940,16 @@
                                     },
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
-                                "start_col": 16,
-                                "start_line": 18
+                                "start_col": 17,
+                                "start_line": 16
                             },
                             "While trying to update the implicit return value 'range_check_ptr' in:"
                         ],
-                        "start_col": 12,
-                        "start_line": 42
+                        "start_col": 63,
+                        "start_line": 13
                     }
                 },
-                "144": {
+                "137": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3027,15 +2959,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 31,
-                        "end_line": 20,
+                        "end_line": 17,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
                         "start_col": 19,
-                        "start_line": 20
+                        "start_line": 17
                     }
                 },
-                "145": {
+                "138": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3045,15 +2977,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 32,
-                        "end_line": 20,
+                        "end_line": 17,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 20
+                        "start_line": 17
                     }
                 },
-                "147": {
+                "140": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3063,15 +2995,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 15,
-                        "end_line": 21,
+                        "end_line": 18,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 21
+                        "start_line": 18
                     }
                 },
-                "148": {
+                "141": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3150,7 +3082,7 @@
                         "start_line": 2
                     }
                 },
-                "150": {
+                "143": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3181,7 +3113,7 @@
                         "start_line": 1
                     }
                 },
-                "151": {
+                "144": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3236,7 +3168,7 @@
                         "start_line": 1
                     }
                 },
-                "152": {
+                "145": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3291,7 +3223,7 @@
                         "start_line": 1
                     }
                 },
-                "153": {
+                "146": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3346,7 +3278,7 @@
                         "start_line": 1
                     }
                 },
-                "154": {
+                "147": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3401,7 +3333,7 @@
                         "start_line": 1
                     }
                 },
-                "155": {
+                "148": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3420,7 +3352,7 @@
                         "start_line": 13
                     }
                 },
-                "157": {
+                "150": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3476,7 +3408,7 @@
                         "start_line": 3
                     }
                 },
-                "159": {
+                "152": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3531,7 +3463,7 @@
                         "start_line": 1
                     }
                 },
-                "160": {
+                "153": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3586,7 +3518,7 @@
                         "start_line": 1
                     }
                 },
-                "161": {
+                "154": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3641,7 +3573,7 @@
                         "start_line": 1
                     }
                 },
-                "162": {
+                "155": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3696,7 +3628,7 @@
                         "start_line": 4
                     }
                 },
-                "164": {
+                "157": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3751,7 +3683,7 @@
                         "start_line": 3
                     }
                 },
-                "165": {
+                "158": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3782,7 +3714,7 @@
                         "start_line": 1
                     }
                 },
-                "166": {
+                "159": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3792,7 +3724,7 @@
                     "hints": [],
                     "inst": {
                         "end_col": 36,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
@@ -3806,12 +3738,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
                                             "filename": "increase_balance.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'syscall_ptr' in:"
                                 ],
@@ -3821,10 +3753,10 @@
                             "While expanding the reference 'syscall_ptr' in:"
                         ],
                         "start_col": 18,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "167": {
+                "160": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3834,7 +3766,7 @@
                     "hints": [],
                     "inst": {
                         "end_col": 64,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
@@ -3848,12 +3780,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
                                             "filename": "increase_balance.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'pedersen_ptr' in:"
                                 ],
@@ -3863,10 +3795,10 @@
                             "While expanding the reference 'pedersen_ptr' in:"
                         ],
                         "start_col": 38,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "168": {
+                "161": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3876,7 +3808,7 @@
                     "hints": [],
                     "inst": {
                         "end_col": 81,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
@@ -3890,12 +3822,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 31,
-                                        "end_line": 27,
+                                        "end_line": 24,
                                         "input_file": {
                                             "filename": "increase_balance.cairo"
                                         },
                                         "start_col": 17,
-                                        "start_line": 27
+                                        "start_line": 24
                                     },
                                     "While trying to retrieve the implicit argument 'range_check_ptr' in:"
                                 ],
@@ -3905,10 +3837,10 @@
                             "While expanding the reference 'range_check_ptr' in:"
                         ],
                         "start_col": 66,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "169": {
+                "162": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3918,15 +3850,279 @@
                     "hints": [],
                     "inst": {
                         "end_col": 31,
-                        "end_line": 27,
+                        "end_line": 24,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
                         "start_col": 17,
-                        "start_line": 27
+                        "start_line": 24
+                    }
+                },
+                "164": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 30,
+                        "end_line": 26,
+                        "input_file": {
+                            "filename": "increase_balance.cairo"
+                        },
+                        "start_col": 26,
+                        "start_line": 26
+                    }
+                },
+                "166": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 31,
+                        "end_line": 26,
+                        "input_file": {
+                            "filename": "increase_balance.cairo"
+                        },
+                        "start_col": 16,
+                        "start_line": 26
+                    }
+                },
+                "168": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 35,
+                        "end_line": 26,
+                        "input_file": {
+                            "filename": "increase_balance.cairo"
+                        },
+                        "start_col": 34,
+                        "start_line": 26
+                    }
+                },
+                "170": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 36,
+                        "end_line": 26,
+                        "input_file": {
+                            "filename": "increase_balance.cairo"
+                        },
+                        "start_col": 9,
+                        "start_line": 26
                     }
                 },
                 "171": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 33,
+                        "end_line": 13,
+                        "input_file": {
+                            "filename": "autogen/starknet/storage_var/balance/decl.cairo"
+                        },
+                        "parent_location": [
+                            {
+                                "end_col": 31,
+                                "end_line": 24,
+                                "input_file": {
+                                    "filename": "increase_balance.cairo"
+                                },
+                                "parent_location": [
+                                    {
+                                        "end_col": 36,
+                                        "end_line": 23,
+                                        "input_file": {
+                                            "filename": "increase_balance.cairo"
+                                        },
+                                        "parent_location": [
+                                            {
+                                                "end_col": 19,
+                                                "end_line": 28,
+                                                "input_file": {
+                                                    "filename": "increase_balance.cairo"
+                                                },
+                                                "start_col": 5,
+                                                "start_line": 28
+                                            },
+                                            "While trying to retrieve the implicit argument 'syscall_ptr' in:"
+                                        ],
+                                        "start_col": 18,
+                                        "start_line": 23
+                                    },
+                                    "While expanding the reference 'syscall_ptr' in:"
+                                ],
+                                "start_col": 17,
+                                "start_line": 24
+                            },
+                            "While trying to update the implicit return value 'syscall_ptr' in:"
+                        ],
+                        "start_col": 15,
+                        "start_line": 13
+                    }
+                },
+                "172": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 61,
+                        "end_line": 13,
+                        "input_file": {
+                            "filename": "autogen/starknet/storage_var/balance/decl.cairo"
+                        },
+                        "parent_location": [
+                            {
+                                "end_col": 31,
+                                "end_line": 24,
+                                "input_file": {
+                                    "filename": "increase_balance.cairo"
+                                },
+                                "parent_location": [
+                                    {
+                                        "end_col": 64,
+                                        "end_line": 23,
+                                        "input_file": {
+                                            "filename": "increase_balance.cairo"
+                                        },
+                                        "parent_location": [
+                                            {
+                                                "end_col": 19,
+                                                "end_line": 28,
+                                                "input_file": {
+                                                    "filename": "increase_balance.cairo"
+                                                },
+                                                "start_col": 5,
+                                                "start_line": 28
+                                            },
+                                            "While trying to retrieve the implicit argument 'pedersen_ptr' in:"
+                                        ],
+                                        "start_col": 38,
+                                        "start_line": 23
+                                    },
+                                    "While expanding the reference 'pedersen_ptr' in:"
+                                ],
+                                "start_col": 17,
+                                "start_line": 24
+                            },
+                            "While trying to update the implicit return value 'pedersen_ptr' in:"
+                        ],
+                        "start_col": 35,
+                        "start_line": 13
+                    }
+                },
+                "173": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 27,
+                        "end_line": 42,
+                        "input_file": {
+                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/math_cmp.cairo"
+                        },
+                        "parent_location": [
+                            {
+                                "end_col": 31,
+                                "end_line": 26,
+                                "input_file": {
+                                    "filename": "increase_balance.cairo"
+                                },
+                                "parent_location": [
+                                    {
+                                        "end_col": 81,
+                                        "end_line": 23,
+                                        "input_file": {
+                                            "filename": "increase_balance.cairo"
+                                        },
+                                        "parent_location": [
+                                            {
+                                                "end_col": 19,
+                                                "end_line": 28,
+                                                "input_file": {
+                                                    "filename": "increase_balance.cairo"
+                                                },
+                                                "start_col": 5,
+                                                "start_line": 28
+                                            },
+                                            "While trying to retrieve the implicit argument 'range_check_ptr' in:"
+                                        ],
+                                        "start_col": 66,
+                                        "start_line": 23
+                                    },
+                                    "While expanding the reference 'range_check_ptr' in:"
+                                ],
+                                "start_col": 16,
+                                "start_line": 26
+                            },
+                            "While trying to update the implicit return value 'range_check_ptr' in:"
+                        ],
+                        "start_col": 12,
+                        "start_line": 42
+                    }
+                },
+                "174": {
+                    "accessible_scopes": [
+                        "__main__",
+                        "__main__",
+                        "__main__.get_balance"
+                    ],
+                    "flow_tracking_data": null,
+                    "hints": [],
+                    "inst": {
+                        "end_col": 13,
+                        "end_line": 24,
+                        "input_file": {
+                            "filename": "increase_balance.cairo"
+                        },
+                        "parent_location": [
+                            {
+                                "end_col": 16,
+                                "end_line": 28,
+                                "input_file": {
+                                    "filename": "increase_balance.cairo"
+                                },
+                                "start_col": 13,
+                                "start_line": 28
+                            },
+                            "While expanding the reference 'res' in:"
+                        ],
+                        "start_col": 10,
+                        "start_line": 24
+                    }
+                },
+                "175": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3944,7 +4140,7 @@
                         "start_line": 28
                     }
                 },
-                "172": {
+                "176": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -3963,12 +4159,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 17,
-                                        "end_line": 26,
+                                        "end_line": 23,
                                         "input_file": {
                                             "filename": "increase_balance.cairo"
                                         },
                                         "start_col": 6,
-                                        "start_line": 26
+                                        "start_line": 23
                                     },
                                     "While handling return value of"
                                 ],
@@ -3987,12 +4183,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4000,7 +4196,7 @@
                         "start_line": 4
                     }
                 },
-                "174": {
+                "178": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4018,12 +4214,12 @@
                         "parent_location": [
                             {
                                 "end_col": 98,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 89,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value 'res'"
                         ],
@@ -4031,7 +4227,7 @@
                         "start_line": 1
                     }
                 },
-                "175": {
+                "179": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4049,7 +4245,7 @@
                         "parent_location": [
                             {
                                 "end_col": 98,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4063,12 +4259,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4078,7 +4274,7 @@
                                     "While expanding the reference '__return_value_ptr' in:"
                                 ],
                                 "start_col": 89,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value 'res'"
                         ],
@@ -4086,7 +4282,7 @@
                         "start_line": 2
                     }
                 },
-                "177": {
+                "181": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4104,7 +4300,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4118,12 +4314,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4133,7 +4329,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4141,7 +4337,7 @@
                         "start_line": 1
                     }
                 },
-                "178": {
+                "182": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4159,12 +4355,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4172,7 +4368,7 @@
                         "start_line": 11
                     }
                 },
-                "179": {
+                "183": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4190,7 +4386,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4204,12 +4400,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While handling return value of"
                                         ],
@@ -4219,7 +4415,7 @@
                                     "While expanding the reference '__return_value_ptr_start' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4227,7 +4423,7 @@
                         "start_line": 5
                     }
                 },
-                "180": {
+                "184": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4245,12 +4441,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling return value of"
                         ],
@@ -4258,7 +4454,7 @@
                         "start_line": 9
                     }
                 },
-                "181": {
+                "185": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4276,12 +4472,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While handling calldata of"
                         ],
@@ -4289,7 +4485,7 @@
                         "start_line": 1
                     }
                 },
-                "182": {
+                "186": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4307,7 +4503,7 @@
                         "parent_location": [
                             {
                                 "end_col": 36,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4321,12 +4517,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4336,7 +4532,7 @@
                                     "While expanding the reference 'syscall_ptr' in:"
                                 ],
                                 "start_col": 18,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4344,7 +4540,7 @@
                         "start_line": 1
                     }
                 },
-                "183": {
+                "187": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4362,7 +4558,7 @@
                         "parent_location": [
                             {
                                 "end_col": 64,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4376,12 +4572,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4391,7 +4587,7 @@
                                     "While expanding the reference 'pedersen_ptr' in:"
                                 ],
                                 "start_col": 38,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4399,7 +4595,7 @@
                         "start_line": 1
                     }
                 },
-                "184": {
+                "188": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4417,7 +4613,7 @@
                         "parent_location": [
                             {
                                 "end_col": 81,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4431,12 +4627,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4446,7 +4642,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 66,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4454,7 +4650,7 @@
                         "start_line": 1
                     }
                 },
-                "185": {
+                "189": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4465,15 +4661,15 @@
                     "hints": [],
                     "inst": {
                         "end_col": 17,
-                        "end_line": 26,
+                        "end_line": 23,
                         "input_file": {
                             "filename": "increase_balance.cairo"
                         },
                         "start_col": 6,
-                        "start_line": 26
+                        "start_line": 23
                     }
                 },
-                "187": {
+                "191": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4491,7 +4687,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4505,12 +4701,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4520,7 +4716,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4528,7 +4724,7 @@
                         "start_line": 1
                     }
                 },
-                "188": {
+                "192": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4546,12 +4742,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4559,7 +4755,7 @@
                         "start_line": 2
                     }
                 },
-                "190": {
+                "194": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4577,7 +4773,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4591,12 +4787,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4606,7 +4802,7 @@
                                     "While expanding the reference 'syscall_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4614,7 +4810,7 @@
                         "start_line": 1
                     }
                 },
-                "191": {
+                "195": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4632,7 +4828,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4646,12 +4842,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4661,7 +4857,7 @@
                                     "While expanding the reference 'pedersen_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4669,7 +4865,7 @@
                         "start_line": 1
                     }
                 },
-                "192": {
+                "196": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4687,7 +4883,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4701,12 +4897,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4716,7 +4912,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4724,7 +4920,7 @@
                         "start_line": 2
                     }
                 },
-                "193": {
+                "197": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4742,7 +4938,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4756,12 +4952,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4771,7 +4967,7 @@
                                     "While expanding the reference 'retdata_size' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4779,7 +4975,7 @@
                         "start_line": 2
                     }
                 },
-                "194": {
+                "198": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4797,7 +4993,7 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
@@ -4811,12 +5007,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 17,
-                                                "end_line": 26,
+                                                "end_line": 23,
                                                 "input_file": {
                                                     "filename": "increase_balance.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 26
+                                                "start_line": 23
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -4826,7 +5022,7 @@
                                     "While expanding the reference 'retdata' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -4834,7 +5030,7 @@
                         "start_line": 2
                     }
                 },
-                "195": {
+                "199": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
@@ -4852,12 +5048,12 @@
                         "parent_location": [
                             {
                                 "end_col": 17,
-                                "end_line": 26,
+                                "end_line": 23,
                                 "input_file": {
                                     "filename": "increase_balance.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 26
+                                "start_line": 23
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -5008,7 +5204,7 @@
                     }
                 }
             ],
-            "157": [
+            "150": [
                 {
                     "accessible_scopes": [
                         "__main__",
@@ -5020,13 +5216,13 @@
                     "flow_tracking_data": {
                         "ap_tracking": {
                             "group": 9,
-                            "offset": 83
+                            "offset": 52
                         },
                         "reference_ids": {}
                     }
                 }
             ],
-            "172": [
+            "176": [
                 {
                     "accessible_scopes": [
                         "__main__",
@@ -5212,7 +5408,7 @@
                 "decorators": [
                     "view"
                 ],
-                "pc": 166,
+                "pc": 159,
                 "type": "function"
             },
             "__main__.get_balance.Args": {
@@ -5301,7 +5497,7 @@
                 "decorators": [
                     "view"
                 ],
-                "pc": 181,
+                "pc": 185,
                 "type": "function"
             },
             "__wrappers__.get_balance.Args": {
@@ -5330,7 +5526,7 @@
             },
             "__wrappers__.get_balance_encode_return": {
                 "decorators": [],
-                "pc": 172,
+                "pc": 176,
                 "type": "function"
             },
             "__wrappers__.get_balance_encode_return.Args": {
@@ -5370,7 +5566,7 @@
                 "decorators": [
                     "external"
                 ],
-                "pc": 148,
+                "pc": 141,
                 "type": "function"
             },
             "__wrappers__.increase_balance.Args": {

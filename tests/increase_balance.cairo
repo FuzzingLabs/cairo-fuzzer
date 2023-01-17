@@ -14,9 +14,6 @@ func increase_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_chec
     amount: felt
 ) {
     let (res) = balance.read();
-    with_attr error_message("More than 5"){
-        assert is_le(res,5) = 1;
-    }
     balance.write(res + amount);
     return ();
 }
@@ -25,5 +22,8 @@ func increase_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_chec
 @view
 func get_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
     let (res) = balance.read();
+    with_attr error_message("More than 5000"){
+        assert is_le(res,5000) = 1;
+    }
     return (res,);
 }

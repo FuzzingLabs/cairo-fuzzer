@@ -1,13 +1,13 @@
 use serde_json::Value;
-use std::process;
+
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
-    /// parse entrypoint number in the json
     pub entrypoint: String,
     pub num_args: u64,
     pub type_args: Vec<String>,
     pub hints: bool,
+    pub decorators: Vec<String>,
     pub _starknet: bool,
 }
 
@@ -23,16 +23,69 @@ fn get_type_args(members: &Value) -> Vec<String> {
     return type_args;
 }
 
+fn get_decorators(decorators: &Value) -> Vec<String> {
+    let mut decorators_list = Vec::<String>::new();
+    if let Some(data) = decorators.as_array() {
+        for elem in data {
+            decorators_list.push(elem.to_string().replace("\"", ""));
+        }
+    }
+    return decorators_list;
+}
+
+pub fn parse_starknet_json(data: &String) -> Vec<Function> {
+    let mut vec_functions = Vec::new();
+    let mut starknet = false;
+    let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    if let Some(program) = data.get("program") {
+        data = program.clone();
+        starknet = true;
+    }
+    let hints = if let Some(field) = data.get("hints") {
+        field.as_object().unwrap().len() != 0
+    } else {
+        false
+    };
+    if let Some(identifiers) = data.get("identifiers") {
+        for (key, value) in identifiers
+            .as_object()
+            .expect("Failed to get identifier from json")
+        {
+            let key_split = key.split(".").collect::<Vec<&str>>();
+            if value["type"] == "function" && key.contains("main") && key_split.len() == 2 {
+                let name = key_split[key_split.len() - 1];
+                let pc = value["pc"].to_string();
+                let mut decorators = Vec::<String>::new();
+                if let Some(decorators_data) = value.get("decorators") {
+                    decorators.append(&mut get_decorators(decorators_data));
+                }
+                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
+                    if let (Some(size), Some(members)) =
+                        (identifiers_key.get("size"), identifiers_key.get("members"))
+                    {
+                        let new_function = Function {
+                            _starknet: starknet,
+                            entrypoint: pc,
+                            hints: hints,
+                            name: name.to_string(),
+                            num_args: size
+                                .as_u64()
+                                .expect("Failed to get number of arguments from json"),
+                            decorators: decorators,
+                            type_args: get_type_args(members),
+                        };
+                        vec_functions.push(new_function);
+                    }
+                }
+            }
+        }
+    }
+    return vec_functions;
+}
+
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let starknet = false;
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(_program) = data.get("program") {
-        // Useless for now
-        println!("Cairo-fuzzer does not support starknet contract.");
-        process::exit(1);
-        /* data = program.clone();
-        starknet = true; */
-    }
     let hints = if let Some(field) = data.get("hints") {
         field.as_object().unwrap().len() != 0
     } else {
@@ -51,6 +104,7 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
                         (identifiers_key.get("size"), identifiers_key.get("members"))
                     {
                         let new_function = Function {
+                            decorators: Vec::new(),
                             _starknet: starknet,
                             entrypoint: pc,
                             hints: hints,

@@ -19,6 +19,11 @@ pub struct Config {
     pub run_time: Option<u64>,
     pub replay: bool,
     pub minimizer: bool,
+    pub abi_path: Option<String>,
+    pub devnet_host: Option<String>,
+    pub devnet_port: Option<String>,
+    pub cairo: bool,
+    pub starknet: bool,
 }
 
 impl Config {

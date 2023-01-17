@@ -8,6 +8,7 @@ mod custom_rand;
 mod fuzzer;
 mod json;
 mod mutator;
+mod starknet_helper;
 
 use cli::args::Opt;
 use cli::config::Config;
@@ -43,6 +44,9 @@ fn main() {
                 process::exit(1);
             }
             Config {
+                abi_path: opt.abi_path,
+                devnet_host: opt.devnet_host,
+                devnet_port: opt.devnet_port,
                 workspace: opt.workspace,
                 contract_file: opt.contract,
                 function_name: opt.function,
@@ -57,6 +61,8 @@ fn main() {
                 run_time: opt.run_time,
                 replay: opt.replay,
                 minimizer: opt.minimizer,
+                cairo: opt.cairo,
+                starknet: opt.starknet,
             }
         }
     };
@@ -69,6 +75,11 @@ fn main() {
         fuzzer.replay();
     // launch fuzzing
     } else {
-        fuzzer.fuzz();
+        if opt.cairo {
+            fuzzer.fuzz();
+        }
+        if opt.starknet {
+            fuzzer.starknet_fuzz();
+        }
     }
 }

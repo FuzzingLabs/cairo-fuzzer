@@ -80,10 +80,10 @@ pub fn get_class_hash(out: Output) -> String {
     let cmd_output = &String::from_utf8(out.stdout).unwrap();
     let regex_class_hash = Regex::new(r"Contract class hash: (.*)").unwrap();
     if let Some(class_hash) = regex_class_hash.captures(&cmd_output) {
-        class_hash.get(1).map_or("", |m| m.as_str()).to_string();
+        return class_hash.get(1).map_or("", |m| m.as_str()).to_string();
     }
     let cmd_err = &String::from_utf8(out.stderr).unwrap();
-    println!("{}", cmd_err);
+    println!("Error get_class_hash {}", cmd_err);
     process::exit(1);
 }
 
@@ -97,7 +97,7 @@ pub fn get_contract_address(out: Output) -> String {
             .to_string();
     }
     let cmd_err = &String::from_utf8(out.stderr).unwrap();
-    println!("{}", cmd_err);
+    println!("Error get_contract_address {}", cmd_err);
     process::exit(1);
 }
 
@@ -108,7 +108,7 @@ pub fn get_tx_hash(out: Output) -> String {
         return tx_hash.get(1).map_or("", |m| m.as_str()).to_string();
     }
     let cmd_err = &String::from_utf8(out.stderr).unwrap();
-    println!("{}", cmd_err);
+    println!("Error get_tx_hash{}", cmd_err);
     process::exit(1);
 }
 
@@ -287,85 +287,6 @@ pub fn invoke_contract(
         println!("Error while invoking contract");
         process::exit(1);
     }
-}
-
-/// Function that returns a vector of the args type of the function the user want to fuzz
-fn get_type_args(members: &Value) -> Vec<String> {
-    let mut type_args = Vec::<String>::new();
-    for (_, value) in members
-        .as_object()
-        .expect("Failed get member type_args as object from json")
-    {
-        type_args.push(value["cairo_type"].to_string().replace("\"", ""));
-    }
-    return type_args;
-}
-
-fn get_decorators(decorators: &Value) -> Vec<String> {
-    let mut decorators_list = Vec::<String>::new();
-    if let Some(data) = decorators.as_array() {
-        for elem in data {
-            decorators_list.push(elem.to_string().replace("\"", ""));
-        }
-    }
-    /*for (_, value) in decorators
-        .as_object()
-        .expect("Failed get decorators as object from json")
-    {
-        decorators_list.push(value["cairo_type"].to_string().replace("\"", ""));
-    }*/
-    return decorators_list;
-}
-
-pub fn parse_json(data: &String) -> Vec<Function> {
-    let mut vec = Vec::new();
-    let mut starknet = false;
-    let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(program) = data.get("program") {
-        data = program.clone();
-        starknet = true;
-    }
-    let hints = if let Some(field) = data.get("hints") {
-        field.as_object().unwrap().len() != 0
-    } else {
-        false
-    };
-    if let Some(identifiers) = data.get("identifiers") {
-        for (key, value) in identifiers
-            .as_object()
-            .expect("Failed to get identifier from json")
-        {
-            let key_split = key.split(".").collect::<Vec<&str>>();
-            if value["type"] == "function" && key.contains("main") && key_split.len() == 2 {
-                let name = key_split[key_split.len() - 1];
-                let pc = value["pc"].to_string();
-                let mut decorators = Vec::<String>::new();
-                if let Some(decorators_data) = value.get("decorators") {
-                    println!("{:?}", decorators_data);
-                    decorators.append(&mut get_decorators(decorators_data));
-                }
-                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
-                    if let (Some(size), Some(members)) =
-                        (identifiers_key.get("size"), identifiers_key.get("members"))
-                    {
-                        let new_function = Function {
-                            _starknet: starknet,
-                            entrypoint: pc,
-                            hints: hints,
-                            name: name.to_string(),
-                            num_args: size
-                                .as_u64()
-                                .expect("Failed to get number of arguments from json"),
-                            decorators: decorators,
-                            type_args: get_type_args(members),
-                        };
-                        vec.push(new_function);
-                    }
-                }
-            }
-        }
-    }
-    return vec;
 }
 
 pub fn generate_tx_sequence(
