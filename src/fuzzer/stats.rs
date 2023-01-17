@@ -1,7 +1,8 @@
-use std::collections::{HashMap, HashSet};
-use std::sync::Arc;
-
 use crate::cairo_vm::cairo_types::Felt;
+use std::{
+    collections::{HashMap, HashSet},
+    sync::Arc,
+};
 
 pub type FuzzInput = Arc<Vec<Felt>>;
 

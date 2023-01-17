@@ -1,20 +1,20 @@
-use crate::cairo_vm::cairo_types::Felt;
-use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use super::{
+    corpus::{CrashFile, InputFile},
+    stats::*,
+};
+use crate::{
+    cairo_vm::cairo_runner::{py_runner, runner},
+    cairo_vm::cairo_types::Felt,
+    custom_rand::rng::Rng,
+    json::json_parser::Function,
+    mutator::mutator::{EmptyDatabase, Mutator},
+};
 use std::sync::{Arc, Mutex};
 
-use super::corpus::{CrashFile, InputFile};
-use super::stats::*;
-
-use crate::cairo_vm::cairo_runner::{py_runner, runner};
-use crate::custom_rand::rng::Rng;
-use crate::json::json_parser::Function;
-
-use thiserror::Error;
-
-#[derive(Debug, PartialEq, Error)]
+/* #[derive(Debug, PartialEq, Error)]
 pub enum WorkerError {
     // TODO implem
-}
+} */
 
 pub struct Worker {
     stats: Arc<Mutex<Statistics>>,

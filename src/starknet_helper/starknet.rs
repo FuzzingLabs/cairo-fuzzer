@@ -1,8 +1,8 @@
 use rand::{distributions::Alphanumeric, Rng};
 use regex::Regex;
 use std::process;
-use std::process::Command;
-use std::process::Output;
+use std::process::{Command, Output};
+
 
 #[derive(Debug, Clone)]
 pub struct StarknetFuzzer {
@@ -39,7 +39,7 @@ impl StarknetFuzzer {
         return out_to_str.is_empty();
     }
 
-    pub fn display_tx_status(&self, hash: &String) {
+/*     pub fn display_tx_status(&self, hash: &String) {
         let status = Command::new("starknet")
             .env(
                 "STARKNET_WALLET",
@@ -56,7 +56,7 @@ impl StarknetFuzzer {
             .output()
             .expect("failed to execute process");
         self.display_output(status);
-    }
+    } */
 
     pub fn display_output(&self, out: Output) {
         let out_to_str = &String::from_utf8(out.stdout).unwrap();
@@ -197,7 +197,7 @@ impl StarknetFuzzer {
             .expect("failed to execute process");
 
         let account_address = self.get_account_address(new_account);
-        let _feed_account = Command::new("/home/nabih/cairo-fuzzer/src/POC/mint.sh")
+        let _feed_account = Command::new("src/starknet_helper/mint.sh")
             .arg(account_address)
             .arg(&self.devnet_address)
             .output()

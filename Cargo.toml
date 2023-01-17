@@ -27,7 +27,3 @@ default = ["pyo3/num-bigint", "pyo3/auto-initialize"]
 [[bin]]
 name = "runner-test"
 path = "src/tests/runner.rs"
-
-[[bin]]
-name = "poc"
-path = "src/POC/main.rs"

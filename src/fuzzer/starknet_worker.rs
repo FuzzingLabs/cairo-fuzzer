@@ -1,12 +1,9 @@
+use crate::{
+    fuzzer::stats::*, json::json_parser::Function, starknet_helper::starknet::StarknetFuzzer,
+    starknet_helper::starknet_runner::starknet_runner,
+};
+use rand::{prelude::SliceRandom, SeedableRng, rngs::StdRng, Rng};
 use std::sync::{Arc, Mutex};
-
-use super::starknet::StarknetFuzzer;
-use super::starknet_runner::starknet_runner;
-use crate::fuzzer::stats::*;
-
-use crate::json::json_parser::Function;
-use rand::prelude::SliceRandom;
-use rand::Rng;
 
 #[derive(Debug)]
 pub struct StarknetWorker {
@@ -36,21 +33,20 @@ impl StarknetWorker {
     pub fn fuzz(self) {
         // Local stats database
         let mut local_stats = Statistics::default();
-        let mut rng = rand::thread_rng();
+        let mut rng: StdRng = SeedableRng::seed_from_u64(self.seed);
 
         // TODO - IMPORTANT - Should we replay all the corpus before starting to mutate ? because we will not trigger the bug directly after running
         loop {
             // clear previous data
 
             // Wrap up the fuzz input in an `Arc`
-            let fuzz_input = "1".to_string();
             let n1: u8 = rng.gen();
             let mut tx_sequence: Vec<Function> = Vec::new();
             for _i in 0..n1 {
                 tx_sequence.push(self.all_functions.choose(&mut rng).unwrap().clone());
             }
             // run the cairo vm
-            match starknet_runner(self.stats.clone(),&tx_sequence, &self.starknet_fuzzer) {
+            match starknet_runner(self.stats.clone(), &tx_sequence, &self.starknet_fuzzer) {
                 Ok(_) => {
                     // Mutex locking is limited to this scope
                     {

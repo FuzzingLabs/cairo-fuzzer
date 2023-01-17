@@ -1,45 +1,8 @@
-use crate::cairo_vm::cairo_types::Felt;
-use crate::json::json_parser::Function;
-use chrono::DateTime;
-use chrono::Utc;
+use crate::{cairo_vm::cairo_types::Felt, json::json_parser::Function};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::fs;
-use std::fs::create_dir;
-use std::fs::write;
-use std::path::Path;
-use std::process;
-use std::time::SystemTime;
-
-/*
-#[derive(Debug, Clone)]
-pub struct Workspace {
-    workspace_folder: String,
-    input_folder: String,
-    crash_folder: String,
-}
-
-// TODO - improve and allow user to choose
-impl Default for Workspace {
-    fn default() -> Self {
-        Workspace {
-            workspace_folder: "seth_workspace".to_string(),
-            input_folder: "inputs_corpus".to_string(),
-            crash_folder: "crashes_corpus".to_string(),
-        }
-    }
-} */
-
-/* /// TODO - Load all inputs files
-fn load_inputs(folder_path: &String) -> Vec<InputFile> {
-    // if Path::new(&filename).is_file() {
-    unimplemented!();
-}
-
-/// TODO - Load all crashes files
-fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
-    unimplemented!();
-} */
+use std::{fs, fs::create_dir, fs::write, path::Path, process, time::SystemTime};
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct InputFile {

@@ -1,15 +1,12 @@
-use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
-use cairo_rs::types::program::Program;
-use cairo_rs::types::relocatable::MaybeRelocatable;
-use cairo_rs::types::relocatable::Relocatable;
-use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
-use cairo_rs::vm::runners::cairo_runner::CairoRunner;
-use cairo_rs::vm::vm_core::VirtualMachine;
+use cairo_rs::{
+    hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor,
+    types::program::Program, types::relocatable::MaybeRelocatable, types::relocatable::Relocatable,
+    vm::errors::vm_errors::VirtualMachineError, vm::runners::cairo_runner::CairoRunner,
+    vm::vm_core::VirtualMachine,
+};
 use cairo_rs_py::cairo_runner::PyCairoRunner;
-use num_bigint::BigInt;
-use num_bigint::Sign;
-use pyo3::marker::Python;
-use pyo3::ToPyObject;
+use num_bigint::{BigInt, Sign};
+use pyo3::{marker::Python, ToPyObject};
 
 pub fn runner(
     json: &String,

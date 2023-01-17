@@ -1,30 +1,26 @@
-use std::io::Write;
+use super::{
+    corpus::{CrashFile, InputFile},
+    stats::Statistics,
+};
+use crate::{
+    cairo_vm::cairo_types::Felt,
+    cli::config::Config,
+    fuzzer::cairo_worker::Worker,
+    fuzzer::starknet_worker::StarknetWorker,
+    json::json_parser::parse_starknet_json,
+    json::json_parser::{parse_json, Function},
+    starknet_helper,
+    starknet_helper::devnet::deploy_devnet,
+};
+use chrono::{DateTime, Utc};
+use curl::easy::Easy;
 use std::{
     fs::{self, create_dir, File, OpenOptions},
+    io::Write,
     path::Path,
     process,
     sync::{Arc, Mutex},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
-};
-
-use chrono::{DateTime, Utc};
-
-use curl::easy::Easy;
-
-use crate::json::json_parser::parse_starknet_json;
-use crate::starknet_helper;
-use crate::starknet_helper::devnet::deploy_devnet;
-use crate::starknet_helper::starknet_worker::StarknetWorker;
-use crate::{
-    cairo_vm::cairo_types::Felt,
-    cli::config::Config,
-    fuzzer::worker::Worker,
-    json::json_parser::{parse_json, Function},
-};
-
-use super::{
-    corpus::{CrashFile, InputFile},
-    stats::Statistics,
 };
 
 #[derive(Clone)]
