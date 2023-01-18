@@ -196,9 +196,14 @@ impl StarknetFuzzer {
             .expect("failed to execute process");
 
         let account_address = self.get_account_address(new_account);
-        let _feed_account = Command::new("src/starknet_helper/mint.sh")
-            .arg(account_address)
-            .arg(&self.devnet_address)
+        let curl_addr = format!("{}/mint", &self.devnet_address);
+        let curl_content = format!("{{ \"address\": \"{}\", \"amount\": 1000000000000000000, \"lite\": false }}", &account_address);
+        let _feed_account = Command::new("curl")
+            .arg(curl_addr)
+            .arg("-H")
+            .arg("Content-Type: application/json")
+            .arg("-d")
+            .arg(curl_content)
             .output()
             .expect("Failed to fund account");
 
