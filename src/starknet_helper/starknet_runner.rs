@@ -12,6 +12,7 @@ pub fn starknet_runner(
     let mut rng = rand::thread_rng();
     for func in tx_sequence {
         if func.decorators.contains(&"view".to_string()) {
+            // add arguments generation
             if !starknet_fuzzer.call_contract(&func.name) {
                 let mut stats = stats.lock().expect("Failed to get mutex");
                 stats.crashes += 1;

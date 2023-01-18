@@ -31,6 +31,7 @@ fn main() {
     // get cli args
     let opt = Opt::parse();
     // create config file
+
     let config = match opt.config {
         // config file provided
         Some(config_file) => Config::load_config(&config_file),
@@ -39,7 +40,7 @@ fn main() {
                 error!("Fuzzer needs a contract path using --contract");
                 process::exit(1);
             }
-            if opt.function.len() == 0 {
+            if opt.cairo && opt.function.len() == 0 {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }

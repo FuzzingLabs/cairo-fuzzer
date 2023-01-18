@@ -43,6 +43,7 @@ pub struct Fuzzer {
     pub functions: Vec<Function>,
     /// Store local/on-disk logs
     pub logs: Option<String>,
+    /// Enable fuzzer logs on stdout
     pub stdout: bool,
     /// Replay mode
     pub replay: bool,
@@ -84,7 +85,6 @@ impl Fuzzer {
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
-
         let functions = if config.cairo {
             match parse_json(&contents, &config.function_name) {
                 Some(func) => vec![func],
@@ -94,7 +94,7 @@ impl Fuzzer {
                 }
             }
         } else {
-            parse_starknet_json(&contents)
+            parse_starknet_json(&contents, &config.function_name)
         };
 
         // Load inputs from the input file if provided
@@ -213,7 +213,6 @@ impl Fuzzer {
             let starknet_fuzzer_clone = starknet_fuzzer.clone();
             let all_functions = self.functions.clone();
             let seed = self.seed + (1 as u64); // create unique seed per worker
-
             let _ = std::thread::spawn(move || {
                 let worker =
                     StarknetWorker::new(stats, 1, starknet_fuzzer_clone, all_functions, seed);

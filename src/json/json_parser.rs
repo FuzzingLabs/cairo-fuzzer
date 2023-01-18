@@ -33,7 +33,7 @@ fn get_decorators(decorators: &Value) -> Vec<String> {
     return decorators_list;
 }
 
-pub fn parse_starknet_json(data: &String) -> Vec<Function> {
+pub fn parse_starknet_json(data: &String, function_name: &String) -> Vec<Function> {
     let mut vec_functions = Vec::new();
     let mut starknet = false;
     let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
@@ -74,7 +74,9 @@ pub fn parse_starknet_json(data: &String) -> Vec<Function> {
                             decorators: decorators,
                             type_args: get_type_args(members),
                         };
-                        vec_functions.push(new_function);
+                        if (!function_name.is_empty() && &new_function.name == function_name) || (function_name.is_empty()) {
+                            vec_functions.push(new_function);
+                        }
                     }
                 }
             }

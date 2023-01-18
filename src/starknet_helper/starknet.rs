@@ -3,7 +3,6 @@ use regex::Regex;
 use std::process;
 use std::process::{Command, Output};
 
-
 #[derive(Debug, Clone)]
 pub struct StarknetFuzzer {
     devnet_address: String,
@@ -39,7 +38,7 @@ impl StarknetFuzzer {
         return out_to_str.is_empty();
     }
 
-/*     pub fn display_tx_status(&self, hash: &String) {
+    /*     pub fn display_tx_status(&self, hash: &String) {
         let status = Command::new("starknet")
             .env(
                 "STARKNET_WALLET",
@@ -247,8 +246,8 @@ impl StarknetFuzzer {
             .arg(&self.devnet_address)
             .output()
             .expect("failed to execute process");
-            //self.display_output(call_contract.clone());
-            return self.crash_check(call_contract);
+        //self.display_output(call_contract.clone());
+        return self.crash_check(call_contract);
 
         //self.display_output(call_contract.clone());
     }
@@ -277,7 +276,7 @@ impl StarknetFuzzer {
             .arg(&self.devnet_address)
             .output()
             .expect("failed to execute process");
-            //self.display_output(invoke_contract.clone());
+        //self.display_output(invoke_contract.clone());
 
         //self.display_output(invoke_contract.clone());
         let invoke_hash = &self.get_tx_hash(invoke_contract.clone());
