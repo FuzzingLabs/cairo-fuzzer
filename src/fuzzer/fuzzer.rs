@@ -418,7 +418,7 @@ mod tests {
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
-        assert_eq!(fuzzer.function.name, "test_symbolic_execution");
+        assert_eq!(fuzzer.functions[0].name, "test_symbolic_execution");
     }
 
     #[test]
@@ -458,6 +458,11 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let config = Config {
+            abi_path: None,
+            devnet_host: None,
+            devnet_port: None,
+            cairo: true,
+            starknet: false,
             input_folder: input_folder,
             crash_folder: crash_folder,
             workspace,
@@ -475,7 +480,7 @@ mod tests {
         };
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
-        assert_eq!(fuzzer.function.name, "test_symbolic_execution");
+        assert_eq!(fuzzer.functions[0].name, "test_symbolic_execution");
     }
 
     #[test]
@@ -494,6 +499,11 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let config = Config {
+            abi_path: None,
+            devnet_host: None,
+            devnet_port: None,
+            cairo: true,
+            starknet: false,
             input_folder: input_folder,
             crash_folder: crash_folder,
             workspace,
@@ -545,6 +555,11 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let config = Config {
+            abi_path: None,
+            devnet_host: None,
+            devnet_port: None,
+            cairo: true,
+            starknet: false,
             input_folder: input_folder,
             crash_folder: crash_folder,
             workspace,

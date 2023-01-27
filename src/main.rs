@@ -40,14 +40,14 @@ fn main() {
                 error!("Fuzzer needs a contract path using --contract");
                 process::exit(1);
             }
-            if opt.cairo && opt.function.len() == 0 {
+            if opt.function.len() == 0 {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }
             Config {
-                abi_path: opt.abi_path,
-                devnet_host: opt.devnet_host,
-                devnet_port: opt.devnet_port,
+                abi_path: None,
+                devnet_host: None,
+                devnet_port: None,
                 workspace: opt.workspace,
                 contract_file: opt.contract,
                 function_name: opt.function,
@@ -62,8 +62,8 @@ fn main() {
                 run_time: opt.run_time,
                 replay: opt.replay,
                 minimizer: opt.minimizer,
-                cairo: opt.cairo,
-                starknet: opt.starknet,
+                cairo: true,
+                starknet: false,
             }
         }
     };
