@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_imports)]
+
 use super::{
     corpus::{CrashFile, InputFile},
     stats::Statistics,

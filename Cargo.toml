@@ -23,7 +23,3 @@ curl = "*"
 [features]
 extension = ["pyo3/num-bigint", "pyo3/extension-module"]
 default = ["pyo3/num-bigint", "pyo3/auto-initialize"]
-
-[[bin]]
-name = "starknet-fuzzer"
-path = "./src/tests/starknet_fuzz.rs"

@@ -5,6 +5,3 @@ pub mod fuzzer;
 pub mod json;
 pub mod mutator;
 pub mod starknet_helper;
-pub mod tests {
-    pub mod starknet_fuzz;
-}

@@ -1,4 +1,6 @@
 //! This module contains functions to run and deploy a devnet
+#![allow(dead_code, unused_imports)]
+
 use std::{process::Command, sync::Arc, thread};
 
 /// Function used to deploy the devnet

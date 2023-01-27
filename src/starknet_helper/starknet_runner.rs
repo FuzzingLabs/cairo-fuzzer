@@ -1,4 +1,6 @@
 //! This module contains the starknet runner
+#![allow(dead_code, unused_imports)]
+
 use crate::{
     fuzzer::stats::*, json::json_parser::Function, starknet_helper::starknet::StarknetFuzzer,
 };
