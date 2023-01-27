@@ -1,9 +1,11 @@
+//! This module contains everything related to starknet CLI. It's a helper to execute starknet CLI directly.
 use rand::{distributions::Alphanumeric, Rng};
 use regex::Regex;
 use std::process;
 use std::process::{Command, Output};
 
 #[derive(Debug, Clone)]
+/// This struct contains everything needed for the Starknet fuzzer
 pub struct StarknetFuzzer {
     devnet_address: String,
     rnd_account: String,
@@ -13,6 +15,7 @@ pub struct StarknetFuzzer {
 }
 
 impl StarknetFuzzer {
+    /// This function init a StarknetFuzzer
     pub fn new(contract_path: &String, abi_path: &String, devnet_address: &String) -> Self {
         let rnd_account: String = rand::thread_rng()
             .sample_iter(&Alphanumeric)
@@ -32,7 +35,7 @@ impl StarknetFuzzer {
         println!("Contract deployed");
         return fuzzer;
     }
-
+    /// This function is used to check if stderr is empty or not
     pub fn crash_check(&self, out: Output) -> bool {
         let out_to_str = &String::from_utf8(out.stderr).unwrap();
         return out_to_str.is_empty();
@@ -57,6 +60,7 @@ impl StarknetFuzzer {
         self.display_output(status);
     } */
 
+    /// This function is used to debug and check the content of stdout/stderr
     pub fn display_output(&self, out: Output) {
         let out_to_str = &String::from_utf8(out.stdout).unwrap();
         println!("STDOUT =>{}", out_to_str);
@@ -64,6 +68,7 @@ impl StarknetFuzzer {
         println!("STDERR =>{}", out_to_str);
     }
 
+    /// This function is used to parse the output and get the address of the account
     pub fn get_account_address(&self, out: Output) -> String {
         let cmd_output = &String::from_utf8(out.stdout).unwrap();
         let regex_account_address = Regex::new(r"Account address: (.*)").unwrap();
@@ -75,6 +80,7 @@ impl StarknetFuzzer {
         return account_address.to_string();
     }
 
+    /// This function is used to parse the output and get the class hash of the contract
     pub fn get_class_hash(&self, out: Output) -> String {
         let cmd_output = &String::from_utf8(out.stdout).unwrap();
         let regex_class_hash = Regex::new(r"Contract class hash: (.*)").unwrap();
@@ -86,6 +92,7 @@ impl StarknetFuzzer {
         process::exit(1);
     }
 
+    /// This function is used to parse the output and get the address of the contract
     pub fn get_contract_address(&self, out: Output) -> String {
         let cmd_output = &String::from_utf8(out.stdout).unwrap();
         let regex_contract_address = Regex::new(r"Contract address: (.*)").unwrap();
@@ -100,6 +107,7 @@ impl StarknetFuzzer {
         process::exit(1);
     }
 
+    /// This function is used to parse the output and get the tx hash
     pub fn get_tx_hash(&self, out: Output) -> String {
         let cmd_output = &String::from_utf8(out.stdout).unwrap();
         let regex_tx_hash = Regex::new(r"Transaction hash: (.*)").unwrap();
@@ -111,6 +119,7 @@ impl StarknetFuzzer {
         process::exit(1);
     }
 
+    /// This function is used to check the tx status
     pub fn check_tx_status(&self, hash: &String) -> bool {
         let status = Command::new("starknet")
             .env(
@@ -131,6 +140,7 @@ impl StarknetFuzzer {
         return out_to_str.contains("ACCEPTED");
     }
 
+    /// This function is used to deploy a contrat
     pub fn deploy_contract(&mut self) {
         let declare_contract = Command::new("starknet")
             .env(
@@ -182,6 +192,7 @@ impl StarknetFuzzer {
         }
     }
 
+    /// This function is used to deploy an account
     pub fn deploy_account(&self) {
         let new_account = Command::new("starknet")
             .env(
@@ -232,6 +243,7 @@ impl StarknetFuzzer {
         }
     }
 
+    /// This function is used to call a function from a contract
     pub fn call_contract(&self, function_name: &String) -> bool {
         let call_contract = Command::new("starknet")
             .env(
@@ -259,7 +271,7 @@ impl StarknetFuzzer {
 
         //self.display_output(call_contract.clone());
     }
-
+    /// This function is used to invoke a function from a contract
     pub fn invoke_contract(&self, function_name: &String, inputs: &String) -> bool {
         println!("invoking");
         println!("{:?}", &self);

@@ -1,5 +1,7 @@
+//! This module contains functions to run and deploy a devnet
 use std::{process::Command, sync::Arc, thread};
 
+/// Function used to deploy the devnet
 pub fn deploy_devnet(address: String, port: String) {
     thread::spawn(move || {
         Arc::new(

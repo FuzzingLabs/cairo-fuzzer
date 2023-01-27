@@ -1,3 +1,4 @@
+//! This module contains the Worker struct and it's implementation.
 use super::{
     corpus::{CrashFile, InputFile},
     stats::*,
@@ -16,6 +17,7 @@ pub enum WorkerError {
     // TODO implem
 } */
 
+/// Struct worker containing the stats, the id of the worker, the content of the json artifact, the Function struct, the custom seed for each worker, and the input/crash_file struct.
 pub struct Worker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
@@ -47,6 +49,7 @@ impl Worker {
         }
     }
 
+    /// This function runs the fuzzing of the contract
     pub fn fuzz(self) {
         // Local stats database
         let mut local_stats = Statistics::default();
@@ -101,7 +104,6 @@ impl Worker {
                     &self.function.name,
                     &self.function.entrypoint,
                     &mutator.input,
-                    self.function._starknet,
                 )
             } {
                 Ok(traces) => {
@@ -219,6 +221,7 @@ impl Worker {
         }
     }
 
+    /// This function is used to replay a corpus folder
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();

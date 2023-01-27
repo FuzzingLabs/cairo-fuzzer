@@ -1,3 +1,4 @@
+//! This module contains the config struct and it's implementation. If cairo-fuzzer is used as lib, a config file or a config struct can be used instead of the CLI args.
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::fs;

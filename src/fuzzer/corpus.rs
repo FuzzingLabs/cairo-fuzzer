@@ -1,3 +1,4 @@
+//! This module contains all the struct related to the corpus.
 use crate::{cairo_vm::cairo_types::Felt, json::json_parser::Function};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -5,6 +6,7 @@ use serde_json::Value;
 use std::{fs, fs::create_dir, fs::write, path::Path, process, time::SystemTime};
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
+/// This struct is used to save a new interesting input that managed to find a new coverage
 pub struct InputFile {
     pub workspace: String,
     pub path: String,
@@ -14,6 +16,7 @@ pub struct InputFile {
 }
 
 impl InputFile {
+    /// Function to init the InputFile struct
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {
         let d = SystemTime::now();
         // Create DateTime from SystemTime
@@ -73,6 +76,7 @@ impl InputFile {
         };
     }
 
+    /// Function to load all the folder of old inputs files
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
         let function_name = foldername
@@ -181,6 +185,7 @@ impl InputFile {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
+/// This struct is used to save a new interesting input that managed to find a crash
 pub struct CrashFile {
     pub workspace: String,
     pub path: String,
@@ -190,6 +195,7 @@ pub struct CrashFile {
 }
 
 impl CrashFile {
+    /// Function to init the CrashFile struct
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {
         let d = SystemTime::now();
         // Create DateTime from SystemTime
@@ -249,6 +255,7 @@ impl CrashFile {
         };
     }
 
+    /// Function to load a crash folder
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
         let function_name = foldername

@@ -1,3 +1,4 @@
+//! This module contains the OPT struct with all the CLI arguments
 use clap::{self, Parser};
 
 #[derive(Debug, Parser)]

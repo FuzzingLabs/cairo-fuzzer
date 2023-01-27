@@ -1,6 +1,8 @@
+//! This module contains everything related to the parsing of the json artifact
 use serde_json::Value;
 
 #[derive(Debug, Clone)]
+/// This struct is returned by the parser, it contains everything needed to execute a contract
 pub struct Function {
     pub name: String,
     pub entrypoint: String,
@@ -11,7 +13,7 @@ pub struct Function {
     pub _starknet: bool,
 }
 
-/// Function that returns a vector of the args type of the function the user want to fuzz
+/// Function that returns a vector of the args type of the function
 fn get_type_args(members: &Value) -> Vec<String> {
     let mut type_args = Vec::<String>::new();
     for (_, value) in members
@@ -22,7 +24,7 @@ fn get_type_args(members: &Value) -> Vec<String> {
     }
     return type_args;
 }
-
+/// Function that return a vector of the decoratos of a function
 fn get_decorators(decorators: &Value) -> Vec<String> {
     let mut decorators_list = Vec::<String>::new();
     if let Some(data) = decorators.as_array() {
@@ -33,6 +35,7 @@ fn get_decorators(decorators: &Value) -> Vec<String> {
     return decorators_list;
 }
 
+/// Function to parse starknet json artifact
 pub fn parse_starknet_json(data: &String, function_name: &String) -> Vec<Function> {
     let mut vec_functions = Vec::new();
     let mut starknet = false;
@@ -87,6 +90,7 @@ pub fn parse_starknet_json(data: &String, function_name: &String) -> Vec<Functio
     return vec_functions;
 }
 
+/// Function to parse cairo json artifact
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let starknet = false;
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");

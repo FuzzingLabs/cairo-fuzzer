@@ -1,3 +1,4 @@
+//! This module contains a custom implementation of rand with seed.
 use std::cell::Cell;
 
 /// Random number generator implementation using xorshift64

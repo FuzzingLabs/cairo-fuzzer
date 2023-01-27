@@ -1,9 +1,11 @@
+//! This module contains the starknet runner
 use crate::{
     fuzzer::stats::*, json::json_parser::Function, starknet_helper::starknet::StarknetFuzzer,
 };
 use rand::Rng;
 use std::sync::{Arc, Mutex};
 
+/// This functions is used to execute the tx sequence to fuzz
 pub fn starknet_runner(
     stats: Arc<Mutex<Statistics>>,
     tx_sequence: &Vec<Function>,

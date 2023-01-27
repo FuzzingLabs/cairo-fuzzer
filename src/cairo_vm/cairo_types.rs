@@ -1,3 +1,5 @@
+//! This modules contains an implementation of the FELT type, still not finished and tested yet.
+
 use serde::{Deserialize, Serialize};
 
 pub trait Unsigned: Copy + Default + 'static {

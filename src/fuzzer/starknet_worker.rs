@@ -1,3 +1,4 @@
+//! This module contains the starknet worker
 use crate::{
     fuzzer::stats::*, json::json_parser::Function, starknet_helper::starknet::StarknetFuzzer,
     starknet_helper::starknet_runner::starknet_runner,
@@ -6,6 +7,7 @@ use rand::{prelude::SliceRandom, rngs::StdRng, Rng, SeedableRng};
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]
+/// This struct contrains data used by the starknet worker
 pub struct StarknetWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
@@ -29,7 +31,7 @@ impl StarknetWorker {
             seed: seed,
         }
     }
-
+    /// Function used to run the starknet fuzzer
     pub fn fuzz(self) {
         // Local stats database
         let mut local_stats = Statistics::default();
