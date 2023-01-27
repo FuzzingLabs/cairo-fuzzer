@@ -7,8 +7,9 @@ readme = "README.md"
 license = "AGPL-3.0"
 license-file = "LICENSE"
 repository = "https://github.com/FuzzingLabs/cairo-fuzzer"
+
 [dependencies]
-cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
+cairo-rs = { version = "0.1.0", git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }
