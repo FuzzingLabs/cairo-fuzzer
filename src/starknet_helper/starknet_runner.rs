@@ -11,6 +11,7 @@ pub fn starknet_runner(
 ) -> Result<String, String> {
     let mut rng = rand::thread_rng();
     for func in tx_sequence {
+        println!("{}", func.name);
         if func.decorators.contains(&"view".to_string()) {
             // add arguments generation
             if !starknet_fuzzer.call_contract(&func.name) {

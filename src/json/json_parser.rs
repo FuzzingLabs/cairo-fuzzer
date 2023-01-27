@@ -74,7 +74,9 @@ pub fn parse_starknet_json(data: &String, function_name: &String) -> Vec<Functio
                             decorators: decorators,
                             type_args: get_type_args(members),
                         };
-                        if (!function_name.is_empty() && &new_function.name == function_name) || (function_name.is_empty()) {
+                        if (!function_name.is_empty() && &new_function.name == function_name)
+                            || (function_name.is_empty())
+                        {
                             vec_functions.push(new_function);
                         }
                     }

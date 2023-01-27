@@ -76,11 +76,6 @@ fn main() {
         fuzzer.replay();
     // launch fuzzing
     } else {
-        if opt.cairo {
-            fuzzer.fuzz();
-        }
-        if opt.starknet {
-            fuzzer.starknet_fuzz();
-        }
+        fuzzer.fuzz();
     }
 }

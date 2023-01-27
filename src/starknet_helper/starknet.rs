@@ -197,7 +197,10 @@ impl StarknetFuzzer {
 
         let account_address = self.get_account_address(new_account);
         let curl_addr = format!("{}/mint", &self.devnet_address);
-        let curl_content = format!("{{ \"address\": \"{}\", \"amount\": 1000000000000000000, \"lite\": false }}", &account_address);
+        let curl_content = format!(
+            "{{ \"address\": \"{}\", \"amount\": 1000000000000000000, \"lite\": false }}",
+            &account_address
+        );
         let _feed_account = Command::new("curl")
             .arg(curl_addr)
             .arg("-H")
@@ -258,6 +261,8 @@ impl StarknetFuzzer {
     }
 
     pub fn invoke_contract(&self, function_name: &String, inputs: &String) -> bool {
+        println!("invoking");
+        println!("{:?}", &self);
         let invoke_contract = Command::new("starknet")
             .env(
                 "STARKNET_WALLET",
@@ -281,8 +286,7 @@ impl StarknetFuzzer {
             .arg(&self.devnet_address)
             .output()
             .expect("failed to execute process");
-        //self.display_output(invoke_contract.clone());
-
+        self.display_output(invoke_contract.clone());
         //self.display_output(invoke_contract.clone());
         let invoke_hash = &self.get_tx_hash(invoke_contract.clone());
         if !self.check_tx_status(invoke_hash) {

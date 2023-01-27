@@ -99,15 +99,6 @@ pub struct Opt {
     #[arg(long, help = "Load config file", name = "CONFIG")]
     pub config: Option<String>,
 
-    #[arg(long, help = "Load ABI file", name = "ABI_PATH")]
-    pub abi_path: Option<String>,
-
-    #[arg(long, help = "Devnet IP", name = "DEVNET_HOST")]
-    pub devnet_host: Option<String>,
-
-    #[arg(long, help = "Devnet PORT", name = "DEVNET_PORT")]
-    pub devnet_port: Option<String>,
-
     #[arg(
         long,
         help = "Replay the corpus folder",
@@ -122,15 +113,4 @@ pub struct Opt {
         default_value = "false"
     )]
     pub minimizer: bool,
-
-    #[arg(
-        long,
-        help = "Fuzz Starknet",
-        name = "STARKNET",
-        default_value = "false"
-    )]
-    pub starknet: bool,
-
-    #[arg(long, help = "Fuzz Cairo", name = "CAIRO", default_value = "false")]
-    pub cairo: bool,
 }

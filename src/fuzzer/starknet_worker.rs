@@ -2,7 +2,7 @@ use crate::{
     fuzzer::stats::*, json::json_parser::Function, starknet_helper::starknet::StarknetFuzzer,
     starknet_helper::starknet_runner::starknet_runner,
 };
-use rand::{prelude::SliceRandom, SeedableRng, rngs::StdRng, Rng};
+use rand::{prelude::SliceRandom, rngs::StdRng, Rng, SeedableRng};
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]
