@@ -1,3 +1,4 @@
+//! This module contains the fuzzer module
 #![allow(dead_code, unused_imports)]
 
 use super::{
@@ -26,6 +27,7 @@ use std::{
 };
 
 #[derive(Clone)]
+/// This struct contains data used by the fuzzer
 pub struct Fuzzer {
     /// Shared fuzzing statistics between threads
     pub stats: Arc<Mutex<Statistics>>,
@@ -183,7 +185,7 @@ impl Fuzzer {
             running_workers: 0,
         }
     }
-
+    /// This function is used to fuzz starknet contract
     pub fn starknet_fuzz(&mut self) {
         if let (Some(contract_abi_file), Some(devnet_host), Some(devnet_port)) = (
             &self.contract_abi_file,
@@ -225,7 +227,7 @@ impl Fuzzer {
         }
     }
 
-    /// Fuzz
+    /// This function is used to fuzz cairo contract
     pub fn fuzz(&mut self) {
         // Running all the threads
         for i in 0..self.cores {
@@ -258,7 +260,7 @@ impl Fuzzer {
         self.monitor();
     }
 
-    /// Replay a given corpus.
+    /// This function is used to Replay a given corpus.
     /// If `minimizer` is set to "true" it will dump the new corpus
     pub fn replay(&mut self) {
         // Replay all inputs
@@ -337,6 +339,7 @@ impl Fuzzer {
         }
     }
 
+    ///Function used to save logs in a file
     fn logger(&self, content: &String) {
         match self.logs.clone() {
             Some(log) => match fs::metadata(log.clone()) {
@@ -362,7 +365,7 @@ impl Fuzzer {
         }
     }
 
-    /// Function to print stats of the running fuzzer
+    /// Function used to print stats of the running fuzzer
     fn monitor(&self) {
         // Monitoring loop
         loop {
