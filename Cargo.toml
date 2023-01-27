@@ -18,7 +18,7 @@ serde = "*"
 clap = { version = " 4.0.29", features = ["derive"] }
 log = "*"
 thiserror = "1.0.32"
-cairo-rs-py = {git = "https://github.com/FuzzingLabs/cairo-rs-py", rev="c168a767ea41fd04570c3d33874c0f442fca092d"}
+cairo-rs-py = {version = "0.1.0", git = "https://github.com/FuzzingLabs/cairo-rs-py", rev="c168a767ea41fd04570c3d33874c0f442fca092d"}
 pyo3 = { version = "0.16.5" }
 regex = "*"
 curl = "*"
