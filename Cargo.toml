@@ -1,10 +1,12 @@
 [package]
 name = "cairo-fuzzer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
+description = "A library for fuzzing cairo and starknet contracts"
+readme = "README.md"
+license = "AGPL-3.0"
+license-file = "LICENSE"
+repository = "https://github.com/FuzzingLabs/cairo-fuzzer"
 [dependencies]
 cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
 chrono = "0.4.19"
