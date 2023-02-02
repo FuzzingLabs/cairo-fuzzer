@@ -1,4 +1,6 @@
 //! This module contains everything related to starknet CLI. It's a helper to execute starknet CLI directly.
+#![allow(dead_code, unused_imports)]
+
 use rand::{distributions::Alphanumeric, Rng};
 use regex::Regex;
 use std::process;
