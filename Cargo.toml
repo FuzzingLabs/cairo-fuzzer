@@ -6,7 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
+cairo-vm = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="9c9435062c96e8052eacd3e58e5d37e904fee1c4"}
+cairo-felt = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="9c9435062c96e8052eacd3e58e5d37e904fee1c4"}
+
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }
