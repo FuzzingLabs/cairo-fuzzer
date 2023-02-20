@@ -1,16 +1,14 @@
-use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
-use cairo_rs::types::program::Program;
-use cairo_rs::types::relocatable::MaybeRelocatable;
-use cairo_rs::types::relocatable::Relocatable;
-use cairo_rs::vm::errors::vm_errors::VirtualMachineError;
-use cairo_rs::vm::runners::cairo_runner::CairoRunner;
-use cairo_rs::vm::vm_core::VirtualMachine;
-use cairo_rs_py::cairo_runner::PyCairoRunner;
+use cairo_vm::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
+use cairo_vm::types::program::Program;
+use cairo_vm::types::relocatable::MaybeRelocatable;
+use cairo_vm::types::relocatable::Relocatable;
+use cairo_vm::vm::errors::vm_errors::VirtualMachineError;
+use cairo_vm::vm::runners::cairo_runner::CairoRunner;
+use cairo_vm::vm::vm_core::VirtualMachine;
+
 use num_bigint::BigInt;
 use num_bigint::Sign;
-use pyo3::marker::Python;
-use pyo3::ToPyObject;
-
+use cairo_felt::Felt;
 
 pub fn runner(
     json: &String,
@@ -23,8 +21,12 @@ pub fn runner(
     // Init the cairo_runner, the VM and the hint_processor
     let mut cairo_runner =
         CairoRunner::new(&program, "all", false).expect("Failed to init the CairoRunner");
-    let mut vm = VirtualMachine::new(true);
-    let mut hint_processor = BuiltinHintProcessor::new_empty();
+    let mut vm = VirtualMachine::new(
+        BigInt::new(Sign::Plus, vec![1, 0, 0, 0, 0, 0, 17, 134217728]),
+        true,
+        Vec::new(),
+    );
+    let hint_processor = BuiltinHintProcessor::new_empty();
 
     // Set the entrypoint which is the function the user want to fuzz
     let entrypoint = match program
@@ -46,7 +48,7 @@ pub fn runner(
     // Init the vector of arguments
     let mut args = Vec::<MaybeRelocatable>::new();
     // Set the entrypoint selector
-    let entrypoint_selector = MaybeRelocatable::from(Felt::new(entrypoint)); // entry point selector => ne sert a rien
+    let entrypoint_selector = MaybeRelocatable::from(Into::<BigInt>::into(entrypoint)); // entry point selector => ne sert a rien
                                                                                         // This is used in case of implicit argument
     let value_one = MaybeRelocatable::from((2, 0));
     args.push(entrypoint_selector);
@@ -56,14 +58,14 @@ pub fn runner(
     let buf: Vec<MaybeRelocatable> = data
         .as_slice()
         .iter()
-        .map(|x| MaybeRelocatable::from(Felt::new(*x)))
+        .map(|x| MaybeRelocatable::from(Into::<BigInt>::into(*x)))
         .collect();
     // Each u8 of the data will be an argument to the function
     for val in buf {
         args.push(val)
     }
     // This function is a wrapper Fuzzinglabs made to pass the vector of MaybeRelocatable easily
-    cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &mut hint_processor)?;
+    cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &hint_processor)?;
     cairo_runner
         .relocate(&mut vm)
         .expect("Failed to relocate VM");
@@ -80,51 +82,4 @@ pub fn runner(
         .expect("Failed to get running output from the VM");
 
     return Ok(Some(ret));
-}
-
-pub fn py_runner(
-    json: &String,
-    func_name: &String,
-    entrypoint: &String,
-    data: &Vec<u8>,
-    _starknet: bool,
-) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
-    let mut runner = PyCairoRunner::new(
-        json.clone(),
-        Some(func_name.clone()),
-        Some("all".to_string()),
-        false,
-    )
-    .unwrap();
-    runner.initialize_segments();
-    let mut ret = Vec::<(Relocatable, Relocatable)>::new();
-    return Python::with_gil(
-        |py| -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
-            let args = data.to_object(py);
-            // builtin init // add this to the beginning of the args
-            let _builtins = runner.get_program_builtins_initial_stack(py);
-            runner
-                .run_from_entrypoint(
-                    py,
-                    py.eval(&entrypoint, None, None).unwrap(),
-                    args,
-                    None,
-                    None,
-                    Some(false),
-                    None,
-                    None,
-                )
-                .expect("Failed to run from entrypoint");
-            let pyvm = runner.pyvm;
-            let get_vm = pyvm.get_vm().clone();
-            let vm = get_vm.try_borrow().expect("Failed to get the VM");
-            let trace = vm
-                .get_trace()
-                .expect("Failed to get running trace from the VM");
-            for i in trace {
-                ret.push((i.fp.clone(), i.pc.clone()));
-            }
-            return Ok(Some(ret));
-        },
-    );
 }

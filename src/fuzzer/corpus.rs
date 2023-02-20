@@ -194,8 +194,8 @@ impl InputFile {
     /// Function to dump the inputs corpus
     pub fn dump_json(&self) {
         let _ = create_dir(&self.workspace);
-        let _ = create_dir(format!("{}/{}", &self.workspace, &self.name));
-        let _ = create_dir(format!("{}/{}/inputs", &self.workspace, &self.name));
+        let _ = create_dir(format!("{}/{}", &self.workspace, self.name.clone()));
+        let _ = create_dir(format!("{}/{}/inputs", &self.workspace, self.name.clone()));
         //let _ = create_dir(self.workspace.input_folder);
         let buf = Vec::new();
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");

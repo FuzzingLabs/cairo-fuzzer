@@ -14,7 +14,6 @@ pub struct Config {
     pub crash_folder: String,
     pub cores: i32,
     pub logs: bool,
-    pub stdout: bool,
     pub seed: Option<u64>,
     pub run_time: Option<u64>,
     pub replay: bool,

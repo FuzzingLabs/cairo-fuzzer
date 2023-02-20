@@ -6,9 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cairo-vm = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="9c9435062c96e8052eacd3e58e5d37e904fee1c4"}
-cairo-felt = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="9c9435062c96e8052eacd3e58e5d37e904fee1c4"}
-
+cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", rev="d938ffb4a36e3e266bb51955d4a76cdae38e44c2"}
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }
@@ -17,13 +15,3 @@ serde = "*"
 clap = { version = " 4.0.29", features = ["derive"] }
 log = "*"
 thiserror = "1.0.32"
-cairo-rs-py = {git = "https://github.com/FuzzingLabs/cairo-rs-py", rev="c168a767ea41fd04570c3d33874c0f442fca092d"}
-pyo3 = { version = "0.16.5" }
-
-[features]
-extension = ["pyo3/num-bigint", "pyo3/extension-module"]
-default = ["pyo3/num-bigint", "pyo3/auto-initialize"]
-
-[[bin]]
-name = "runner-test"
-path = "src/tests/runner.rs"

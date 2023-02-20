@@ -1,13 +1,9 @@
-use std::io::Write;
 use std::{
-    fs::{self, create_dir, File, OpenOptions},
-    path::Path,
+    fs::{self, File},
     process,
     sync::{Arc, Mutex},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-
-use chrono::{DateTime, Utc};
 
 use crate::{
     cairo_vm::cairo_types::Felt,
@@ -20,6 +16,7 @@ use super::{
     corpus::{CrashFile, InputFile},
     stats::Statistics,
 };
+use std::io::Write;
 
 #[derive(Clone)]
 pub struct Fuzzer {
@@ -34,8 +31,7 @@ pub struct Fuzzer {
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs
-    pub logs: Option<String>,
-    pub stdout: bool,
+    pub logs: bool,
     /// Replay mode
     pub replay: bool,
     /// Corpus minimization
@@ -61,9 +57,6 @@ impl Fuzzer {
     pub fn new(config: &Config) -> Self {
         let stats = Arc::new(Mutex::new(Statistics::default()));
         // Set seed if provided or generate a new seed using `SystemTime`
-        println!("\t\t\t\t\t\t\tStdout: {}", config.stdout);
-        println!("\t\t\t\t\t\t\tLog file: {}", config.logs);
-
         let seed = match config.seed {
             Some(val) => val,
             None => SystemTime::now()
@@ -81,7 +74,6 @@ impl Fuzzer {
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
             None => {
-                println!("Could not parse json artifact properly");
                 process::exit(1);
             }
         };
@@ -131,25 +123,12 @@ impl Fuzzer {
         let inputs = Arc::new(Mutex::new(inputs));
         let crashes = Arc::new(Mutex::new(crashes));
 
-        let d = SystemTime::now();
-        let datetime = DateTime::<Utc>::from(d);
-        let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
-        let _ = create_dir(&config.workspace);
-        let _ = create_dir(format!("{}/{}", &config.workspace, &config.function_name));
-        let mut file: Option<String> = None;
-        if config.logs {
-            file = Some(format!(
-                "{}/{}/logs_{}.txt",
-                &config.workspace, &config.function_name, timestamp_str
-            ));
-        }
         // Setup the fuzzer
         Fuzzer {
             // Init stats struct
             stats: stats,
             cores: config.cores,
-            logs: file,
-            stdout: config.stdout,
+            logs: config.logs,
             run_time: config.run_time,
             replay: config.replay,
             minimizer: config.minimizer,
@@ -191,6 +170,7 @@ impl Fuzzer {
                 );
                 worker.fuzz();
             });
+            //println!("Thread {} Spawned", i);
             self.running_workers += 1;
         }
         println!("\t\t\t\t\t\t\tRunning {} threads", self.running_workers);
@@ -278,33 +258,13 @@ impl Fuzzer {
         }
     }
 
-    fn logger(&self, content: &String) {
-        match self.logs.clone() {
-            Some(log) => match fs::metadata(log.clone()) {
-                Ok(_) => {
-                    let mut file = OpenOptions::new()
-                        .write(true)
-                        .append(true)
-                        .open(&log)
-                        .unwrap();
-                    file.write_all(content.as_bytes()).unwrap();
-                }
-                Err(_e) => {
-                    let filename = Path::new(&log);
-                    let mut file = File::create(filename).unwrap();
-                    write!(file, "{}", content).expect("Failed to write logs in log file");
-                }
-            },
-            None => (),
-        }
-        match self.stdout {
-            true => println!("{}", content),
-            false => (),
-        }
-    }
-
     /// Function to print stats of the running fuzzer
     fn monitor(&self) {
+        let mut log = None;
+        if self.logs {
+            log = Some(File::create("fuzz_stats.txt").expect("Failed to lock stats mutex"));
+        }
+
         // Monitoring loop
         loop {
             // wait 1 second
@@ -319,7 +279,7 @@ impl Fuzzer {
 
                 // number of executions
                 let fuzz_case = stats.fuzz_cases;
-                self.logger(&format!(
+                print!(
                     "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
                             {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
                     uptime,
@@ -329,8 +289,23 @@ impl Fuzzer {
                     stats.input_len,
                     stats.crashes,
                     stats.crash_db.len()
-                ));
+                );
                 // Writing inside logging file
+                if let Some(ref mut file) = log {
+                    write!(
+                        file,
+                        "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+                        uptime,
+                        fuzz_case,
+                        stats.coverage_db.len(),
+                        stats.input_len,
+                        stats.crashes,
+                        stats.crash_db.len()
+                    )
+                    .expect("Failed to write logs in log file");
+                    file.flush().expect("Failed to flush the file");
+                }
+
                 // Only for replay: all thread are finished
                 if self.replay && stats.threads_finished == self.running_workers {
                     break;
@@ -361,6 +336,7 @@ mod tests {
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
+        assert_eq!(fuzzer.logs, false);
         assert_eq!(fuzzer.function.name, "test_symbolic_execution");
     }
 
@@ -410,7 +386,6 @@ mod tests {
             crash_file,
             cores,
             logs,
-            stdout: true,
             seed,
             run_time,
             replay,
@@ -418,6 +393,7 @@ mod tests {
         };
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
+        assert_eq!(fuzzer.logs, false);
         assert_eq!(fuzzer.function.name, "test_symbolic_execution");
     }
 
@@ -446,7 +422,6 @@ mod tests {
             crash_file,
             cores,
             logs,
-            stdout: true,
             seed,
             run_time,
             replay,
@@ -497,7 +472,6 @@ mod tests {
             crash_file,
             cores,
             logs,
-            stdout: true,
             seed,
             run_time,
             replay,

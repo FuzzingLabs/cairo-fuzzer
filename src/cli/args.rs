@@ -76,14 +76,6 @@ pub struct Opt {
 
     #[arg(
         long,
-        help = "Enable fuzzer logs in STDOUT",
-        name = "STDOUT",
-        default_value = "false"
-    )]
-    pub stdout: bool,
-
-    #[arg(
-        long,
         help = "Set a custom seed (only applicable for 1 core run)",
         name = "SEED"
     )]
