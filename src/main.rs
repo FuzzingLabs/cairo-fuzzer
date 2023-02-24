@@ -8,6 +8,7 @@ mod custom_rand;
 mod fuzzer;
 mod json;
 mod mutator;
+mod starknet;
 
 use cli::args::Opt;
 use cli::config::Config;

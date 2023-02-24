@@ -5,9 +5,10 @@ use std::sync::{Arc, Mutex};
 use super::corpus::{CrashFile, InputFile};
 use super::stats::*;
 
-use crate::cairo_vm::cairo_runner::runner;
+use crate::cairo_vm::cairo_runner;
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
+use crate::starknet::starknet_runner;
 
 use thiserror::Error;
 
@@ -24,6 +25,7 @@ pub struct Worker {
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
+    starknet: bool,
 }
 
 impl Worker {
@@ -35,6 +37,7 @@ impl Worker {
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
+        starknet: bool,
     ) -> Self {
         Worker {
             stats,
@@ -44,6 +47,7 @@ impl Worker {
             seed: seed,
             input_file,
             crash_file,
+            starknet,
         }
     }
 
@@ -93,7 +97,11 @@ impl Worker {
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
-            match runner(&self.contents, &self.function.name, &mutator.input) {
+            match if !self.starknet {
+                cairo_runner::runner(&self.contents, &self.function.name, &mutator.input)
+            } else {
+                starknet_runner::runner(&self.contents, &self.function.entrypoint, &mutator.input)
+            } {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
@@ -216,7 +224,7 @@ impl Worker {
 
         for input in inputs {
             let fuzz_input = input.clone();
-            match runner(&self.contents, &self.function.name, &input.clone()) {
+            match cairo_runner::runner(&self.contents, &self.function.name, &input.clone()) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {

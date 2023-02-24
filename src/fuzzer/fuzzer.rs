@@ -9,7 +9,7 @@ use crate::{
     cairo_vm::cairo_types::Felt,
     cli::config::Config,
     fuzzer::worker::Worker,
-    json::json_parser::{parse_json, Function},
+    json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
 use super::{
@@ -50,6 +50,8 @@ pub struct Fuzzer {
     pub start_time: Instant,
     /// Running workers
     pub running_workers: u64,
+    /// Starknet or cairo contract
+    pub starknet: bool,
 }
 
 impl Fuzzer {
@@ -73,11 +75,14 @@ impl Fuzzer {
         // TODO - remove when support multiple txs
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
-            None => {
-                process::exit(1);
-            }
+            None => match parse_starknet_json(&contents, &config.function_name) {
+                Some(func) => func,
+                None => {
+                    eprintln!("Error: Could not parse json file");
+                    process::exit(1)},
+            },
         };
-
+        println!("parsing done");
         // Load inputs from the input file if provided
         let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
@@ -134,7 +139,7 @@ impl Fuzzer {
             minimizer: config.minimizer,
             contract_file: config.contract_file.clone(),
             contract_content: contents,
-            function: function,
+            function: function.clone(),
             // Init starting time
             start_time: Instant::now(),
             seed: seed,
@@ -142,6 +147,7 @@ impl Fuzzer {
             crash_file: crashes,
             workspace: config.workspace.clone(),
             running_workers: 0,
+            starknet: function._starknet,
         }
     }
 
@@ -156,7 +162,7 @@ impl Fuzzer {
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
             let seed = self.seed + (i as u64); // create unique seed per worker
-
+            let starknet = self.starknet;
             // Spawn threads
             let _ = std::thread::spawn(move || {
                 let worker = Worker::new(
@@ -167,6 +173,7 @@ impl Fuzzer {
                     seed,
                     input_file,
                     crash_file,
+                    starknet,
                 );
                 worker.fuzz();
             });
@@ -212,6 +219,7 @@ impl Fuzzer {
             let seed = self.seed;
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
+            let starknet = self.starknet.clone();
 
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
@@ -223,6 +231,7 @@ impl Fuzzer {
                     seed,
                     input_file,
                     crash_file,
+                    starknet,
                 );
                 worker.replay(chunk);
             }));

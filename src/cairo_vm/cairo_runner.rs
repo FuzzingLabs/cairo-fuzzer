@@ -1,20 +1,17 @@
-use cairo_vm::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
-use cairo_vm::types::program::Program;
-use cairo_vm::types::relocatable::MaybeRelocatable;
-use cairo_vm::types::relocatable::Relocatable;
-use cairo_vm::vm::errors::vm_errors::VirtualMachineError;
-use cairo_vm::vm::runners::cairo_runner::CairoRunner;
-use cairo_vm::vm::vm_core::VirtualMachine;
+use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
+use cairo_rs::types::program::Program;
+use cairo_rs::types::relocatable::MaybeRelocatable;
+use cairo_rs::types::relocatable::Relocatable;
+use cairo_rs::vm::runners::cairo_runner::CairoRunner;
+use cairo_rs::vm::vm_core::VirtualMachine;
 
-use num_bigint::BigInt;
-use num_bigint::Sign;
-use cairo_felt::Felt;
+use felt::Felt;
 
 pub fn runner(
     json: &String,
     func_name: &String,
     data: &Vec<u8>,
-) -> Result<Option<Vec<(Relocatable, Relocatable)>>, VirtualMachineError> {
+) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
     // Init program from the json content
     let program =
         Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
@@ -45,7 +42,7 @@ pub fn runner(
     let mut args = Vec::<MaybeRelocatable>::new();
     // Set the entrypoint selector
     let entrypoint_selector = MaybeRelocatable::from(Felt::new(entrypoint)); // entry point selector => ne sert a rien
-                                                                                        // This is used in case of implicit argument
+                                                                             // This is used in case of implicit argument
     let value_one = MaybeRelocatable::from((2, 0));
     args.push(entrypoint_selector);
     args.push(value_one);
@@ -61,7 +58,10 @@ pub fn runner(
         args.push(val)
     }
     // This function is a wrapper Fuzzinglabs made to pass the vector of MaybeRelocatable easily
-    cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &mut hint_processor)?;
+    match cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &mut hint_processor){
+        Ok(()) => (),
+        Err(e) => return Err(e.to_string()),
+    };
     cairo_runner
         .relocate(&mut vm)
         .expect("Failed to relocate VM");
