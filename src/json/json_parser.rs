@@ -36,8 +36,8 @@ fn get_decorators(decorators: &Value) -> Vec<String> {
 
 fn get_pc_from_wrapper(identifiers: &Value, function_name: &String) -> String {
     for (key, value) in identifiers
-    .as_object()
-    .expect("Failed to get identifier from json")
+        .as_object()
+        .expect("Failed to get identifier from json")
     {
         let key_split = key.split(".").collect::<Vec<&str>>();
         if value["type"] == "function" && key.contains("wrapper") && key_split.len() == 2 {
@@ -45,9 +45,8 @@ fn get_pc_from_wrapper(identifiers: &Value, function_name: &String) -> String {
             if name == function_name {
                 return value["pc"].to_string();
             }
-        
+        }
     }
-}
     return "".to_string();
 }
 

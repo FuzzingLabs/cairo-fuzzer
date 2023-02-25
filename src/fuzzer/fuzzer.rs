@@ -79,7 +79,8 @@ impl Fuzzer {
                 Some(func) => func,
                 None => {
                     eprintln!("Error: Could not parse json file");
-                    process::exit(1)},
+                    process::exit(1)
+                }
             },
         };
         println!("parsing done");

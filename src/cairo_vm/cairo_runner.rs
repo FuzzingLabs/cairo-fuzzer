@@ -58,7 +58,13 @@ pub fn runner(
         args.push(val)
     }
     // This function is a wrapper Fuzzinglabs made to pass the vector of MaybeRelocatable easily
-    match cairo_runner.run_from_entrypoint_fuzz(entrypoint, args, true, &mut vm, &mut hint_processor){
+    match cairo_runner.run_from_entrypoint_fuzz(
+        entrypoint,
+        args,
+        true,
+        &mut vm,
+        &mut hint_processor,
+    ) {
         Ok(()) => (),
         Err(e) => return Err(e.to_string()),
     };

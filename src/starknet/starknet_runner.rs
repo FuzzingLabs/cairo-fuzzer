@@ -1,4 +1,4 @@
-use cairo_rs::{types::relocatable::Relocatable};
+use cairo_rs::types::relocatable::Relocatable;
 use felt::Felt;
 use num_traits::Zero;
 use starknet_rs::{
@@ -18,7 +18,7 @@ use starknet_rs::{
     starknet_storage::dict_storage::DictStorage,
     utils::Address,
 };
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 pub fn runner(
     json: &String,
@@ -31,14 +31,14 @@ pub fn runner(
 
     let contract_class = ContractClass::from_string(json).expect("could not get contractclass");
     let entry_points_by_type = contract_class.entry_points_by_type().clone();
-/*     println!("==== DEBUG entry_points_by_type ====");
+    /*     println!("==== DEBUG entry_points_by_type ====");
     println!("{:#?}", entry_points_by_type);
     println!("==== DEBUG entry_points_by_type ====\n"); */
     let entrypoint_selector = entry_points_by_type
         .get(&EntryPointType::External) // Should we call only "External" functions?
         .unwrap()
         .iter()
-        .find(|entrypoint| &entrypoint.get_offset() == func_entrypoint )
+        .find(|entrypoint| &entrypoint.get_offset() == func_entrypoint)
         .unwrap()
         .selector()
         .clone();
@@ -83,7 +83,7 @@ pub fn runner(
     let exec_entry_point = ExecutionEntryPoint::new(
         address,
         calldata.clone(),
-        entrypoint_selector,//entrypoint_selector.clone(),
+        entrypoint_selector, //entrypoint_selector.clone(),
         caller_address,
         entry_point_type,
         Some(CallType::Delegate),
@@ -105,15 +105,15 @@ pub fn runner(
     );
     let mut resources_manager = ExecutionResourcesManager::default(); //  Does it depends on the contract or the default configuration is enough ?
     match exec_entry_point.execute(
-            &mut state,
-            &general_config,
-            &mut resources_manager,
-            &tx_execution_context,
-        ) {
-            Ok(exec_info) => return Ok(Some(exec_info.trace)),
-            Err(e) => return Err(e.to_string()),
-        };
-/*     println!("==== DEBUG exec_info ====");
+        &mut state,
+        &general_config,
+        &mut resources_manager,
+        &tx_execution_context,
+    ) {
+        Ok(exec_info) => return Ok(Some(exec_info.trace)),
+        Err(e) => return Err(e.to_string()),
+    };
+    /*     println!("==== DEBUG exec_info ====");
     println!("{:#?}", exec_info);
     println!("==== DEBUG exec_info ====\n"); */
 }
