@@ -1,4 +1,5 @@
-use crate::cairo_vm::cairo_types::Felt;
+//use crate::cairo_vm::cairo_types::Felt;
+use felt::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use std::sync::{Arc, Mutex};
 
@@ -77,7 +78,7 @@ impl Worker {
             } else {
                 mutator
                     .input
-                    .extend_from_slice(&vec![b'\0' as Felt; self.function.num_args as usize]);
+                    .extend_from_slice(&vec![Felt::from(b'\0'); self.function.num_args as usize]);
             }
 
             // Corrupt it with 4 mutation passes

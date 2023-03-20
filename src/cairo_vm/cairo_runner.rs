@@ -10,8 +10,9 @@ use felt::Felt;
 pub fn runner(
     json: &String,
     func_name: &String,
-    data: &Vec<u8>,
+    data: &Vec<Felt>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
+    //println!("data => {:#?}", data);
     // Init program from the json content
     let program =
         Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
@@ -51,7 +52,7 @@ pub fn runner(
     let buf: Vec<MaybeRelocatable> = data
         .as_slice()
         .iter()
-        .map(|x| MaybeRelocatable::from(Felt::new(*x)))
+        .map(|x| MaybeRelocatable::from(x))
         .collect();
     // Each u8 of the data will be an argument to the function
     for val in buf {

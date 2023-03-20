@@ -23,7 +23,7 @@ use std::collections::HashMap;
 pub fn runner(
     json: &String,
     func_entrypoint: &String,
-    data: &Vec<u8>,
+    data: &Vec<Felt>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
     // ---------------------------------------------------------
     //  Create program and entry point types for contract class
@@ -74,7 +74,7 @@ pub fn runner(
 
     let mut calldata = [].to_vec();
     for i in data {
-        calldata.push(Felt::from(*i));
+        calldata.push((*i).clone());
     }
     let caller_address = Address(0000.into()); // Do we really care about it ?
     let entry_point_type = EntryPointType::External;

@@ -1,4 +1,5 @@
-use crate::cairo_vm::cairo_types::Felt;
+//use crate::cairo_vm::cairo_types::Felt;
+use felt::Felt;
 use crate::json::json_parser::Function;
 use chrono::DateTime;
 use chrono::Utc;
@@ -83,7 +84,7 @@ impl InputFile {
                     .as_array()
                     .expect("Failed to get input as array")
                     .iter()
-                    .map(|input| input.as_u64().expect("Failed to get input as u64") as Felt)
+                    .map(|input| Felt::from(input.as_u64().expect("Failed to get input as u64")))
                     .collect()
             })
             .collect();
@@ -164,7 +165,7 @@ impl InputFile {
                                 .expect("Failed to get input as array")
                                 .iter()
                                 .map(|input| {
-                                    input.as_u64().expect("Failed to get input as u64") as Felt
+                                    Felt::from(input.as_u64().expect("Failed to get input as u64"))
                                 })
                                 .collect()
                         })
@@ -259,7 +260,7 @@ impl CrashFile {
                     .as_array()
                     .expect("Failed to get input as array")
                     .iter()
-                    .map(|input| input.as_u64().expect("Failed to get input as u64") as Felt)
+                    .map(|input| Felt::from(input.as_u64().expect("Failed to get input as u64")))
                     .collect()
             })
             .collect();
@@ -340,7 +341,7 @@ impl CrashFile {
                                 .expect("Failed to get input as array")
                                 .iter()
                                 .map(|input| {
-                                    input.as_u64().expect("Failed to get input as u64") as Felt
+                                    Felt::from(input.as_u64().expect("Failed to get input as u64"))
                                 })
                                 .collect()
                         })

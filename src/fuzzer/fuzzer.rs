@@ -6,11 +6,12 @@ use std::{
 };
 
 use crate::{
-    cairo_vm::cairo_types::Felt,
     cli::config::Config,
     fuzzer::worker::Worker,
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
+
+use felt::Felt;
 
 use super::{
     corpus::{CrashFile, InputFile},
