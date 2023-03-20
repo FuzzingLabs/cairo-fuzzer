@@ -8,14 +8,14 @@ use cairo_rs::vm::vm_core::VirtualMachine;
 use felt::Felt;
 
 pub fn runner(
-    json: &String,
+    program: &Program,
     func_name: &String,
     data: &Vec<Felt>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
     //println!("data => {:#?}", data);
     // Init program from the json content
-    let program =
-        Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
+    //let program =
+    //    Program::from_string(json, Some(&func_name)).expect("Failed to deserialize Program");
     // Init the cairo_runner, the VM and the hint_processor
     let mut cairo_runner =
         CairoRunner::new(&program, "all", false).expect("Failed to init the CairoRunner");

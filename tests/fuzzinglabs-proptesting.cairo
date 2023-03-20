@@ -1,5 +1,5 @@
 %builtins output
-func Fuzz_symbolic_execution(
+func Fuzz_one(
     f: felt,
     u: felt,
     z: felt,
@@ -38,7 +38,48 @@ func Fuzz_symbolic_execution(
     return ();
 }
 
-func Fuzz_symbolic_execution_two(
+
+func Fuzz_two(
+    f: felt,
+    u: felt,
+    z: felt,
+    z2: felt,
+    i: felt,
+    n: felt,
+    g: felt,
+    l: felt,
+    a: felt,
+    b: felt,
+    s: felt,
+) {
+    if (f == 'f') {
+        if (u == 'u') {
+            if (z == 'z') {
+                if (z2 == 'z') {
+                    if (i == 'i') {
+                        if (n == 'n') {
+                            if (g == 'g') {
+                                if (l == 'l') {
+                                    if (a == 'a') {
+                                        if (b == 'b') {
+                                            if (s == 's') {
+                                                assert 0 = 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ();
+}
+
+
+func Fuzz_three(
     f: felt,
     u: felt,
     z: felt,

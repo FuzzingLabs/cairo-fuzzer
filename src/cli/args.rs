@@ -105,4 +105,19 @@ pub struct Opt {
         default_value = "false"
     )]
     pub minimizer: bool,
+    #[arg(
+        long,
+        help = "Property Testing",
+        name = "PROPTESTING",
+        default_value = "false"
+    )]
+    pub proptesting: bool,
+
+    #[arg(
+        long,
+        help = "Iteration Number",
+        name = "ITER",
+        default_value = "2500000"
+    )]
+    pub iter: u64,
 }

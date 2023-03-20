@@ -1,6 +1,7 @@
 //use crate::cairo_vm::cairo_types::Felt;
-use felt::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use cairo_rs::types::program::Program;
+use felt::Felt;
 use std::sync::{Arc, Mutex};
 
 use super::corpus::{CrashFile, InputFile};
@@ -22,11 +23,13 @@ pub struct Worker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
     contents: String,
+    program: Program,
     function: Function,
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
     starknet: bool,
+    iter: u64,
 }
 
 impl Worker {
@@ -34,21 +37,25 @@ impl Worker {
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
         contents: String,
+        program: Program,
         function: Function,
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
         starknet: bool,
+        iter: u64,
     ) -> Self {
         Worker {
             stats,
             worker_id,
             contents,
+            program,
             function,
             seed: seed,
             input_file,
             crash_file,
             starknet,
+            iter,
         }
     }
 
@@ -99,7 +106,7 @@ impl Worker {
 
             // run the cairo vm
             match if !self.starknet {
-                cairo_runner::runner(&self.contents, &self.function.name, &mutator.input)
+                cairo_runner::runner(&self.program, &self.function.name, &mutator.input)
             } else {
                 starknet_runner::runner(&self.contents, &self.function.entrypoint, &mutator.input)
             } {
@@ -123,6 +130,9 @@ impl Worker {
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
+                        if self.iter > 0 && self.iter < stats.fuzz_cases {
+                            return;
+                        }
                         // verify if new input has been found by other fuzzers
                         // if so, update our statistics
                         if local_stats.input_len != stats.input_len {
@@ -225,7 +235,7 @@ impl Worker {
 
         for input in inputs {
             let fuzz_input = input.clone();
-            match cairo_runner::runner(&self.contents, &self.function.name, &input.clone()) {
+            match cairo_runner::runner(&self.program, &self.function.name, &input.clone()) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {

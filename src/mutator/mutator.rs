@@ -21,8 +21,7 @@
  * permissions and limitations under the License.
  *
  */
-// No need for std
-#![no_std]
+#![allow(dead_code)]
 extern crate alloc;
 
 use super::magic_values;

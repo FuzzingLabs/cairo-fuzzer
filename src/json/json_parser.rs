@@ -106,6 +106,24 @@ pub fn parse_starknet_json(data: &String, function_name: &String) -> Option<Func
     return None;
 }
 
+/// Function to get all property testing functions
+pub fn get_proptesting_functions(data: &String) -> Vec<String> {
+    let mut functions: Vec<String> = Vec::new();
+    let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    if let Some(identifiers) = data.get("identifiers") {
+        for (key, value) in identifiers
+            .as_object()
+            .expect("Failed to get identifier from json")
+        {
+            let name = key.split(".").last().unwrap().to_string();
+            if value["type"] == "function" && name.contains("Fuzz_") {
+                functions.push(name);
+            }
+        }
+    }
+    return functions;
+}
+
 /// Function to parse cairo json artifact
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let starknet = false;

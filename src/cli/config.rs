@@ -18,6 +18,8 @@ pub struct Config {
     pub run_time: Option<u64>,
     pub replay: bool,
     pub minimizer: bool,
+    pub proptesting: bool,
+    pub iter: u64,
 }
 
 impl Config {

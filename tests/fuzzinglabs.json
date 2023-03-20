@@ -54,6 +54,55 @@
         "0x400680017fff7fff",
         "0x0",
         "0x208b7fff7fff7ffe",
+        "0x482680017ff38000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff9b",
+        "0x20680017fff7fff",
+        "0x2e",
+        "0x482680017ff48000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff8c",
+        "0x20680017fff7fff",
+        "0x2a",
+        "0x482680017ff58000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff87",
+        "0x20680017fff7fff",
+        "0x26",
+        "0x482680017ff68000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff87",
+        "0x20680017fff7fff",
+        "0x22",
+        "0x482680017ff78000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff98",
+        "0x20680017fff7fff",
+        "0x1e",
+        "0x482680017ff88000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff93",
+        "0x20680017fff7fff",
+        "0x1a",
+        "0x482680017ff98000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff9a",
+        "0x20680017fff7fff",
+        "0x16",
+        "0x482680017ffa8000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff95",
+        "0x20680017fff7fff",
+        "0x12",
+        "0x482680017ffb8000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffffa0",
+        "0x20680017fff7fff",
+        "0xe",
+        "0x482680017ffc8000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff9f",
+        "0x20680017fff7fff",
+        "0xa",
+        "0x482680017ffd8000",
+        "0x800000000000010ffffffffffffffffffffffffffffffffffffffffffffff8e",
+        "0x20680017fff7fff",
+        "0x6",
+        "0x480680017fff8000",
+        "0x2",
+        "0x400680017fff7fff",
+        "0x0",
+        "0x208b7fff7fff7ffe",
         "0x480a7ffd7fff8000",
         "0x208b7fff7fff7ffe"
     ],
@@ -63,7 +112,7 @@
             "0": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -71,17 +120,17 @@
                         "offset": 0
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -89,7 +138,7 @@
                     "end_col": 17,
                     "end_line": 15,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 9,
                     "start_line": 15
@@ -98,7 +147,7 @@
             "2": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -106,18 +155,18 @@
                         "offset": 1
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -125,7 +174,7 @@
                     "end_col": 7,
                     "end_line": 15,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 5,
                     "start_line": 15
@@ -134,7 +183,7 @@
             "4": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -142,18 +191,18 @@
                         "offset": 1
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -161,7 +210,7 @@
                     "end_col": 21,
                     "end_line": 16,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 13,
                     "start_line": 16
@@ -170,7 +219,7 @@
             "6": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -178,19 +227,19 @@
                         "offset": 2
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -198,7 +247,7 @@
                     "end_col": 11,
                     "end_line": 16,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 9,
                     "start_line": 16
@@ -207,7 +256,7 @@
             "8": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -215,19 +264,19 @@
                         "offset": 2
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -235,7 +284,7 @@
                     "end_col": 25,
                     "end_line": 17,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 17,
                     "start_line": 17
@@ -244,7 +293,7 @@
             "10": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -252,20 +301,20 @@
                         "offset": 3
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -273,7 +322,7 @@
                     "end_col": 15,
                     "end_line": 17,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 13,
                     "start_line": 17
@@ -282,7 +331,7 @@
             "12": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -290,20 +339,20 @@
                         "offset": 3
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -311,7 +360,7 @@
                     "end_col": 30,
                     "end_line": 18,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 21,
                     "start_line": 18
@@ -320,7 +369,7 @@
             "14": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -328,21 +377,21 @@
                         "offset": 4
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -350,7 +399,7 @@
                     "end_col": 19,
                     "end_line": 18,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 17,
                     "start_line": 18
@@ -359,7 +408,7 @@
             "16": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -367,21 +416,21 @@
                         "offset": 4
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -389,7 +438,7 @@
                     "end_col": 33,
                     "end_line": 19,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 25,
                     "start_line": 19
@@ -398,7 +447,7 @@
             "18": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -406,22 +455,22 @@
                         "offset": 5
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -429,7 +478,7 @@
                     "end_col": 23,
                     "end_line": 19,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 21,
                     "start_line": 19
@@ -438,7 +487,7 @@
             "20": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -446,22 +495,22 @@
                         "offset": 5
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -469,7 +518,7 @@
                     "end_col": 37,
                     "end_line": 20,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 29,
                     "start_line": 20
@@ -478,7 +527,7 @@
             "22": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -486,23 +535,23 @@
                         "offset": 6
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -510,7 +559,7 @@
                     "end_col": 27,
                     "end_line": 20,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 25,
                     "start_line": 20
@@ -519,7 +568,7 @@
             "24": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -527,23 +576,23 @@
                         "offset": 6
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -551,7 +600,7 @@
                     "end_col": 41,
                     "end_line": 21,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 33,
                     "start_line": 21
@@ -560,7 +609,7 @@
             "26": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -568,24 +617,24 @@
                         "offset": 7
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -593,7 +642,7 @@
                     "end_col": 31,
                     "end_line": 21,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 29,
                     "start_line": 21
@@ -602,7 +651,7 @@
             "28": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -610,24 +659,24 @@
                         "offset": 7
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -635,7 +684,7 @@
                     "end_col": 45,
                     "end_line": 22,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 37,
                     "start_line": 22
@@ -644,7 +693,7 @@
             "30": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -652,25 +701,25 @@
                         "offset": 8
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -678,7 +727,7 @@
                     "end_col": 35,
                     "end_line": 22,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 33,
                     "start_line": 22
@@ -687,7 +736,7 @@
             "32": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -695,25 +744,25 @@
                         "offset": 8
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -721,7 +770,7 @@
                     "end_col": 49,
                     "end_line": 23,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 41,
                     "start_line": 23
@@ -730,7 +779,7 @@
             "34": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -738,26 +787,26 @@
                         "offset": 9
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -765,7 +814,7 @@
                     "end_col": 39,
                     "end_line": 23,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 37,
                     "start_line": 23
@@ -774,7 +823,7 @@
             "36": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -782,26 +831,26 @@
                         "offset": 9
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -809,7 +858,7 @@
                     "end_col": 53,
                     "end_line": 24,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 45,
                     "start_line": 24
@@ -818,7 +867,7 @@
             "38": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -826,27 +875,27 @@
                         "offset": 10
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.__temp9": 20,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.__temp9": 20,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -854,7 +903,7 @@
                     "end_col": 43,
                     "end_line": 24,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 41,
                     "start_line": 24
@@ -863,7 +912,7 @@
             "40": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -871,27 +920,27 @@
                         "offset": 10
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.__temp9": 20,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.__temp9": 20,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -899,7 +948,7 @@
                     "end_col": 57,
                     "end_line": 25,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 49,
                     "start_line": 25
@@ -908,7 +957,7 @@
             "42": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -916,28 +965,28 @@
                         "offset": 11
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp10": 21,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.__temp9": 20,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp10": 21,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.__temp9": 20,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -945,7 +994,7 @@
                     "end_col": 47,
                     "end_line": 25,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 45,
                     "start_line": 25
@@ -954,7 +1003,7 @@
             "44": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -962,28 +1011,28 @@
                         "offset": 11
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp10": 21,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.__temp9": 20,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp10": 21,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.__temp9": 20,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -991,7 +1040,7 @@
                     "end_col": 61,
                     "end_line": 26,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 60,
                     "start_line": 26
@@ -1000,7 +1049,7 @@
             "46": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -1008,29 +1057,29 @@
                         "offset": 12
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.__temp1": 12,
-                        "__main__.test_symbolic_execution.__temp10": 21,
-                        "__main__.test_symbolic_execution.__temp11": 22,
-                        "__main__.test_symbolic_execution.__temp2": 13,
-                        "__main__.test_symbolic_execution.__temp3": 14,
-                        "__main__.test_symbolic_execution.__temp4": 15,
-                        "__main__.test_symbolic_execution.__temp5": 16,
-                        "__main__.test_symbolic_execution.__temp6": 17,
-                        "__main__.test_symbolic_execution.__temp7": 18,
-                        "__main__.test_symbolic_execution.__temp8": 19,
-                        "__main__.test_symbolic_execution.__temp9": 20,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.__temp1": 12,
+                        "__main__.Fuzz_symbolic_execution.__temp10": 21,
+                        "__main__.Fuzz_symbolic_execution.__temp11": 22,
+                        "__main__.Fuzz_symbolic_execution.__temp2": 13,
+                        "__main__.Fuzz_symbolic_execution.__temp3": 14,
+                        "__main__.Fuzz_symbolic_execution.__temp4": 15,
+                        "__main__.Fuzz_symbolic_execution.__temp5": 16,
+                        "__main__.Fuzz_symbolic_execution.__temp6": 17,
+                        "__main__.Fuzz_symbolic_execution.__temp7": 18,
+                        "__main__.Fuzz_symbolic_execution.__temp8": 19,
+                        "__main__.Fuzz_symbolic_execution.__temp9": 20,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -1038,7 +1087,7 @@
                     "end_col": 62,
                     "end_line": 26,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 49,
                     "start_line": 26
@@ -1047,7 +1096,7 @@
             "48": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.test_symbolic_execution"
+                    "__main__.Fuzz_symbolic_execution"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -1055,18 +1104,18 @@
                         "offset": 0
                     },
                     "reference_ids": {
-                        "__main__.test_symbolic_execution.__temp0": 11,
-                        "__main__.test_symbolic_execution.a": 8,
-                        "__main__.test_symbolic_execution.b": 9,
-                        "__main__.test_symbolic_execution.f": 0,
-                        "__main__.test_symbolic_execution.g": 6,
-                        "__main__.test_symbolic_execution.i": 4,
-                        "__main__.test_symbolic_execution.l": 7,
-                        "__main__.test_symbolic_execution.n": 5,
-                        "__main__.test_symbolic_execution.s": 10,
-                        "__main__.test_symbolic_execution.u": 1,
-                        "__main__.test_symbolic_execution.z": 2,
-                        "__main__.test_symbolic_execution.z2": 3
+                        "__main__.Fuzz_symbolic_execution.__temp0": 11,
+                        "__main__.Fuzz_symbolic_execution.a": 8,
+                        "__main__.Fuzz_symbolic_execution.b": 9,
+                        "__main__.Fuzz_symbolic_execution.f": 0,
+                        "__main__.Fuzz_symbolic_execution.g": 6,
+                        "__main__.Fuzz_symbolic_execution.i": 4,
+                        "__main__.Fuzz_symbolic_execution.l": 7,
+                        "__main__.Fuzz_symbolic_execution.n": 5,
+                        "__main__.Fuzz_symbolic_execution.s": 10,
+                        "__main__.Fuzz_symbolic_execution.u": 1,
+                        "__main__.Fuzz_symbolic_execution.z": 2,
+                        "__main__.Fuzz_symbolic_execution.z2": 3
                     }
                 },
                 "hints": [],
@@ -1074,7 +1123,7 @@
                     "end_col": 15,
                     "end_line": 38,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 5,
                     "start_line": 38
@@ -1083,7 +1132,7 @@
             "49": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.main"
+                    "__main__.Fuzz_symbolic_execution_two"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -1091,48 +1140,34 @@
                         "offset": 0
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 23
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
                     }
                 },
                 "hints": [],
                 "inst": {
-                    "end_col": 28,
-                    "end_line": 41,
+                    "end_col": 17,
+                    "end_line": 54,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
-                    "parent_location": [
-                        {
-                            "end_col": 28,
-                            "end_line": 41,
-                            "input_file": {
-                                "filename": "fuzzinglabs.cairo"
-                            },
-                            "parent_location": [
-                                {
-                                    "end_col": 15,
-                                    "end_line": 42,
-                                    "input_file": {
-                                        "filename": "fuzzinglabs.cairo"
-                                    },
-                                    "start_col": 5,
-                                    "start_line": 42
-                                },
-                                "While trying to retrieve the implicit argument 'output_ptr' in:"
-                            ],
-                            "start_col": 11,
-                            "start_line": 41
-                        },
-                        "While expanding the reference 'output_ptr' in:"
-                    ],
-                    "start_col": 11,
-                    "start_line": 41
+                    "start_col": 9,
+                    "start_line": 54
                 }
             },
-            "50": {
+            "51": {
                 "accessible_scopes": [
                     "__main__",
-                    "__main__.main"
+                    "__main__.Fuzz_symbolic_execution_two"
                 ],
                 "flow_tracking_data": {
                     "ap_tracking": {
@@ -1140,76 +1175,1065 @@
                         "offset": 1
                     },
                     "reference_ids": {
-                        "__main__.main.output_ptr": 23
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 7,
+                    "end_line": 54,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 54
+                }
+            },
+            "53": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 21,
+                    "end_line": 55,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 13,
+                    "start_line": 55
+                }
+            },
+            "55": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 2
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 11,
+                    "end_line": 55,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 9,
+                    "start_line": 55
+                }
+            },
+            "57": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 2
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 25,
+                    "end_line": 56,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 17,
+                    "start_line": 56
+                }
+            },
+            "59": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 3
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
                     }
                 },
                 "hints": [],
                 "inst": {
                     "end_col": 15,
-                    "end_line": 42,
+                    "end_line": 56,
                     "input_file": {
-                        "filename": "fuzzinglabs.cairo"
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 13,
+                    "start_line": 56
+                }
+            },
+            "61": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 3
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 30,
+                    "end_line": 57,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 21,
+                    "start_line": 57
+                }
+            },
+            "63": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 4
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 19,
+                    "end_line": 57,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 17,
+                    "start_line": 57
+                }
+            },
+            "65": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 4
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 33,
+                    "end_line": 58,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 25,
+                    "start_line": 58
+                }
+            },
+            "67": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 5
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 23,
+                    "end_line": 58,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 21,
+                    "start_line": 58
+                }
+            },
+            "69": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 5
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 37,
+                    "end_line": 59,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 29,
+                    "start_line": 59
+                }
+            },
+            "71": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 6
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 27,
+                    "end_line": 59,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 25,
+                    "start_line": 59
+                }
+            },
+            "73": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 6
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 41,
+                    "end_line": 60,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 33,
+                    "start_line": 60
+                }
+            },
+            "75": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 7
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 31,
+                    "end_line": 60,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 29,
+                    "start_line": 60
+                }
+            },
+            "77": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 7
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 45,
+                    "end_line": 61,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 37,
+                    "start_line": 61
+                }
+            },
+            "79": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 8
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 35,
+                    "end_line": 61,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 33,
+                    "start_line": 61
+                }
+            },
+            "81": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 8
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 49,
+                    "end_line": 62,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 41,
+                    "start_line": 62
+                }
+            },
+            "83": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 9
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 39,
+                    "end_line": 62,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 37,
+                    "start_line": 62
+                }
+            },
+            "85": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 9
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 53,
+                    "end_line": 63,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 45,
+                    "start_line": 63
+                }
+            },
+            "87": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 10
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.__temp21": 43,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 43,
+                    "end_line": 63,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 41,
+                    "start_line": 63
+                }
+            },
+            "89": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 10
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.__temp21": 43,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 57,
+                    "end_line": 64,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 49,
+                    "start_line": 64
+                }
+            },
+            "91": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 11
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.__temp21": 43,
+                        "__main__.Fuzz_symbolic_execution_two.__temp22": 44,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 47,
+                    "end_line": 64,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 45,
+                    "start_line": 64
+                }
+            },
+            "93": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 11
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.__temp21": 43,
+                        "__main__.Fuzz_symbolic_execution_two.__temp22": 44,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 61,
+                    "end_line": 65,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 60,
+                    "start_line": 65
+                }
+            },
+            "95": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 12,
+                        "offset": 12
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.__temp13": 35,
+                        "__main__.Fuzz_symbolic_execution_two.__temp14": 36,
+                        "__main__.Fuzz_symbolic_execution_two.__temp15": 37,
+                        "__main__.Fuzz_symbolic_execution_two.__temp16": 38,
+                        "__main__.Fuzz_symbolic_execution_two.__temp17": 39,
+                        "__main__.Fuzz_symbolic_execution_two.__temp18": 40,
+                        "__main__.Fuzz_symbolic_execution_two.__temp19": 41,
+                        "__main__.Fuzz_symbolic_execution_two.__temp20": 42,
+                        "__main__.Fuzz_symbolic_execution_two.__temp21": 43,
+                        "__main__.Fuzz_symbolic_execution_two.__temp22": 44,
+                        "__main__.Fuzz_symbolic_execution_two.__temp23": 45,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 62,
+                    "end_line": 65,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 49,
+                    "start_line": 65
+                }
+            },
+            "97": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.Fuzz_symbolic_execution_two"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 23,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.Fuzz_symbolic_execution_two.__temp12": 34,
+                        "__main__.Fuzz_symbolic_execution_two.a": 31,
+                        "__main__.Fuzz_symbolic_execution_two.b": 32,
+                        "__main__.Fuzz_symbolic_execution_two.f": 23,
+                        "__main__.Fuzz_symbolic_execution_two.g": 29,
+                        "__main__.Fuzz_symbolic_execution_two.i": 27,
+                        "__main__.Fuzz_symbolic_execution_two.l": 30,
+                        "__main__.Fuzz_symbolic_execution_two.n": 28,
+                        "__main__.Fuzz_symbolic_execution_two.s": 33,
+                        "__main__.Fuzz_symbolic_execution_two.u": 24,
+                        "__main__.Fuzz_symbolic_execution_two.z": 25,
+                        "__main__.Fuzz_symbolic_execution_two.z2": 26
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 77,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
                     },
                     "start_col": 5,
-                    "start_line": 42
+                    "start_line": 77
+                }
+            },
+            "98": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 24,
+                        "offset": 0
+                    },
+                    "reference_ids": {
+                        "__main__.main.output_ptr": 46
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 28,
+                    "end_line": 80,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "parent_location": [
+                        {
+                            "end_col": 28,
+                            "end_line": 80,
+                            "input_file": {
+                                "filename": "tests/fuzzinglabs.cairo"
+                            },
+                            "parent_location": [
+                                {
+                                    "end_col": 15,
+                                    "end_line": 81,
+                                    "input_file": {
+                                        "filename": "tests/fuzzinglabs.cairo"
+                                    },
+                                    "start_col": 5,
+                                    "start_line": 81
+                                },
+                                "While trying to retrieve the implicit argument 'output_ptr' in:"
+                            ],
+                            "start_col": 11,
+                            "start_line": 80
+                        },
+                        "While expanding the reference 'output_ptr' in:"
+                    ],
+                    "start_col": 11,
+                    "start_line": 80
+                }
+            },
+            "99": {
+                "accessible_scopes": [
+                    "__main__",
+                    "__main__.main"
+                ],
+                "flow_tracking_data": {
+                    "ap_tracking": {
+                        "group": 24,
+                        "offset": 1
+                    },
+                    "reference_ids": {
+                        "__main__.main.output_ptr": 46
+                    }
+                },
+                "hints": [],
+                "inst": {
+                    "end_col": 15,
+                    "end_line": 81,
+                    "input_file": {
+                        "filename": "tests/fuzzinglabs.cairo"
+                    },
+                    "start_col": 5,
+                    "start_line": 81
                 }
             }
         }
     },
     "hints": {},
     "identifiers": {
-        "__main__.main": {
-            "decorators": [],
-            "pc": 49,
-            "type": "function"
-        },
-        "__main__.main.Args": {
-            "full_name": "__main__.main.Args",
-            "members": {},
-            "size": 0,
-            "type": "struct"
-        },
-        "__main__.main.ImplicitArgs": {
-            "full_name": "__main__.main.ImplicitArgs",
-            "members": {
-                "output_ptr": {
-                    "cairo_type": "felt*",
-                    "offset": 0
-                }
-            },
-            "size": 1,
-            "type": "struct"
-        },
-        "__main__.main.Return": {
-            "cairo_type": "()",
-            "type": "type_definition"
-        },
-        "__main__.main.SIZEOF_LOCALS": {
-            "type": "const",
-            "value": 0
-        },
-        "__main__.main.output_ptr": {
-            "cairo_type": "felt*",
-            "full_name": "__main__.main.output_ptr",
-            "references": [
-                {
-                    "ap_tracking_data": {
-                        "group": 12,
-                        "offset": 0
-                    },
-                    "pc": 49,
-                    "value": "[cast(fp + (-3), felt**)]"
-                }
-            ],
-            "type": "reference"
-        },
-        "__main__.test_symbolic_execution": {
+        "__main__.Fuzz_symbolic_execution": {
             "decorators": [],
             "pc": 0,
             "type": "function"
         },
-        "__main__.test_symbolic_execution.Args": {
-            "full_name": "__main__.test_symbolic_execution.Args",
+        "__main__.Fuzz_symbolic_execution.Args": {
+            "full_name": "__main__.Fuzz_symbolic_execution.Args",
             "members": {
                 "a": {
                     "cairo_type": "felt",
@@ -1259,23 +2283,23 @@
             "size": 11,
             "type": "struct"
         },
-        "__main__.test_symbolic_execution.ImplicitArgs": {
-            "full_name": "__main__.test_symbolic_execution.ImplicitArgs",
+        "__main__.Fuzz_symbolic_execution.ImplicitArgs": {
+            "full_name": "__main__.Fuzz_symbolic_execution.ImplicitArgs",
             "members": {},
             "size": 0,
             "type": "struct"
         },
-        "__main__.test_symbolic_execution.Return": {
+        "__main__.Fuzz_symbolic_execution.Return": {
             "cairo_type": "()",
             "type": "type_definition"
         },
-        "__main__.test_symbolic_execution.SIZEOF_LOCALS": {
+        "__main__.Fuzz_symbolic_execution.SIZEOF_LOCALS": {
             "type": "const",
             "value": 0
         },
-        "__main__.test_symbolic_execution.__temp0": {
+        "__main__.Fuzz_symbolic_execution.__temp0": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp0",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp0",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1288,9 +2312,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp1": {
+        "__main__.Fuzz_symbolic_execution.__temp1": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp1",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp1",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1303,9 +2327,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp10": {
+        "__main__.Fuzz_symbolic_execution.__temp10": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp10",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp10",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1318,9 +2342,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp11": {
+        "__main__.Fuzz_symbolic_execution.__temp11": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp11",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp11",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1333,9 +2357,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp2": {
+        "__main__.Fuzz_symbolic_execution.__temp2": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp2",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp2",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1348,9 +2372,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp3": {
+        "__main__.Fuzz_symbolic_execution.__temp3": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp3",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp3",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1363,9 +2387,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp4": {
+        "__main__.Fuzz_symbolic_execution.__temp4": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp4",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp4",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1378,9 +2402,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp5": {
+        "__main__.Fuzz_symbolic_execution.__temp5": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp5",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp5",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1393,9 +2417,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp6": {
+        "__main__.Fuzz_symbolic_execution.__temp6": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp6",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp6",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1408,9 +2432,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp7": {
+        "__main__.Fuzz_symbolic_execution.__temp7": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp7",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp7",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1423,9 +2447,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp8": {
+        "__main__.Fuzz_symbolic_execution.__temp8": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp8",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp8",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1438,9 +2462,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.__temp9": {
+        "__main__.Fuzz_symbolic_execution.__temp9": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.__temp9",
+            "full_name": "__main__.Fuzz_symbolic_execution.__temp9",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1453,9 +2477,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.a": {
+        "__main__.Fuzz_symbolic_execution.a": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.a",
+            "full_name": "__main__.Fuzz_symbolic_execution.a",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1468,9 +2492,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.b": {
+        "__main__.Fuzz_symbolic_execution.b": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.b",
+            "full_name": "__main__.Fuzz_symbolic_execution.b",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1483,9 +2507,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.f": {
+        "__main__.Fuzz_symbolic_execution.f": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.f",
+            "full_name": "__main__.Fuzz_symbolic_execution.f",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1498,9 +2522,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.g": {
+        "__main__.Fuzz_symbolic_execution.g": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.g",
+            "full_name": "__main__.Fuzz_symbolic_execution.g",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1513,9 +2537,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.i": {
+        "__main__.Fuzz_symbolic_execution.i": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.i",
+            "full_name": "__main__.Fuzz_symbolic_execution.i",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1528,9 +2552,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.l": {
+        "__main__.Fuzz_symbolic_execution.l": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.l",
+            "full_name": "__main__.Fuzz_symbolic_execution.l",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1543,9 +2567,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.n": {
+        "__main__.Fuzz_symbolic_execution.n": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.n",
+            "full_name": "__main__.Fuzz_symbolic_execution.n",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1558,9 +2582,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.s": {
+        "__main__.Fuzz_symbolic_execution.s": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.s",
+            "full_name": "__main__.Fuzz_symbolic_execution.s",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1573,9 +2597,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.u": {
+        "__main__.Fuzz_symbolic_execution.u": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.u",
+            "full_name": "__main__.Fuzz_symbolic_execution.u",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1588,9 +2612,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.z": {
+        "__main__.Fuzz_symbolic_execution.z": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.z",
+            "full_name": "__main__.Fuzz_symbolic_execution.z",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1603,9 +2627,9 @@
             ],
             "type": "reference"
         },
-        "__main__.test_symbolic_execution.z2": {
+        "__main__.Fuzz_symbolic_execution.z2": {
             "cairo_type": "felt",
-            "full_name": "__main__.test_symbolic_execution.z2",
+            "full_name": "__main__.Fuzz_symbolic_execution.z2",
             "references": [
                 {
                     "ap_tracking_data": {
@@ -1614,6 +2638,466 @@
                     },
                     "pc": 0,
                     "value": "[cast(fp + (-10), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two": {
+            "decorators": [],
+            "pc": 49,
+            "type": "function"
+        },
+        "__main__.Fuzz_symbolic_execution_two.Args": {
+            "full_name": "__main__.Fuzz_symbolic_execution_two.Args",
+            "members": {
+                "a": {
+                    "cairo_type": "felt",
+                    "offset": 8
+                },
+                "b": {
+                    "cairo_type": "felt",
+                    "offset": 9
+                },
+                "f": {
+                    "cairo_type": "felt",
+                    "offset": 0
+                },
+                "g": {
+                    "cairo_type": "felt",
+                    "offset": 6
+                },
+                "i": {
+                    "cairo_type": "felt",
+                    "offset": 4
+                },
+                "l": {
+                    "cairo_type": "felt",
+                    "offset": 7
+                },
+                "n": {
+                    "cairo_type": "felt",
+                    "offset": 5
+                },
+                "s": {
+                    "cairo_type": "felt",
+                    "offset": 10
+                },
+                "u": {
+                    "cairo_type": "felt",
+                    "offset": 1
+                },
+                "z": {
+                    "cairo_type": "felt",
+                    "offset": 2
+                },
+                "z2": {
+                    "cairo_type": "felt",
+                    "offset": 3
+                }
+            },
+            "size": 11,
+            "type": "struct"
+        },
+        "__main__.Fuzz_symbolic_execution_two.ImplicitArgs": {
+            "full_name": "__main__.Fuzz_symbolic_execution_two.ImplicitArgs",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.Fuzz_symbolic_execution_two.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "__main__.Fuzz_symbolic_execution_two.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp12": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp12",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 1
+                    },
+                    "pc": 51,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp13": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp13",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 2
+                    },
+                    "pc": 55,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp14": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp14",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 3
+                    },
+                    "pc": 59,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp15": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp15",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 4
+                    },
+                    "pc": 63,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp16": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp16",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 5
+                    },
+                    "pc": 67,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp17": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp17",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 6
+                    },
+                    "pc": 71,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp18": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp18",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 7
+                    },
+                    "pc": 75,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp19": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp19",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 8
+                    },
+                    "pc": 79,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp20": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp20",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 9
+                    },
+                    "pc": 83,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp21": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp21",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 10
+                    },
+                    "pc": 87,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp22": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp22",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 11
+                    },
+                    "pc": 91,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.__temp23": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.__temp23",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 12
+                    },
+                    "pc": 95,
+                    "value": "[cast(ap + (-1), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.a": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.a",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-5), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.b": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.b",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-4), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.f": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.f",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-13), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.g": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.g",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-7), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.i": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.i",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-9), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.l": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.l",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-6), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.n": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.n",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-8), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.s": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.s",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-3), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.u": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.u",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-12), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.z": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.z",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-11), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.Fuzz_symbolic_execution_two.z2": {
+            "cairo_type": "felt",
+            "full_name": "__main__.Fuzz_symbolic_execution_two.z2",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 12,
+                        "offset": 0
+                    },
+                    "pc": 49,
+                    "value": "[cast(fp + (-10), felt*)]"
+                }
+            ],
+            "type": "reference"
+        },
+        "__main__.main": {
+            "decorators": [],
+            "pc": 98,
+            "type": "function"
+        },
+        "__main__.main.Args": {
+            "full_name": "__main__.main.Args",
+            "members": {},
+            "size": 0,
+            "type": "struct"
+        },
+        "__main__.main.ImplicitArgs": {
+            "full_name": "__main__.main.ImplicitArgs",
+            "members": {
+                "output_ptr": {
+                    "cairo_type": "felt*",
+                    "offset": 0
+                }
+            },
+            "size": 1,
+            "type": "struct"
+        },
+        "__main__.main.Return": {
+            "cairo_type": "()",
+            "type": "type_definition"
+        },
+        "__main__.main.SIZEOF_LOCALS": {
+            "type": "const",
+            "value": 0
+        },
+        "__main__.main.output_ptr": {
+            "cairo_type": "felt*",
+            "full_name": "__main__.main.output_ptr",
+            "references": [
+                {
+                    "ap_tracking_data": {
+                        "group": 24,
+                        "offset": 0
+                    },
+                    "pc": 98,
+                    "value": "[cast(fp + (-3), felt**)]"
                 }
             ],
             "type": "reference"
@@ -1813,6 +3297,190 @@
                     "offset": 0
                 },
                 "pc": 49,
+                "value": "[cast(fp + (-13), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-12), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-11), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-10), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-9), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-8), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-7), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-6), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-5), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-4), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 0
+                },
+                "pc": 49,
+                "value": "[cast(fp + (-3), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 1
+                },
+                "pc": 51,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 2
+                },
+                "pc": 55,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 3
+                },
+                "pc": 59,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 4
+                },
+                "pc": 63,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 5
+                },
+                "pc": 67,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 6
+                },
+                "pc": 71,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 7
+                },
+                "pc": 75,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 8
+                },
+                "pc": 79,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 9
+                },
+                "pc": 83,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 10
+                },
+                "pc": 87,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 11
+                },
+                "pc": 91,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 12,
+                    "offset": 12
+                },
+                "pc": 95,
+                "value": "[cast(ap + (-1), felt*)]"
+            },
+            {
+                "ap_tracking_data": {
+                    "group": 24,
+                    "offset": 0
+                },
+                "pc": 98,
                 "value": "[cast(fp + (-3), felt**)]"
             }
         ]

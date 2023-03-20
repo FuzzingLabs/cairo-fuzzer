@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     process,
     sync::{Arc, Mutex},
+    thread::JoinHandle,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
@@ -11,6 +12,7 @@ use crate::{
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
+use cairo_rs::types::program::Program;
 use felt::Felt;
 
 use super::{
@@ -29,6 +31,8 @@ pub struct Fuzzer {
     pub contract_file: String,
     /// Contract JSON content
     pub contract_content: String,
+    /// Program for cairo-rs
+    pub program: Program,
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs
@@ -53,6 +57,8 @@ pub struct Fuzzer {
     pub running_workers: u64,
     /// Starknet or cairo contract
     pub starknet: bool,
+    pub iter: u64,
+    pub proptesting: bool,
 }
 
 impl Fuzzer {
@@ -84,7 +90,6 @@ impl Fuzzer {
                 }
             },
         };
-        println!("parsing done");
         // Load inputs from the input file if provided
         let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
@@ -130,6 +135,9 @@ impl Fuzzer {
         let inputs = Arc::new(Mutex::new(inputs));
         let crashes = Arc::new(Mutex::new(crashes));
 
+        let program = Program::from_string(&contents, Some(&function.name))
+            .expect("Failed to deserialize Program");
+
         // Setup the fuzzer
         Fuzzer {
             // Init stats struct
@@ -141,6 +149,7 @@ impl Fuzzer {
             minimizer: config.minimizer,
             contract_file: config.contract_file.clone(),
             contract_content: contents,
+            program: program,
             function: function.clone(),
             // Init starting time
             start_time: Instant::now(),
@@ -150,6 +159,8 @@ impl Fuzzer {
             workspace: config.workspace.clone(),
             running_workers: 0,
             starknet: function._starknet,
+            iter: config.iter,
+            proptesting: config.proptesting,
         }
     }
 
@@ -163,19 +174,23 @@ impl Fuzzer {
             let function = self.function.clone();
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
+            let program = self.program.clone();
             let seed = self.seed + (i as u64); // create unique seed per worker
             let starknet = self.starknet;
+            let iter = if self.proptesting { self.iter } else { 0 };
             // Spawn threads
-            let _ = std::thread::spawn(move || {
+            std::thread::spawn(move || {
                 let worker = Worker::new(
                     stats,
                     i,
                     contract_content,
+                    program,
                     function,
                     seed,
                     input_file,
                     crash_file,
                     starknet,
+                    iter,
                 );
                 worker.fuzz();
             });
@@ -222,6 +237,7 @@ impl Fuzzer {
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
             let starknet = self.starknet.clone();
+            let program = self.program.clone();
 
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
@@ -229,11 +245,13 @@ impl Fuzzer {
                     stats_thread,
                     i as i32,
                     contract_content,
+                    program,
                     function,
                     seed,
                     input_file,
                     crash_file,
                     starknet,
+                    0,
                 );
                 worker.replay(chunk);
             }));
@@ -318,7 +336,9 @@ impl Fuzzer {
                 }
 
                 // Only for replay: all thread are finished
-                if self.replay && stats.threads_finished == self.running_workers {
+                if (self.replay && stats.threads_finished == self.running_workers)
+                    || (self.iter < fuzz_case && self.proptesting)
+                {
                     break;
                 }
             }
@@ -387,6 +407,8 @@ mod tests {
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
+        let proptesting: bool = false;
+        let iter: u64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -401,6 +423,8 @@ mod tests {
             run_time,
             replay,
             minimizer,
+            iter,
+            proptesting,
         };
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
@@ -423,6 +447,8 @@ mod tests {
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
+        let proptesting: bool = false;
+        let iter: u64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -437,6 +463,8 @@ mod tests {
             run_time,
             replay,
             minimizer,
+            iter,
+            proptesting,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
@@ -473,6 +501,8 @@ mod tests {
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
+        let proptesting: bool = false;
+        let iter: u64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -487,6 +517,8 @@ mod tests {
             run_time,
             replay,
             minimizer,
+            iter,
+            proptesting,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
