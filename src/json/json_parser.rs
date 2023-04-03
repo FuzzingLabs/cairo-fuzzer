@@ -34,6 +34,7 @@ fn get_decorators(decorators: &Value) -> Vec<String> {
     return decorators_list;
 }
 
+/// Function that return the PC of the wrapper
 fn get_pc_from_wrapper(identifiers: &Value, function_name: &String) -> String {
     for (key, value) in identifiers
         .as_object()

@@ -1,4 +1,3 @@
-//use crate::cairo_vm::cairo_types::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use cairo_rs::types::program::Program;
 use felt::Felt;
@@ -72,7 +71,6 @@ impl Worker {
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
 
-        // TODO - IMPORTANT - Should we replay all the corpus before starting to mutate ? because we will not trigger the bug directly after running
         'next_case: loop {
             // clear previous data
             mutator.input.clear();

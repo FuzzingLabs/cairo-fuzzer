@@ -12,36 +12,6 @@ use std::path::Path;
 use std::process;
 use std::time::SystemTime;
 
-/*
-#[derive(Debug, Clone)]
-pub struct Workspace {
-    workspace_folder: String,
-    input_folder: String,
-    crash_folder: String,
-}
-
-// TODO - improve and allow user to choose
-impl Default for Workspace {
-    fn default() -> Self {
-        Workspace {
-            workspace_folder: "seth_workspace".to_string(),
-            input_folder: "inputs_corpus".to_string(),
-            crash_folder: "crashes_corpus".to_string(),
-        }
-    }
-} */
-
-/* /// TODO - Load all inputs files
-fn load_inputs(folder_path: &String) -> Vec<InputFile> {
-    // if Path::new(&filename).is_file() {
-    unimplemented!();
-}
-
-/// TODO - Load all crashes files
-fn load_crashes(folder_path: &String) -> Vec<CrashFile> {
-    unimplemented!();
-} */
-
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct InputFile {
     pub workspace: String,
@@ -52,6 +22,7 @@ pub struct InputFile {
 }
 
 impl InputFile {
+    /// Init a new InputFile using the Function object
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {
         let d = SystemTime::now();
         // Create DateTime from SystemTime
@@ -111,6 +82,7 @@ impl InputFile {
         };
     }
 
+    /// Load all the old corpora
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
         let function_name = foldername
@@ -228,6 +200,7 @@ pub struct CrashFile {
 }
 
 impl CrashFile {
+    /// Init a new CrashFile using the Function object
     pub fn new_from_function(function: &Function, workspace: &String) -> Self {
         let d = SystemTime::now();
         // Create DateTime from SystemTime
@@ -287,6 +260,7 @@ impl CrashFile {
         };
     }
 
+    /// Load all the old corpora
     pub fn load_from_folder(foldername: &String, workspace: &String) -> Self {
         let folder = Path::new(&foldername);
         let function_name = foldername

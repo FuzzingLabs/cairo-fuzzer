@@ -2,7 +2,6 @@ use std::{
     fs::{self, File},
     process,
     sync::{Arc, Mutex},
-    thread::JoinHandle,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
@@ -57,7 +56,9 @@ pub struct Fuzzer {
     pub running_workers: u64,
     /// Starknet or cairo contract
     pub starknet: bool,
+    /// Number of iterations to run
     pub iter: u64,
+    /// Usage of property testing
     pub proptesting: bool,
 }
 
@@ -140,7 +141,6 @@ impl Fuzzer {
 
         // Setup the fuzzer
         Fuzzer {
-            // Init stats struct
             stats: stats,
             cores: config.cores,
             logs: config.logs,
@@ -151,7 +151,6 @@ impl Fuzzer {
             contract_content: contents,
             program: program,
             function: function.clone(),
-            // Init starting time
             start_time: Instant::now(),
             seed: seed,
             input_file: inputs,
@@ -175,7 +174,7 @@ impl Fuzzer {
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
             let program = self.program.clone();
-            let seed = self.seed + (i as u64); // create unique seed per worker
+            let seed = self.seed + (i as u64);
             let starknet = self.starknet;
             let iter = if self.proptesting { self.iter } else { 0 };
             // Spawn threads
@@ -194,7 +193,6 @@ impl Fuzzer {
                 );
                 worker.fuzz();
             });
-            //println!("Thread {} Spawned", i);
             self.running_workers += 1;
         }
         println!("\t\t\t\t\t\t\tRunning {} threads", self.running_workers);

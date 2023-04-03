@@ -31,9 +31,6 @@ pub fn runner(
 
     let contract_class = ContractClass::from_string(json).expect("could not get contractclass");
     let entry_points_by_type = contract_class.entry_points_by_type().clone();
-    /*     println!("==== DEBUG entry_points_by_type ====");
-    println!("{:#?}", entry_points_by_type);
-    println!("==== DEBUG entry_points_by_type ====\n"); */
     let entrypoint_selector = entry_points_by_type
         .get(&EntryPointType::External) // Should we call only "External" functions?
         .unwrap()
@@ -46,7 +43,6 @@ pub fn runner(
     //*    Create state reader with class hash data
     //* --------------------------------------------
 
-    // usage ?
     let ffc = DictStorage::new();
     let contract_class_storage = DictStorage::new();
     let mut contract_class_cache = HashMap::new();
@@ -67,23 +63,22 @@ pub fn runner(
     //*    Create state with previous data
     //* ---------------------------------------
 
-    let mut state = CachedState::new(state_reader, Some(contract_class_cache)); // Is it updated after each execution ? can we use it for a tx seq?
-                                                                                //* ------------------------------------
-                                                                                //*    Create execution entry point
-                                                                                //* ------------------------------------
+    let mut state = CachedState::new(state_reader, Some(contract_class_cache));
+
+    //* ------------------------------------
+    //*    Create execution entry point
+    //* ------------------------------------
 
     let mut calldata = [].to_vec();
     for i in data {
         calldata.push((*i).clone());
     }
-    let caller_address = Address(0000.into()); // Do we really care about it ?
+    let caller_address = Address(0000.into());
     let entry_point_type = EntryPointType::External;
-
-    // Can we get the trace from the execution
     let exec_entry_point = ExecutionEntryPoint::new(
         address,
         calldata.clone(),
-        entrypoint_selector, //entrypoint_selector.clone(),
+        entrypoint_selector,
         caller_address,
         entry_point_type,
         Some(CallType::Delegate),
@@ -93,7 +88,7 @@ pub fn runner(
     //* --------------------
     //*   Execute contract
     //* ---------------------
-    let general_config = StarknetGeneralConfig::default(); // Does execution require any network ?
+    let general_config = StarknetGeneralConfig::default();
     let tx_execution_context = TransactionExecutionContext::new(
         Address(0.into()),
         Felt::zero(),
@@ -103,7 +98,7 @@ pub fn runner(
         general_config.invoke_tx_max_n_steps(),
         TRANSACTION_VERSION,
     );
-    let mut resources_manager = ExecutionResourcesManager::default(); //  Does it depends on the contract or the default configuration is enough ?
+    let mut resources_manager = ExecutionResourcesManager::default();
     match exec_entry_point.execute(
         &mut state,
         &general_config,
@@ -113,7 +108,4 @@ pub fn runner(
         Ok(exec_info) => return Ok(Some(exec_info.trace)),
         Err(e) => return Err(e.to_string()),
     };
-    /*     println!("==== DEBUG exec_info ====");
-    println!("{:#?}", exec_info);
-    println!("==== DEBUG exec_info ====\n"); */
 }
