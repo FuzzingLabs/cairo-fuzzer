@@ -1,7 +1,7 @@
 %lang starknet
 
 @external
-func test_symbolic_execution(
+func fuzzinglabs_starknet(
     f: felt,
     u: felt,
     z: felt,

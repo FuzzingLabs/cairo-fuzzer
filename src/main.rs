@@ -1,5 +1,4 @@
-use std::thread::JoinHandle;
-use std::{fs, process, thread};
+use std::{fs, process};
 
 use clap::Parser;
 

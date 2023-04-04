@@ -175,9 +175,9 @@ mod tests {
         let filename = "tests/fuzzinglabs.json";
         let contents = fs::read_to_string(&filename.to_string())
             .expect("Should have been able to read the file");
-        let function = parse_json(&contents, &"test_symbolic_execution".to_string());
+        let function = parse_json(&contents, &"Fuzz_symbolic_execution".to_string());
         if let Some(ok_function) = function {
-            assert_eq!(ok_function.name, "test_symbolic_execution".to_string());
+            assert_eq!(ok_function.name, "Fuzz_symbolic_execution".to_string());
             assert_eq!(ok_function.num_args, 11);
             assert_eq!(
                 ok_function.type_args,

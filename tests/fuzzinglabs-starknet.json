@@ -47,7 +47,7 @@
                     "type": "felt"
                 }
             ],
-            "name": "test_symbolic_execution",
+            "name": "fuzzinglabs_starknet",
             "outputs": [],
             "type": "function"
         }
@@ -57,7 +57,7 @@
         "EXTERNAL": [
             {
                 "offset": "0x31",
-                "selector": "0x218a9f01dbb68b5902cbcca2e55fdf94661e66b8cfdd0cea08cd78dfee0d1e9"
+                "selector": "0x4ccc8958ab2e693536f4100ddb77efa5ce1fd71faba41d21455ff28bbc0df"
             }
         ],
         "L1_HANDLER": []
@@ -158,17 +158,17 @@
                 "autogen/starknet/arg_processor/ccde42d4b555747103b2c76fb464ce76af1ce861002f0626bf7c431987b41955.cairo": "let __calldata_arg_f = [__calldata_ptr];\nlet __calldata_ptr = __calldata_ptr + 1;\n",
                 "autogen/starknet/arg_processor/cfcb8bf7b8ac03a79c284398a31617d1e281120b5ef8ad49aff01340fe9d892b.cairo": "let __calldata_arg_l = [__calldata_ptr];\nlet __calldata_ptr = __calldata_ptr + 1;\n",
                 "autogen/starknet/arg_processor/ec635897d7ccf2ea6588e865f36ce948fd47a9f95455e368f0f1e22fee65a459.cairo": "let __calldata_arg_a = [__calldata_ptr];\nlet __calldata_ptr = __calldata_ptr + 1;\n",
-                "autogen/starknet/external/test_symbolic_execution/3f2c77ab4e9866f148094b3f3c2497496b7ce8700b8370e7f1bc10658a33d640.cairo": "let syscall_ptr = [cast([cast(fp + (-5), felt**)] + 0, felt*)];\n",
-                "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo": "return (syscall_ptr,range_check_ptr,retdata_size,retdata);\n",
-                "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo": "let ret_value = __wrapped_func{}(f=__calldata_arg_f, u=__calldata_arg_u, z=__calldata_arg_z, z2=__calldata_arg_z2, i=__calldata_arg_i, n=__calldata_arg_n, g=__calldata_arg_g, l=__calldata_arg_l, a=__calldata_arg_a, b=__calldata_arg_b, s=__calldata_arg_s,);\n%{ memory[ap] = segments.add() %}        // Allocate memory for return value.\ntempvar retdata: felt*;\nlet retdata_size = 0;\n",
-                "autogen/starknet/external/test_symbolic_execution/fd099223670ab5d428127810c2328d37c65c29951c7abc7cebaa651b40be0a6a.cairo": "let range_check_ptr = [cast([cast(fp + (-5), felt**)] + 1, felt*)];\n"
+                "autogen/starknet/external/fuzzinglabs_starknet/3f2c77ab4e9866f148094b3f3c2497496b7ce8700b8370e7f1bc10658a33d640.cairo": "let syscall_ptr = [cast([cast(fp + (-5), felt**)] + 0, felt*)];\n",
+                "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo": "return (syscall_ptr,range_check_ptr,retdata_size,retdata);\n",
+                "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo": "let ret_value = __wrapped_func{}(f=__calldata_arg_f, u=__calldata_arg_u, z=__calldata_arg_z, z2=__calldata_arg_z2, i=__calldata_arg_i, n=__calldata_arg_n, g=__calldata_arg_g, l=__calldata_arg_l, a=__calldata_arg_a, b=__calldata_arg_b, s=__calldata_arg_s,);\n%{ memory[ap] = segments.add() %}        // Allocate memory for return value.\ntempvar retdata: felt*;\nlet retdata_size = 0;\n",
+                "autogen/starknet/external/fuzzinglabs_starknet/fd099223670ab5d428127810c2328d37c65c29951c7abc7cebaa651b40be0a6a.cairo": "let range_check_ptr = [cast([cast(fp + (-5), felt**)] + 1, felt*)];\n"
             },
             "instruction_locations": {
                 "0": {
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -176,7 +176,7 @@
                         "end_col": 17,
                         "end_line": 17,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 9,
                         "start_line": 17
@@ -186,7 +186,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -194,7 +194,7 @@
                         "end_col": 7,
                         "end_line": 17,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 5,
                         "start_line": 17
@@ -204,7 +204,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -212,7 +212,7 @@
                         "end_col": 21,
                         "end_line": 18,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 13,
                         "start_line": 18
@@ -222,7 +222,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -230,7 +230,7 @@
                         "end_col": 11,
                         "end_line": 18,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 9,
                         "start_line": 18
@@ -240,7 +240,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -248,7 +248,7 @@
                         "end_col": 25,
                         "end_line": 19,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 17,
                         "start_line": 19
@@ -258,7 +258,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -266,7 +266,7 @@
                         "end_col": 15,
                         "end_line": 19,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 13,
                         "start_line": 19
@@ -276,7 +276,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -284,7 +284,7 @@
                         "end_col": 30,
                         "end_line": 20,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 21,
                         "start_line": 20
@@ -294,7 +294,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -302,7 +302,7 @@
                         "end_col": 19,
                         "end_line": 20,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 17,
                         "start_line": 20
@@ -312,7 +312,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -320,7 +320,7 @@
                         "end_col": 33,
                         "end_line": 21,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 25,
                         "start_line": 21
@@ -330,7 +330,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -338,7 +338,7 @@
                         "end_col": 23,
                         "end_line": 21,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 21,
                         "start_line": 21
@@ -348,7 +348,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -356,7 +356,7 @@
                         "end_col": 37,
                         "end_line": 22,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 29,
                         "start_line": 22
@@ -366,7 +366,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -374,7 +374,7 @@
                         "end_col": 27,
                         "end_line": 22,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 25,
                         "start_line": 22
@@ -384,7 +384,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -392,7 +392,7 @@
                         "end_col": 41,
                         "end_line": 23,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 33,
                         "start_line": 23
@@ -402,7 +402,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -410,7 +410,7 @@
                         "end_col": 31,
                         "end_line": 23,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 29,
                         "start_line": 23
@@ -420,7 +420,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -428,7 +428,7 @@
                         "end_col": 45,
                         "end_line": 24,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 37,
                         "start_line": 24
@@ -438,7 +438,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -446,7 +446,7 @@
                         "end_col": 35,
                         "end_line": 24,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 33,
                         "start_line": 24
@@ -456,7 +456,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -464,7 +464,7 @@
                         "end_col": 49,
                         "end_line": 25,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 41,
                         "start_line": 25
@@ -474,7 +474,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -482,7 +482,7 @@
                         "end_col": 39,
                         "end_line": 25,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 37,
                         "start_line": 25
@@ -492,7 +492,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -500,7 +500,7 @@
                         "end_col": 53,
                         "end_line": 26,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 45,
                         "start_line": 26
@@ -510,7 +510,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -518,7 +518,7 @@
                         "end_col": 43,
                         "end_line": 26,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 41,
                         "start_line": 26
@@ -528,7 +528,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -536,7 +536,7 @@
                         "end_col": 57,
                         "end_line": 27,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 49,
                         "start_line": 27
@@ -546,7 +546,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -554,7 +554,7 @@
                         "end_col": 47,
                         "end_line": 27,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 45,
                         "start_line": 27
@@ -564,7 +564,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -572,7 +572,7 @@
                         "end_col": 61,
                         "end_line": 28,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 60,
                         "start_line": 28
@@ -582,7 +582,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -590,7 +590,7 @@
                         "end_col": 62,
                         "end_line": 28,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 49,
                         "start_line": 28
@@ -600,7 +600,7 @@
                     "accessible_scopes": [
                         "__main__",
                         "__main__",
-                        "__main__.test_symbolic_execution"
+                        "__main__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -608,7 +608,7 @@
                         "end_col": 15,
                         "end_line": 40,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 5,
                         "start_line": 40
@@ -619,7 +619,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -634,7 +634,7 @@
                                 "end_col": 12,
                                 "end_line": 15,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -645,10 +645,10 @@
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "parent_location": [
                                                     {
@@ -659,10 +659,10 @@
                                                         },
                                                         "parent_location": [
                                                             {
-                                                                "end_col": 29,
+                                                                "end_col": 26,
                                                                 "end_line": 4,
                                                                 "input_file": {
-                                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                                 },
                                                                 "start_col": 6,
                                                                 "start_line": 4
@@ -698,7 +698,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -710,10 +710,10 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 4
@@ -729,7 +729,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -744,21 +744,21 @@
                                 "end_col": 12,
                                 "end_line": 5,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 52,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -784,7 +784,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -799,21 +799,21 @@
                                 "end_col": 12,
                                 "end_line": 6,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 72,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -839,7 +839,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -854,21 +854,21 @@
                                 "end_col": 12,
                                 "end_line": 7,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 92,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -894,7 +894,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -909,21 +909,21 @@
                                 "end_col": 13,
                                 "end_line": 8,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 114,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -949,7 +949,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -964,21 +964,21 @@
                                 "end_col": 12,
                                 "end_line": 9,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 134,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1004,7 +1004,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1019,21 +1019,21 @@
                                 "end_col": 12,
                                 "end_line": 10,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 154,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1059,7 +1059,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1074,21 +1074,21 @@
                                 "end_col": 12,
                                 "end_line": 11,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 174,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1114,7 +1114,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1129,21 +1129,21 @@
                                 "end_col": 12,
                                 "end_line": 12,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 194,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1169,7 +1169,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1184,21 +1184,21 @@
                                 "end_col": 12,
                                 "end_line": 13,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 214,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1224,7 +1224,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1239,21 +1239,21 @@
                                 "end_col": 12,
                                 "end_line": 14,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 234,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1279,7 +1279,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1294,21 +1294,21 @@
                                 "end_col": 12,
                                 "end_line": 15,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 254,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1334,15 +1334,15 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 29,
+                        "end_col": 26,
                         "end_line": 4,
                         "input_file": {
-                            "filename": "fuzzinglabs-starknet.cairo"
+                            "filename": "tests/fuzzinglabs-starknet.cairo"
                         },
                         "start_col": 6,
                         "start_line": 4
@@ -1353,7 +1353,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [
@@ -1362,14 +1362,14 @@
                                 "end_col": 34,
                                 "end_line": 2,
                                 "input_file": {
-                                    "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                                    "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                                 },
                                 "parent_location": [
                                     {
-                                        "end_col": 29,
+                                        "end_col": 26,
                                         "end_line": 4,
                                         "input_file": {
-                                            "filename": "fuzzinglabs-starknet.cairo"
+                                            "filename": "tests/fuzzinglabs-starknet.cairo"
                                         },
                                         "start_col": 6,
                                         "start_line": 4
@@ -1386,14 +1386,14 @@
                         "end_col": 24,
                         "end_line": 3,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 4
@@ -1409,7 +1409,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1417,28 +1417,28 @@
                         "end_col": 63,
                         "end_line": 1,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/3f2c77ab4e9866f148094b3f3c2497496b7ce8700b8370e7f1bc10658a33d640.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/3f2c77ab4e9866f148094b3f3c2497496b7ce8700b8370e7f1bc10658a33d640.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 20,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1464,7 +1464,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1472,28 +1472,28 @@
                         "end_col": 67,
                         "end_line": 1,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/fd099223670ab5d428127810c2328d37c65c29951c7abc7cebaa651b40be0a6a.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/fd099223670ab5d428127810c2328d37c65c29951c7abc7cebaa651b40be0a6a.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 36,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1519,7 +1519,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1527,28 +1527,28 @@
                         "end_col": 21,
                         "end_line": 4,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 49,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1574,7 +1574,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1582,28 +1582,28 @@
                         "end_col": 16,
                         "end_line": 3,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/bdfb7dc2f8a6714b53e263c6e91589d9bbd26f265730e229a20144616015333b.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 57,
                                         "end_line": 1,
                                         "input_file": {
-                                            "filename": "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
+                                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 29,
+                                                "end_col": 26,
                                                 "end_line": 4,
                                                 "input_file": {
-                                                    "filename": "fuzzinglabs-starknet.cairo"
+                                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                                 },
                                                 "start_col": 6,
                                                 "start_line": 4
@@ -1629,7 +1629,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "flow_tracking_data": null,
                     "hints": [],
@@ -1637,14 +1637,14 @@
                         "end_col": 59,
                         "end_line": 1,
                         "input_file": {
-                            "filename": "autogen/starknet/external/test_symbolic_execution/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
+                            "filename": "autogen/starknet/external/fuzzinglabs_starknet/93099bea078b47105ec080392b498d5fa602cf51e6076f4584216f16f5b4c273.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 29,
+                                "end_col": 26,
                                 "end_line": 4,
                                 "input_file": {
-                                    "filename": "fuzzinglabs-starknet.cairo"
+                                    "filename": "tests/fuzzinglabs-starknet.cairo"
                                 },
                                 "start_col": 6,
                                 "start_line": 4
@@ -1664,7 +1664,7 @@
                         "__main__",
                         "__main__",
                         "__wrappers__",
-                        "__wrappers__.test_symbolic_execution"
+                        "__wrappers__.fuzzinglabs_starknet"
                     ],
                     "code": "memory[ap] = segments.add()",
                     "flow_tracking_data": {
@@ -1678,15 +1678,15 @@
             ]
         },
         "identifiers": {
-            "__main__.test_symbolic_execution": {
+            "__main__.fuzzinglabs_starknet": {
                 "decorators": [
                     "external"
                 ],
                 "pc": 0,
                 "type": "function"
             },
-            "__main__.test_symbolic_execution.Args": {
-                "full_name": "__main__.test_symbolic_execution.Args",
+            "__main__.fuzzinglabs_starknet.Args": {
+                "full_name": "__main__.fuzzinglabs_starknet.Args",
                 "members": {
                     "a": {
                         "cairo_type": "felt",
@@ -1736,52 +1736,52 @@
                 "size": 11,
                 "type": "struct"
             },
-            "__main__.test_symbolic_execution.ImplicitArgs": {
-                "full_name": "__main__.test_symbolic_execution.ImplicitArgs",
+            "__main__.fuzzinglabs_starknet.ImplicitArgs": {
+                "full_name": "__main__.fuzzinglabs_starknet.ImplicitArgs",
                 "members": {},
                 "size": 0,
                 "type": "struct"
             },
-            "__main__.test_symbolic_execution.Return": {
+            "__main__.fuzzinglabs_starknet.Return": {
                 "cairo_type": "()",
                 "type": "type_definition"
             },
-            "__main__.test_symbolic_execution.SIZEOF_LOCALS": {
+            "__main__.fuzzinglabs_starknet.SIZEOF_LOCALS": {
                 "type": "const",
                 "value": 0
             },
-            "__wrappers__.test_symbolic_execution": {
+            "__wrappers__.fuzzinglabs_starknet": {
                 "decorators": [
                     "external"
                 ],
                 "pc": 49,
                 "type": "function"
             },
-            "__wrappers__.test_symbolic_execution.Args": {
-                "full_name": "__wrappers__.test_symbolic_execution.Args",
+            "__wrappers__.fuzzinglabs_starknet.Args": {
+                "full_name": "__wrappers__.fuzzinglabs_starknet.Args",
                 "members": {},
                 "size": 0,
                 "type": "struct"
             },
-            "__wrappers__.test_symbolic_execution.ImplicitArgs": {
-                "full_name": "__wrappers__.test_symbolic_execution.ImplicitArgs",
+            "__wrappers__.fuzzinglabs_starknet.ImplicitArgs": {
+                "full_name": "__wrappers__.fuzzinglabs_starknet.ImplicitArgs",
                 "members": {},
                 "size": 0,
                 "type": "struct"
             },
-            "__wrappers__.test_symbolic_execution.Return": {
+            "__wrappers__.fuzzinglabs_starknet.Return": {
                 "cairo_type": "(syscall_ptr: felt, range_check_ptr: felt, size: felt, retdata: felt*)",
                 "type": "type_definition"
             },
-            "__wrappers__.test_symbolic_execution.SIZEOF_LOCALS": {
+            "__wrappers__.fuzzinglabs_starknet.SIZEOF_LOCALS": {
                 "type": "const",
                 "value": 0
             },
-            "__wrappers__.test_symbolic_execution.__wrapped_func": {
-                "destination": "__main__.test_symbolic_execution",
+            "__wrappers__.fuzzinglabs_starknet.__wrapped_func": {
+                "destination": "__main__.fuzzinglabs_starknet",
                 "type": "alias"
             },
-            "__wrappers__.test_symbolic_execution_encode_return.memcpy": {
+            "__wrappers__.fuzzinglabs_starknet_encode_return.memcpy": {
                 "destination": "starkware.cairo.common.memcpy.memcpy",
                 "type": "alias"
             },

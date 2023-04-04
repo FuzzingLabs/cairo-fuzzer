@@ -21,7 +21,7 @@ use starknet_rs::{
 use std::collections::HashMap;
 
 pub fn runner(
-    json: &String,
+    contract_class: &ContractClass,
     func_entrypoint: &String,
     data: &Vec<Felt>,
 ) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
@@ -29,8 +29,7 @@ pub fn runner(
     //  Create program and entry point types for contract class
     // ---------------------------------------------------------
 
-    let contract_class = ContractClass::from_string(json).expect("could not get contractclass");
-    let entry_points_by_type = contract_class.entry_points_by_type().clone();
+    let entry_points_by_type = contract_class.entry_points_by_type();
     let entrypoint_selector = entry_points_by_type
         .get(&EntryPointType::External) // Should we call only "External" functions?
         .unwrap()
@@ -53,7 +52,7 @@ pub fn runner(
     let class_hash = [1; 32];
     let contract_state = ContractState::new(class_hash, 3.into(), HashMap::new()); // What is a contract state ?
 
-    contract_class_cache.insert(class_hash, contract_class);
+    contract_class_cache.insert(class_hash, contract_class.clone());
     let mut state_reader = InMemoryStateReader::new(ffc, contract_class_storage);
     state_reader
         .contract_states_mut()

@@ -1,12 +1,11 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
-use cairo_rs::types::program::Program;
 use felt::Felt;
+use starknet_rs::services::api::contract_class::ContractClass;
 use std::sync::{Arc, Mutex};
 
 use super::corpus::{CrashFile, InputFile};
 use super::stats::*;
 
-use crate::cairo_vm::cairo_runner;
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
 use crate::starknet::starknet_runner;
@@ -14,46 +13,40 @@ use crate::starknet::starknet_runner;
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
-pub enum WorkerError {
+pub enum StarknetworkerError {
     // TODO implem
 }
 
-pub struct Worker {
+pub struct Starknetworker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
-    contents: String,
-    program: Program,
+    contract_class: ContractClass,
     function: Function,
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
-    starknet: bool,
     iter: u64,
 }
 
-impl Worker {
+impl Starknetworker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
-        contents: String,
-        program: Program,
+        contract_class: ContractClass,
         function: Function,
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
-        starknet: bool,
         iter: u64,
     ) -> Self {
-        Worker {
+        Starknetworker {
             stats,
             worker_id,
-            contents,
-            program,
+            contract_class,
             function,
             seed: seed,
             input_file,
             crash_file,
-            starknet,
             iter,
         }
     }
@@ -103,11 +96,11 @@ impl Worker {
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
-            match if !self.starknet {
-                cairo_runner::runner(&self.program, &self.function.name, &mutator.input)
-            } else {
-                starknet_runner::runner(&self.contents, &self.function.entrypoint, &mutator.input)
-            } {
+            match starknet_runner::runner(
+                &self.contract_class,
+                &self.function.entrypoint,
+                &mutator.input,
+            ) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
@@ -233,7 +226,11 @@ impl Worker {
 
         for input in inputs {
             let fuzz_input = input.clone();
-            match cairo_runner::runner(&self.program, &self.function.name, &input.clone()) {
+            match starknet_runner::runner(
+                &self.contract_class,
+                &self.function.entrypoint,
+                &fuzz_input,
+            ) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {

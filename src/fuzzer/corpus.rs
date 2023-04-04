@@ -46,19 +46,22 @@ impl InputFile {
         // Extract json data
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load inputs
-        let inputs: Vec<Vec<Felt>> = data["inputs"]
-            .as_array()
-            .expect("Failed to get inputs from inputfile")
-            .iter()
-            .map(|input_array| {
-                input_array
-                    .as_array()
-                    .expect("Failed to get input as array")
-                    .iter()
-                    .map(|input| Felt::from(input.as_u64().expect("Failed to get input as u64")))
-                    .collect()
-            })
-            .collect();
+        let mut inputs_vec: Vec<Vec<Felt>> = Vec::new();
+        if let Some(inputs) = data.get("inputs") {
+            if let Some(inputs_array) = inputs.as_array() {
+                for input in inputs_array {
+                    if let Some(input_array) = input.as_array() {
+                        let mut felt_vec: Vec<Felt> = Vec::new();
+                        for element in input_array {
+                            let value: Felt = serde_json::from_value(element.clone())
+                                .expect("Could not get values");
+                            felt_vec.push(value);
+                        }
+                        inputs_vec.push(felt_vec.clone());
+                    }
+                }
+            }
+        }
 
         return InputFile {
             workspace: workspace.to_string(),
@@ -78,7 +81,7 @@ impl InputFile {
                         .to_string()
                 })
                 .collect(),
-            inputs: inputs,
+            inputs: inputs_vec,
         };
     }
 
@@ -127,22 +130,23 @@ impl InputFile {
                             }
                         }
                     }
-                    let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
-                        .as_array()
-                        .expect("Failed to get inputs from inputfile")
-                        .iter()
-                        .map(|input_array| {
-                            input_array
-                                .as_array()
-                                .expect("Failed to get input as array")
-                                .iter()
-                                .map(|input| {
-                                    Felt::from(input.as_u64().expect("Failed to get input as u64"))
-                                })
-                                .collect()
-                        })
-                        .collect();
-                    inputs.append(&mut data_inputs);
+                    let mut inputs_vec: Vec<Vec<Felt>> = Vec::new();
+                    if let Some(inputs) = data.get("inputs") {
+                        if let Some(inputs_array) = inputs.as_array() {
+                            for input in inputs_array {
+                                if let Some(input_array) = input.as_array() {
+                                    let mut felt_vec: Vec<Felt> = Vec::new();
+                                    for element in input_array {
+                                        let value: Felt = serde_json::from_value(element.clone())
+                                            .expect("Could not get values");
+                                        felt_vec.push(value);
+                                    }
+                                    inputs_vec.push(felt_vec.clone());
+                                }
+                            }
+                        }
+                    }
+                    inputs.append(&mut inputs_vec);
                 }
             }
         }
@@ -172,7 +176,6 @@ impl InputFile {
         //let _ = create_dir(self.workspace.input_folder);
         let buf = Vec::new();
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
-
         let mut inputs_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut inputs_ser)
             .expect("Failed to serialize");
@@ -224,19 +227,22 @@ impl CrashFile {
         // Extract json data
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load old crashes to prevent overwriting and to use it as a dictionary for the mutator
-        let crashes: Vec<Vec<Felt>> = data["crashes"]
-            .as_array()
-            .expect("Failed to get inputs from crashfile")
-            .iter()
-            .map(|input_array| {
-                input_array
-                    .as_array()
-                    .expect("Failed to get input as array")
-                    .iter()
-                    .map(|input| Felt::from(input.as_u64().expect("Failed to get input as u64")))
-                    .collect()
-            })
-            .collect();
+        let mut crashes_vec: Vec<Vec<Felt>> = Vec::new();
+        if let Some(inputs) = data.get("crashes") {
+            if let Some(inputs_array) = inputs.as_array() {
+                for input in inputs_array {
+                    if let Some(input_array) = input.as_array() {
+                        let mut felt_vec: Vec<Felt> = Vec::new();
+                        for element in input_array {
+                            let value: Felt = serde_json::from_value(element.clone())
+                                .expect("Could not get values");
+                            felt_vec.push(value);
+                        }
+                        crashes_vec.push(felt_vec.clone());
+                    }
+                }
+            }
+        }
 
         return CrashFile {
             workspace: workspace.to_string(),
@@ -256,7 +262,7 @@ impl CrashFile {
                         .to_string()
                 })
                 .collect(),
-            crashes: crashes,
+            crashes: crashes_vec,
         };
     }
 
@@ -305,22 +311,23 @@ impl CrashFile {
                             }
                         }
                     }
-                    let mut data_inputs: Vec<Vec<Felt>> = data["inputs"]
-                        .as_array()
-                        .expect("Failed to get inputs from inputfile")
-                        .iter()
-                        .map(|input_array| {
-                            input_array
-                                .as_array()
-                                .expect("Failed to get input as array")
-                                .iter()
-                                .map(|input| {
-                                    Felt::from(input.as_u64().expect("Failed to get input as u64"))
-                                })
-                                .collect()
-                        })
-                        .collect();
-                    inputs.append(&mut data_inputs);
+                    let mut crashes_vec: Vec<Vec<Felt>> = Vec::new();
+                    if let Some(inputs) = data.get("crashes") {
+                        if let Some(inputs_array) = inputs.as_array() {
+                            for input in inputs_array {
+                                if let Some(input_array) = input.as_array() {
+                                    let mut felt_vec: Vec<Felt> = Vec::new();
+                                    for element in input_array {
+                                        let value: Felt = serde_json::from_value(element.clone())
+                                            .expect("Could not get values");
+                                        felt_vec.push(value);
+                                    }
+                                    crashes_vec.push(felt_vec.clone());
+                                }
+                            }
+                        }
+                    }
+                    inputs.append(&mut crashes_vec);
                 }
             }
         }
