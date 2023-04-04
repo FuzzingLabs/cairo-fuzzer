@@ -113,11 +113,6 @@ pub struct Opt {
     )]
     pub proptesting: bool,
 
-    #[arg(
-        long,
-        help = "Iteration Number",
-        name = "ITER",
-        default_value = "2500000"
-    )]
-    pub iter: u64,
+    #[arg(long, help = "Iteration Number", name = "ITER", default_value = "-1")]
+    pub iter: i64,
 }

@@ -24,7 +24,7 @@ pub struct Cairoworker {
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
-    iter: u64,
+    iter: i64,
 }
 
 impl Cairoworker {
@@ -36,7 +36,7 @@ impl Cairoworker {
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
-        iter: u64,
+        iter: i64,
     ) -> Self {
         Cairoworker {
             stats,
@@ -53,7 +53,6 @@ impl Cairoworker {
     pub fn fuzz(self) {
         // Local stats database
         let mut local_stats = Statistics::default();
-
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
@@ -115,7 +114,7 @@ impl Cairoworker {
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
-                        if self.iter > 0 && self.iter < stats.fuzz_cases {
+                        if self.iter > 0 && self.iter < stats.fuzz_cases as i64 {
                             return;
                         }
                         // verify if new input has been found by other fuzzers

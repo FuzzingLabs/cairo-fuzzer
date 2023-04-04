@@ -31,7 +31,13 @@ impl InputFile {
         let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         InputFile {
             workspace: workspace.to_string(),
-            path: format!("{}_{}.json", function.name, timestamp_str),
+            path: format!(
+                "{}/{}/inputs/{}_{}.json",
+                workspace.to_string(),
+                function.name,
+                function.name,
+                timestamp_str
+            ),
             name: function.name.clone(),
             args: function.type_args.clone(),
             inputs: Vec::<Vec<Felt252>>::new(),
@@ -181,9 +187,10 @@ impl InputFile {
         self.serialize(&mut inputs_ser)
             .expect("Failed to serialize");
         let dump_file = format!(
-            "{}/{}/inputs/{}",
+            "{}",
+            /*             "{}/{}/inputs/{}",
             self.workspace,
-            self.name.clone(),
+            self.name.clone(), */
             self.path
         );
         write(
@@ -213,7 +220,13 @@ impl CrashFile {
         let timestamp_str = datetime.format("%Y-%m-%d--%H:%M:%S").to_string();
         CrashFile {
             workspace: workspace.to_string(),
-            path: format!("CRASHES_{}_{}.json", function.name, timestamp_str),
+            path: format!(
+                "{}/{}/CRASHES_{}_{}.json",
+                workspace.to_string(),
+                function.name,
+                function.name,
+                timestamp_str
+            ),
             name: function.name.clone(),
             args: function.type_args.clone(),
             crashes: Vec::<Vec<Felt252>>::new(),
@@ -363,7 +376,7 @@ impl CrashFile {
             serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut crashes_ser)
             .expect("Failed to serialize");
-        let dump_file = format!("{}/{}/{}", &self.workspace, self.name.clone(), self.path);
+        let dump_file = format!("{}", self.path);
         write(
             &dump_file,
             String::from_utf8(crashes_ser.into_inner()).expect("Failed to dump string as utf8"),

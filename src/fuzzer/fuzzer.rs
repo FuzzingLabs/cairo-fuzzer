@@ -62,7 +62,7 @@ pub struct Fuzzer {
     /// Starknet or cairo contract
     pub starknet: bool,
     /// Number of iterations to run
-    pub iter: u64,
+    pub iter: i64,
     /// Usage of property testing
     pub proptesting: bool,
 }
@@ -193,7 +193,7 @@ impl Fuzzer {
             let contract_class = self.contract_class.clone();
             let seed = self.seed + (i as u64);
             let starknet = self.starknet;
-            let iter = if self.proptesting { self.iter } else { 0 };
+            let iter = self.iter;
             // Spawn threads
             std::thread::spawn(move || {
                 if !starknet {
@@ -377,7 +377,7 @@ impl Fuzzer {
 
                 // Only for replay: all thread are finished
                 if (self.replay && stats.threads_finished == self.running_workers)
-                    || (self.iter < fuzz_case && self.proptesting)
+                    || (self.iter < fuzz_case as i64 && self.iter != -1)
                 {
                     break;
                 }
@@ -448,7 +448,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: u64 = 0;
+        let iter: i64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -488,7 +488,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: u64 = 0;
+        let iter: i64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -541,7 +541,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: u64 = 0;
+        let iter: i64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -595,7 +595,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: u64 = 0;
+        let iter: i64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -638,7 +638,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: u64 = 0;
+        let iter: i64 = 0;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,

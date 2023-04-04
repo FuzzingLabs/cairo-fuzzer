@@ -25,7 +25,7 @@ pub struct Starknetworker {
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
-    iter: u64,
+    iter: i64,
 }
 
 impl Starknetworker {
@@ -37,7 +37,7 @@ impl Starknetworker {
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
-        iter: u64,
+        iter: i64,
     ) -> Self {
         Starknetworker {
             stats,
@@ -120,7 +120,7 @@ impl Starknetworker {
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
-                        if self.iter > 0 && self.iter < stats.fuzz_cases {
+                        if self.iter > 0 && self.iter < stats.fuzz_cases as i64 {
                             return;
                         }
                         // verify if new input has been found by other fuzzers

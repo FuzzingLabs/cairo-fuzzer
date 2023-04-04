@@ -19,7 +19,7 @@ pub struct Config {
     pub replay: bool,
     pub minimizer: bool,
     pub proptesting: bool,
-    pub iter: u64,
+    pub iter: i64,
 }
 
 impl Config {
