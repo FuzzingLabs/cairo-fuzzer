@@ -5,16 +5,16 @@ use cairo_rs::types::relocatable::Relocatable;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
 use cairo_rs::vm::vm_core::VirtualMachine;
 
-use felt::Felt;
+use felt::Felt252;
 
 pub fn runner(
     program: &Program,
     func_name: &String,
-    data: &Vec<Felt>,
-) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
+    data: &Vec<Felt252>,
+) -> Result<Option<Vec<Relocatable>>, String> {
     // Init the cairo_runner, the VM and the hint_processor
     let mut cairo_runner =
-        CairoRunner::new(&program, "all", false).expect("Failed to init the CairoRunner");
+        CairoRunner::new(&program, "small", false).expect("Failed to init the CairoRunner");
     let mut vm = VirtualMachine::new(true);
     let mut hint_processor = BuiltinHintProcessor::new_empty();
 
@@ -38,8 +38,8 @@ pub fn runner(
     // Init the vector of arguments
     let mut args = Vec::<MaybeRelocatable>::new();
     // Set the entrypoint selector
-    let entrypoint_selector = MaybeRelocatable::from(Felt::new(entrypoint)); // entry point selector => ne sert a rien
-                                                                             // This is used in case of implicit argument
+    let entrypoint_selector = MaybeRelocatable::from(Felt252::new(entrypoint)); // entry point selector => ne sert a rien
+                                                                                // This is used in case of implicit argument
     let value_one = MaybeRelocatable::from((2, 0));
     args.push(entrypoint_selector);
     args.push(value_one);
@@ -66,19 +66,19 @@ pub fn runner(
         Err(e) => return Err(e.to_string()),
     };
     cairo_runner
-        .relocate(&mut vm)
+        .relocate(&mut vm, false)
         .expect("Failed to relocate VM");
     let trace = vm
         .get_trace()
         .expect("Failed to get running trace from the VM");
-    let mut ret = Vec::<(Relocatable, Relocatable)>::new();
+    let mut ret = Vec::<Relocatable>::new();
     for i in trace {
-        ret.push((i.fp.clone(), i.pc.clone()));
+        ret.push(Relocatable::from((i.fp.clone() as isize, i.pc.clone())));
     }
-    let mut stdout = Vec::<u8>::new();
-    cairo_runner
-        .write_output(&mut vm, &mut stdout)
-        .expect("Failed to get running output from the VM");
+    /*     let mut stdout = Vec::<u8>::new();
+    vm
+        .write_output(&mut stdout)
+        .expect("Failed to get running output from the VM"); */
 
     return Ok(Some(ret));
 }

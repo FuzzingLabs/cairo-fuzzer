@@ -13,7 +13,7 @@ use crate::{
 };
 
 use cairo_rs::types::program::Program;
-use felt::Felt;
+use felt::Felt252;
 use starknet_rs::services::api::contract_class::ContractClass;
 
 use super::{
@@ -315,7 +315,7 @@ impl Fuzzer {
                 path: format!("{}_min.json", self.function.name),
                 name: self.function.name.clone(),
                 args: self.function.type_args.clone(),
-                inputs: Vec::<Vec<Felt>>::new(),
+                inputs: Vec::<Vec<Felt252>>::new(),
             };
             // Push every input to the struct
             for input in &stats.input_db {

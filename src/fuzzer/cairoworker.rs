@@ -1,6 +1,6 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use cairo_rs::types::program::Program;
-use felt::Felt;
+use felt::Felt252;
 use std::sync::{Arc, Mutex};
 
 use super::corpus::{CrashFile, InputFile};
@@ -73,9 +73,10 @@ impl Cairoworker {
                     .input
                     .extend_from_slice(&local_stats.get_input_by_index(index));
             } else {
-                mutator
-                    .input
-                    .extend_from_slice(&vec![Felt::from(b'\0'); self.function.num_args as usize]);
+                mutator.input.extend_from_slice(&vec![
+                    Felt252::from(b'\0');
+                    self.function.num_args as usize
+                ]);
             }
 
             // Corrupt it with 4 mutation passes
@@ -101,12 +102,10 @@ impl Cairoworker {
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
                             trace
-                                .0
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
                             trace
-                                .1
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
@@ -215,7 +214,7 @@ impl Cairoworker {
         }
     }
 
-    pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt>>>) {
+    pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
 
@@ -227,12 +226,10 @@ impl Cairoworker {
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
                             trace
-                                .0
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
                             trace
-                                .1
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),

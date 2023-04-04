@@ -1,5 +1,5 @@
 use cairo_rs::types::relocatable::Relocatable;
-use felt::Felt;
+use felt::Felt252;
 use num_traits::Zero;
 use starknet_rs::{
     business_logic::{
@@ -8,23 +8,21 @@ use starknet_rs::{
             objects::{CallType, TransactionExecutionContext},
         },
         fact_state::{
-            contract_state::ContractState, in_memory_state_reader::InMemoryStateReader,
-            state::ExecutionResourcesManager,
+            in_memory_state_reader::InMemoryStateReader, state::ExecutionResourcesManager,
         },
         state::cached_state::CachedState,
     },
     definitions::{constants::TRANSACTION_VERSION, general_config::StarknetGeneralConfig},
     services::api::contract_class::{ContractClass, EntryPointType},
-    starknet_storage::dict_storage::DictStorage,
-    utils::Address,
+    utils::{Address, ClassHash},
 };
 use std::collections::HashMap;
 
 pub fn runner(
     contract_class: &ContractClass,
     func_entrypoint: &String,
-    data: &Vec<Felt>,
-) -> Result<Option<Vec<(Relocatable, Relocatable)>>, String> {
+    data: &Vec<Felt252>,
+) -> Result<Option<Vec<Relocatable>>, String> {
     // ---------------------------------------------------------
     //  Create program and entry point types for contract class
     // ---------------------------------------------------------
@@ -42,21 +40,22 @@ pub fn runner(
     //*    Create state reader with class hash data
     //* --------------------------------------------
 
-    let ffc = DictStorage::new();
-    let contract_class_storage = DictStorage::new();
     let mut contract_class_cache = HashMap::new();
 
     //  ------------ contract data --------------------
 
-    let address = Address(1111.into()); // Do we really care about that ?
-    let class_hash = [1; 32];
-    let contract_state = ContractState::new(class_hash, 3.into(), HashMap::new()); // What is a contract state ?
+    let address = Address(1111.into());
+    let class_hash: ClassHash = [1; 32];
+    let nonce = Felt252::zero();
 
     contract_class_cache.insert(class_hash, contract_class.clone());
-    let mut state_reader = InMemoryStateReader::new(ffc, contract_class_storage);
+    let mut state_reader = InMemoryStateReader::default();
     state_reader
-        .contract_states_mut()
-        .insert(address.clone(), contract_state);
+        .address_to_class_hash_mut()
+        .insert(address.clone(), class_hash);
+    state_reader
+        .address_to_nonce_mut()
+        .insert(address.clone(), nonce);
 
     //* ---------------------------------------
     //*    Create state with previous data
@@ -90,7 +89,7 @@ pub fn runner(
     let general_config = StarknetGeneralConfig::default();
     let tx_execution_context = TransactionExecutionContext::new(
         Address(0.into()),
-        Felt::zero(),
+        Felt252::zero(),
         Vec::new(),
         0,
         10.into(),

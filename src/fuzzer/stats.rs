@@ -1,7 +1,7 @@
-use felt::Felt;
+use felt::Felt252;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-pub type FuzzInput = Arc<Vec<Felt>>;
+pub type FuzzInput = Arc<Vec<Felt252>>;
 
 /// Fuzz case statistics
 #[derive(Default, Debug)]

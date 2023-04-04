@@ -1,8 +1,8 @@
-//use crate::cairo_vm::cairo_types::Felt;
+//use crate::cairo_vm::cairo_types::Felt252;
 use crate::json::json_parser::Function;
 use chrono::DateTime;
 use chrono::Utc;
-use felt::Felt;
+use felt::Felt252;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::fs;
@@ -18,7 +18,7 @@ pub struct InputFile {
     pub path: String,
     pub name: String,
     pub args: Vec<String>,
-    pub inputs: Vec<Vec<Felt>>,
+    pub inputs: Vec<Vec<Felt252>>,
 }
 
 impl InputFile {
@@ -34,7 +34,7 @@ impl InputFile {
             path: format!("{}_{}.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
-            inputs: Vec::<Vec<Felt>>::new(),
+            inputs: Vec::<Vec<Felt252>>::new(),
         }
     }
 
@@ -46,14 +46,14 @@ impl InputFile {
         // Extract json data
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load inputs
-        let mut inputs_vec: Vec<Vec<Felt>> = Vec::new();
+        let mut inputs_vec: Vec<Vec<Felt252>> = Vec::new();
         if let Some(inputs) = data.get("inputs") {
             if let Some(inputs_array) = inputs.as_array() {
                 for input in inputs_array {
                     if let Some(input_array) = input.as_array() {
-                        let mut felt_vec: Vec<Felt> = Vec::new();
+                        let mut felt_vec: Vec<Felt252> = Vec::new();
                         for element in input_array {
-                            let value: Felt = serde_json::from_value(element.clone())
+                            let value: Felt252 = serde_json::from_value(element.clone())
                                 .expect("Could not get values");
                             felt_vec.push(value);
                         }
@@ -95,7 +95,7 @@ impl InputFile {
             .expect("Failed to split foldername")
             .to_string();
         let mut args: Option<Vec<String>> = None;
-        let mut inputs: Vec<Vec<Felt>> = Vec::new();
+        let mut inputs: Vec<Vec<Felt252>> = Vec::new();
         // Check if the path is a directory
         if folder.is_dir() {
             // Iterate over the entries in the directory
@@ -130,15 +130,16 @@ impl InputFile {
                             }
                         }
                     }
-                    let mut inputs_vec: Vec<Vec<Felt>> = Vec::new();
+                    let mut inputs_vec: Vec<Vec<Felt252>> = Vec::new();
                     if let Some(inputs) = data.get("inputs") {
                         if let Some(inputs_array) = inputs.as_array() {
                             for input in inputs_array {
                                 if let Some(input_array) = input.as_array() {
-                                    let mut felt_vec: Vec<Felt> = Vec::new();
+                                    let mut felt_vec: Vec<Felt252> = Vec::new();
                                     for element in input_array {
-                                        let value: Felt = serde_json::from_value(element.clone())
-                                            .expect("Could not get values");
+                                        let value: Felt252 =
+                                            serde_json::from_value(element.clone())
+                                                .expect("Could not get values");
                                         felt_vec.push(value);
                                     }
                                     inputs_vec.push(felt_vec.clone());
@@ -199,7 +200,7 @@ pub struct CrashFile {
     pub path: String,
     pub name: String,
     pub args: Vec<String>,
-    pub crashes: Vec<Vec<Felt>>,
+    pub crashes: Vec<Vec<Felt252>>,
 }
 
 impl CrashFile {
@@ -215,7 +216,7 @@ impl CrashFile {
             path: format!("CRASHES_{}_{}.json", function.name, timestamp_str),
             name: function.name.clone(),
             args: function.type_args.clone(),
-            crashes: Vec::<Vec<Felt>>::new(),
+            crashes: Vec::<Vec<Felt252>>::new(),
         }
     }
 
@@ -227,14 +228,14 @@ impl CrashFile {
         // Extract json data
         let data: Value = serde_json::from_str(&contents).expect("JSON was not well-formatted");
         // Load old crashes to prevent overwriting and to use it as a dictionary for the mutator
-        let mut crashes_vec: Vec<Vec<Felt>> = Vec::new();
+        let mut crashes_vec: Vec<Vec<Felt252>> = Vec::new();
         if let Some(inputs) = data.get("crashes") {
             if let Some(inputs_array) = inputs.as_array() {
                 for input in inputs_array {
                     if let Some(input_array) = input.as_array() {
-                        let mut felt_vec: Vec<Felt> = Vec::new();
+                        let mut felt_vec: Vec<Felt252> = Vec::new();
                         for element in input_array {
-                            let value: Felt = serde_json::from_value(element.clone())
+                            let value: Felt252 = serde_json::from_value(element.clone())
                                 .expect("Could not get values");
                             felt_vec.push(value);
                         }
@@ -276,7 +277,7 @@ impl CrashFile {
             .expect("Failed to split foldername")
             .to_string();
         let mut args: Option<Vec<String>> = None;
-        let mut inputs: Vec<Vec<Felt>> = Vec::new();
+        let mut inputs: Vec<Vec<Felt252>> = Vec::new();
         // Check if the path is a directory
         if folder.is_dir() {
             // Iterate over the entries in the directory
@@ -311,15 +312,16 @@ impl CrashFile {
                             }
                         }
                     }
-                    let mut crashes_vec: Vec<Vec<Felt>> = Vec::new();
+                    let mut crashes_vec: Vec<Vec<Felt252>> = Vec::new();
                     if let Some(inputs) = data.get("crashes") {
                         if let Some(inputs_array) = inputs.as_array() {
                             for input in inputs_array {
                                 if let Some(input_array) = input.as_array() {
-                                    let mut felt_vec: Vec<Felt> = Vec::new();
+                                    let mut felt_vec: Vec<Felt252> = Vec::new();
                                     for element in input_array {
-                                        let value: Felt = serde_json::from_value(element.clone())
-                                            .expect("Could not get values");
+                                        let value: Felt252 =
+                                            serde_json::from_value(element.clone())
+                                                .expect("Could not get values");
                                         felt_vec.push(value);
                                     }
                                     crashes_vec.push(felt_vec.clone());
