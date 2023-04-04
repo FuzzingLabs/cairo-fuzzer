@@ -488,7 +488,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: i64 = 0;
+        let iter: i64 = -1;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -541,7 +541,7 @@ mod tests {
         let input_folder: String = "".to_string();
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
-        let iter: i64 = 0;
+        let iter: i64 = -1;
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,

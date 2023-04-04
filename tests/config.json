@@ -11,5 +11,5 @@
     "crash_folder": "",
     "workspace": "fuzzer_workspace",
     "proptesting": false,
-    "iter": 0
+    "iter": -1
 }
