@@ -251,7 +251,6 @@ impl Fuzzer {
         for chunk in corpus.chunks(chunk_size) {
             chunks.push(chunk.to_vec());
         }
-        println!("Total inputs to replay => {}", corpus.len());
 
         let mut threads = Vec::new();
 
