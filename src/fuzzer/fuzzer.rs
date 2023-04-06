@@ -8,8 +8,8 @@ use std::{
 use crate::{
     cli::config::Config,
     fuzzer::cairoworker::Cairoworker,
+    fuzzer::dict::{read_dict, Dict},
     fuzzer::starknetworker::Starknetworker,
-    fuzzer::dict::{Dict, read_dict},
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
@@ -101,31 +101,31 @@ impl Fuzzer {
             },
         };
         // Load inputs from the input file if provided
-        let mut inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
-        {
-            true => InputFile::new_from_function(&function, &config.workspace),
-            false => match config.input_folder.is_empty() {
-                true => InputFile::load_from_file(&config.input_file, &config.workspace),
-                false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
-            },
-        };
+        let mut inputs: InputFile =
+            match config.input_file.is_empty() && config.input_folder.is_empty() {
+                true => InputFile::new_from_function(&function, &config.workspace),
+                false => match config.input_folder.is_empty() {
+                    true => InputFile::load_from_file(&config.input_file, &config.workspace),
+                    false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
+                },
+            };
         println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
         let dict = match &config.dict.is_empty() {
-            true => Dict { inputs:Vec::new() },
-            false => read_dict(&config.dict)
+            true => Dict { inputs: Vec::new() },
+            false => read_dict(&config.dict),
         };
 
         let nbr_args = function.num_args;
         for val in &dict.inputs {
-            let mut value_vec:Vec<Felt252> = Vec::new();
+            let mut value_vec: Vec<Felt252> = Vec::new();
             value_vec.push(val.clone()); // to ensure that all values of the dict will be in the inputs vector
             for _ in 0..nbr_args - 1 {
-                value_vec.push(dict.inputs[rand::thread_rng().gen_range(0..dict.inputs.len())].clone());
+                value_vec
+                    .push(dict.inputs[rand::thread_rng().gen_range(0..dict.inputs.len())].clone());
             }
             inputs.inputs.push(value_vec);
         }
-
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
@@ -186,7 +186,7 @@ impl Fuzzer {
             contract_file: config.contract_file.clone(),
             contract_content: contents,
             program: program,
-            dict:dict,
+            dict: dict,
             contract_class: contract_class,
             function: function.clone(),
             start_time: Instant::now(),
@@ -421,7 +421,7 @@ mod tests {
     use core::panic;
     use std::{thread, time::Duration};
 
-    use crate::{cli::config::Config, fuzzer::dict::Dict};
+    use crate::cli::config::Config;
 
     use super::Fuzzer;
     #[test]

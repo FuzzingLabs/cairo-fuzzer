@@ -287,7 +287,7 @@ impl Mutator {
                 // Select a random input
                 if let Some(inp) = inputs.input(self.rng.rand(0, dblen - 1)) {
                     // Nothing to splice for an empty input
-/*                     if inp.is_empty() {
+                    /*                     if inp.is_empty() {
                         continue;
                     } */
                     println!("Inputs selected => {:?}", inp);
@@ -307,9 +307,15 @@ impl Mutator {
                         let length = core::cmp::min(donor_length, self.input.len() - offset);
 
                         println!("inputs to bytes => {:?}", &inp.to_be_bytes());
-                        println!("inputs slices => {:?}", &inp.to_be_bytes()[donor_offset..donor_offset + length]);
+                        println!(
+                            "inputs slices => {:?}",
+                            &inp.to_be_bytes()[donor_offset..donor_offset + length]
+                        );
                         // Overwrite it!
-                        self.overwrite(offset, &inp.to_be_bytes()[donor_offset..donor_offset + length]);
+                        self.overwrite(
+                            offset,
+                            &inp.to_be_bytes()[donor_offset..donor_offset + length],
+                        );
                     } else {
                         // Find an offset to insert at in our input
                         let offset = self.rand_offset_int(true);
@@ -604,7 +610,7 @@ impl Mutator {
     /// Insert `buf` at `offset` in the input. `buf` will be truncated to
     /// ensure the input stays within the maximum input size
     fn insert(&mut self, offset: usize, buf: Felt252) {
-            self.input.insert(offset, buf.clone());
+        self.input.insert(offset, buf.clone());
         // Make sure we don't expand past the maximum input size
         //let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
 
@@ -686,14 +692,14 @@ impl Mutator {
     }
 
     /// Copy bytes from one location in the input and overwrite them at another
-/*     fn convert<'a>(arr: &'a [&'a [u8; 32]]) -> &'a [u8] {
+    /*     fn convert<'a>(arr: &'a [&'a [u8; 32]]) -> &'a [u8] {
         let size = arr.iter().map(|a| a.len()).sum();
         let ptr = arr.as_ptr() as *const u8;
-    
+
         // SAFETY: We have ensured that the pointer and length are valid
         unsafe { std::slice::from_raw_parts(ptr, size) }
     } */
-    
+
     /// location in the input
     fn copy(&mut self) {
         // Nothing to do on an empty input
@@ -786,13 +792,13 @@ impl Mutator {
 
         let size = test.iter().map(|a| a.len()).sum();
         let ptr = test.as_ptr() as *const u8;
-    
+
         // SAFETY: We have ensured that the pointer and length are valid
-        unsafe { 
-            let new_arr = std::slice::from_raw_parts(ptr, size); 
-                // Overwrite the bytes
-                self.overwrite(offset, new_arr);
-            };
+        unsafe {
+            let new_arr = std::slice::from_raw_parts(ptr, size);
+            // Overwrite the bytes
+            self.overwrite(offset, new_arr);
+        };
     }
 
     /// Find a byte and repeat it multiple times by overwriting the data after
@@ -875,7 +881,7 @@ impl Mutator {
         // Pick a random magic value
         let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
         for i in magic_value.iter() {
-            self.insert(offset,Felt252::from(*i));
+            self.insert(offset, Felt252::from(*i));
         }
         // Insert it
     }
