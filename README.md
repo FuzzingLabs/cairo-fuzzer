@@ -1,6 +1,6 @@
 # Cairo-Fuzzer -- Cairo Smart Contract Fuzzer
 
-Release version 1.0 
+Release version 1.1
 Developped and maintained by [@FuzzingLabs](https://github.com/FuzzingLabs)
 
 ## Description:
@@ -13,21 +13,23 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 	<img src="cairo-fuzzer.png"/>
 </p>
 
-- Run cairo contract
-- Run cairo contract with hints implemented in cairo-rs
+- Run Cairo contract
+- Run Starknet contract
 - Replayer of fuzzing corpus
 - Minimizer of fuzzing corpus
 - Load old corpus
 - Handle multiple arguments
-- Load a folder of inputs/crashes files
-- CLI
-- Run Cairo-fuzzer using a config file instead of CLI
 - Workspace architecture
+- Import dictionnary
+- Use Cairo-fuzzer as a library
+
 
 ## Usage:
 ```
-cargo run --release -- --cores 4 --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
+cargo run --release -- --cores 3 --contract tests/fuzzinglabs.json --function "Fuzz_symbolic_execution"
 ```
+
+For more usage information, follow our [tutorial](USAGE.md)
 
 ## CMDLINE (--help):
 
@@ -57,6 +59,7 @@ Options:
 ## How to find a Cairo/Starknet compilation artifact (json file)?
 
 Cairo-Fuzzer supports cairo compilation artifact (json file) generated after compilation using `cairo-compile`.
+Cairo-Fuzzer does not support Cairo1.0 for starknet contract (Lambdaclass is working on this for the next release of `starknet_in_rust` which is used by our fuzzer)
 
 ## How to run the tests?
 

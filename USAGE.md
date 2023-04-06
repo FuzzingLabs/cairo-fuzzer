@@ -25,6 +25,7 @@ Options:
       --crashfolder <CRASHFOLDER>  Path to the crashes folder to load [default: ]
       --inputfile <INPUTFILE>      Path to the inputs file to load [default: ]
       --crashfile <CRASHFILE>      Path to the crashes file to load [default: ]
+      --dict <DICT>                Path to the dictionnary file to load [default: ]
       --logs                       Enable fuzzer logs in file
       --seed <SEED>                Set a custom seed (only applicable for 1 core run)
       --run-time <RUN_TIME>        Number of seconds this fuzzing session will last
@@ -32,8 +33,9 @@ Options:
       --replay                     Replay the corpus folder
       --minimizer                  Minimize Corpora
       --proptesting                Property Testing
-      --iter <ITER>                Iteration Number [default: 2500000]
+      --iter <ITER>                Iteration Number [default: -1]
   -h, --help                       Print help
+
 ```
 
 ## Fuzzing function of a contract:
@@ -88,4 +90,19 @@ func Fuzz_symbolic_execution()
 
 ```sh
 cargo run --release -- --cores 13 --contract tests/fuzzinglabs.json --proptesting --iter 500000
+```
+
+## Fuzzing with a dictionnary:
+
+Dictionnary format is the same as other fuzzers such as Honggfuzz or libafl
+```python
+key1=999999999999
+key2=888888888888
+key3=777777777777
+...
+key9=111111111111
+```
+
+```sh
+cargo run --release -- --cores 13 --contract tests/fuzzinglabs.json --function "Fuzz_symbolic_execution" --dict tests/dict
 ```
