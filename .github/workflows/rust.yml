@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [ "starknet-rs-fuzzer" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "starknet-rs-fuzzer" ]
+    branches: [ "master" ]
 
 env:
   CARGO_TERM_COLOR: always
