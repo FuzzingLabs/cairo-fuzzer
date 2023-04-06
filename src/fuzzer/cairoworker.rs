@@ -3,7 +3,7 @@ use cairo_rs::types::program::Program;
 use felt::Felt252;
 use std::sync::{Arc, Mutex};
 
-use super::corpus::{CrashFile, InputFile};
+use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 //use super::dict::Dict;
 use super::stats::*;
 

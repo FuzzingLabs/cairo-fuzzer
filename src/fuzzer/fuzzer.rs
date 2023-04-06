@@ -8,7 +8,7 @@ use std::{
 use crate::{
     cli::config::Config,
     fuzzer::cairoworker::Cairoworker,
-    fuzzer::dict::{read_dict, Dict},
+    fuzzer::dict::Dict,
     fuzzer::starknetworker::Starknetworker,
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
@@ -18,10 +18,7 @@ use felt::Felt252;
 use rand::Rng;
 use starknet_rs::services::api::contract_class::ContractClass;
 
-use super::{
-    corpus::{CrashFile, InputFile},
-    stats::Statistics,
-};
+use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
 use std::io::Write;
 
 #[derive(Clone)]
@@ -113,7 +110,7 @@ impl Fuzzer {
 
         let dict = match &config.dict.is_empty() {
             true => Dict { inputs: Vec::new() },
-            false => read_dict(&config.dict),
+            false => Dict::read_dict(&config.dict),
         };
 
         let nbr_args = function.num_args;
@@ -696,5 +693,21 @@ mod tests {
 
         let stats = fuzzer.stats.lock().expect("Failed to lock stats mutex");
         assert_ne!(stats.coverage_db.len(), 0);
+    }
+
+    #[test]
+    fn test_dict() {
+        let config_file = "tests/config.json".to_string();
+        let config = Config::load_config(&config_file);
+        let fuzzer = Fuzzer::new(&config);
+        assert_ne!(
+            fuzzer
+                .stats
+                .lock()
+                .expect("Failed to lock stats mutex")
+                .input_db
+                .len(),
+            0
+        );
     }
 }

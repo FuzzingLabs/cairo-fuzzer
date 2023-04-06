@@ -12,5 +12,5 @@
     "workspace": "fuzzer_workspace",
     "proptesting": false,
     "iter": -1,
-    "dict": ""
+    "dict": "tests/dict"
 }

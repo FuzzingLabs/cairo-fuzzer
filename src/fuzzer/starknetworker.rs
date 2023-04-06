@@ -3,8 +3,8 @@ use felt::Felt252;
 use starknet_rs::services::api::contract_class::ContractClass;
 use std::sync::{Arc, Mutex};
 
-use super::corpus::{CrashFile, InputFile};
 use super::stats::*;
+use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
