@@ -4,10 +4,13 @@
     "replay": false,
     "minimizer": false,
     "contract_file": "tests/fuzzinglabs.json",
-    "function_name": "test_symbolic_execution",
+    "function_name": "Fuzz_symbolic_execution",
     "input_file": "",
     "crash_file": "",
     "input_folder": "",
     "crash_folder": "",
-    "workspace": "fuzzer_workspace"
+    "workspace": "fuzzer_workspace",
+    "proptesting": false,
+    "iter": -1,
+    "dict": "tests/dict"
 }

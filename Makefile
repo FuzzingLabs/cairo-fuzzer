@@ -1,2 +1,2 @@
 run:
-	cargo run --release -- --cores 4 --contract tests/fuzzinglabs.json --function "test_symbolic_execution"
+	cargo run --release -- --cores 13 --contract tests/fuzzinglabs.json --function "Fuzz_symbolic_execution"

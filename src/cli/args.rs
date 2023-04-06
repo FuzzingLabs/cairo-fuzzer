@@ -68,6 +68,14 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Path to the dictionnary file to load",
+        name = "DICT",
+        default_value = ""
+    )]
+    pub dict: String,
+
+    #[arg(
+        long,
         help = "Enable fuzzer logs in file",
         name = "LOGS",
         default_value = "false"
@@ -105,4 +113,14 @@ pub struct Opt {
         default_value = "false"
     )]
     pub minimizer: bool,
+    #[arg(
+        long,
+        help = "Property Testing",
+        name = "PROPTESTING",
+        default_value = "false"
+    )]
+    pub proptesting: bool,
+
+    #[arg(long, help = "Iteration Number", name = "ITER", default_value = "-1")]
+    pub iter: i64,
 }

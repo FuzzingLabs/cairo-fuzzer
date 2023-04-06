@@ -1,56 +1,62 @@
-use crate::cairo_vm::cairo_types::Felt;
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use cairo_rs::types::program::Program;
+use felt::Felt252;
 use std::sync::{Arc, Mutex};
 
-use super::corpus::{CrashFile, InputFile};
+use super::{corpus_crash::CrashFile, corpus_input::InputFile};
+//use super::dict::Dict;
 use super::stats::*;
 
-use crate::cairo_vm::cairo_runner::runner;
+use crate::cairo_vm::cairo_runner;
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
-
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
-pub enum WorkerError {
+pub enum CairoworkerError {
     // TODO implem
 }
 
-pub struct Worker {
+pub struct Cairoworker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
-    contents: String,
+    program: Program,
     function: Function,
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
+    iter: i64,
+    //dict: Dict,
 }
 
-impl Worker {
+impl Cairoworker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
-        contents: String,
+        program: Program,
         function: Function,
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
+        iter: i64,
+        //dict: Dict,
     ) -> Self {
-        Worker {
+        Cairoworker {
             stats,
             worker_id,
-            contents,
+            program,
             function,
             seed: seed,
             input_file,
             crash_file,
+            iter,
+            //dict,
         }
     }
 
     pub fn fuzz(self) {
         // Local stats database
         let mut local_stats = Statistics::default();
-
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
@@ -60,7 +66,6 @@ impl Worker {
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
 
-        // TODO - IMPORTANT - Should we replay all the corpus before starting to mutate ? because we will not trigger the bug directly after running
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -71,13 +76,20 @@ impl Worker {
                     .input
                     .extend_from_slice(&local_stats.get_input_by_index(index));
             } else {
-                mutator
-                    .input
-                    .extend_from_slice(&vec![b'\0' as Felt; self.function.num_args as usize]);
+                mutator.input.extend_from_slice(&vec![
+                    Felt252::from(b'\0');
+                    self.function.num_args as usize
+                ]);
             }
 
             // Corrupt it with 4 mutation passes
+            //if self.dict.inputs.is_empty() {
             mutator.mutate(4, &EmptyDatabase);
+            //} else {
+            //println!("dict values {:?}", self.dict.inputs);
+            //    mutator.mutate(4, &self.dict);
+            //println!("value {:?}", mutator.input);
+            //}
 
             // not the good size, drop this input
             if mutator.input.len() != self.function.num_args as usize {
@@ -91,20 +103,18 @@ impl Worker {
 
             // Wrap up the fuzz input in an `Arc`
             let fuzz_input = Arc::new(mutator.input.clone());
-
+            //println!("Inputs =>>> {:?}", &mutator.input);
             // run the cairo vm
-            match runner(&self.contents, &self.function.name, &mutator.input) {
+            match cairo_runner::runner(&self.program, &self.function.name, &mutator.input) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
                             trace
-                                .0
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
                             trace
-                                .1
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
@@ -114,6 +124,9 @@ impl Worker {
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
+                        if self.iter > 0 && self.iter < stats.fuzz_cases as i64 {
+                            return;
+                        }
                         // verify if new input has been found by other fuzzers
                         // if so, update our statistics
                         if local_stats.input_len != stats.input_len {
@@ -210,24 +223,22 @@ impl Worker {
         }
     }
 
-    pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt>>>) {
+    pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
 
         for input in inputs {
             let fuzz_input = input.clone();
-            match runner(&self.contents, &self.function.name, &input.clone()) {
+            match cairo_runner::runner(&self.program, &self.function.name, &fuzz_input) {
                 Ok(traces) => {
                     let mut vec_trace: Vec<(u32, u32)> = vec![];
                     for trace in traces.expect("Failed to get traces") {
                         vec_trace.push((
                             trace
-                                .0
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),
                             trace
-                                .1
                                 .offset
                                 .try_into()
                                 .expect("Failed to transform offset into u32"),

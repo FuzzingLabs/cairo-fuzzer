@@ -21,13 +21,13 @@
  * permissions and limitations under the License.
  *
  */
+#![allow(dead_code)]
 extern crate alloc;
 
-use crate::cairo_vm::cairo_types::Felt;
-use crate::mutator::magic_values::MAGIC_VALUES;
+use super::magic_values;
 use alloc::vec::Vec;
-use core::convert::TryInto;
-
+use felt::Felt252;
+use magic_values::MAGIC_VALUES;
 /// An empty database that never returns an input, useful for fuzzers without
 /// corpuses or input databases.
 pub struct EmptyDatabase;
@@ -36,7 +36,7 @@ impl InputDatabase for EmptyDatabase {
     fn num_inputs(&self) -> usize {
         0
     }
-    fn input(&self, _idx: usize) -> Option<&[Felt]> {
+    fn input(&self, _idx: usize) -> Option<Felt252> {
         None
     }
 }
@@ -57,7 +57,7 @@ pub trait InputDatabase {
 
     /// Get an input with a specific zero-index identifier
     /// If the `idx` is invalid or otherwise not available, this returns `None`
-    fn input(&self, idx: usize) -> Option<&[Felt]>;
+    fn input(&self, idx: usize) -> Option<Felt252>;
 }
 
 /// A basic random number generator based on xorshift64 with 64-bits of state
@@ -130,7 +130,7 @@ pub struct Mutator {
     /// It is strongly recommended that you do `input.clear()` and
     /// `input.extend_from_slice()` to update this buffer, to prevent the
     /// backing from being deallocated and reallocated.
-    pub input: Vec<Felt>,
+    pub input: Vec<Felt252>,
 
     /// If non-zero length, this contains a list of valid indicies into
     /// `input`, indicating which bytes of the input should mutated. This often
@@ -165,7 +165,7 @@ pub struct Mutator {
 /// A byte corruption skeleton which has user-supplied corruption logic which
 /// will be used to mutate a byte which is passed to it
 ///
-/// $corrupt takes a &mut self, `Felt` as arguments, and returns a `Felt` as the
+/// $corrupt takes a &mut self, `u8` as arguments, and returns a `u8` as the
 /// corrupted value.
 macro_rules! byte_corruptor {
     ($func:ident, $corrupt:expr) => {
@@ -177,13 +177,7 @@ macro_rules! byte_corruptor {
                 let offset = self.rand_offset();
 
                 // Perform the corruption
-                self.input[offset] = ($corrupt)(self, self.input[offset]);
-
-                // If we're in printable mode, wrap the value modulo the
-                // printable boundaries
-                if self.printable {
-                    self.input[offset] = self.input[offset].wrapping_sub(32) % 95 + 32;
-                }
+                self.input[offset] = ($corrupt)(self, self.input[offset].clone()).into();
             }
         }
     };
@@ -204,24 +198,24 @@ impl Mutator {
         }
     }
 
-    /*     /// Set whether or not this mutator should produce only ASCII-printable
-       /// characters.
-       ///
-       /// If non-printable characters are used in part of the corpus or existing
-       /// input, they may be inherited and still exist in the output of the
-       /// fuzzer.
-       pub fn printable(mut self, printable: bool) -> Self {
-           self.printable = printable;
-           self
-       }
+    /// Set whether or not this mutator should produce only ASCII-printable
+    /// characters.
+    ///
+    /// If non-printable characters are used in part of the corpus or existing
+    /// input, they may be inherited and still exist in the output of the
+    /// fuzzer.
+    pub fn printable(mut self, printable: bool) -> Self {
+        self.printable = printable;
+        self
+    }
 
-       /// Allows enabling and disabling of exponential random in the fuzzer. If
-       /// disabled, all random selections will be uniform.
-       pub fn rand_exp(mut self, exponential_random: bool) -> Self {
-           self.rng.exp_disabled = !exponential_random;
-           self
-       }
-    */
+    /// Allows enabling and disabling of exponential random in the fuzzer. If
+    /// disabled, all random selections will be uniform.
+    pub fn rand_exp(mut self, exponential_random: bool) -> Self {
+        self.rng.exp_disabled = !exponential_random;
+        self
+    }
+
     /// Sets the seed for the internal RNG
     pub fn seed(mut self, seed: u64) -> Self {
         self.rng.seed = seed ^ 0x12640367f4b7ea35;
@@ -240,7 +234,6 @@ impl Mutator {
         const STRATEGIES: &[fn(&mut Mutator)] = &[
             //Mutator::shrink,
             //Mutator::expand,
-            Mutator::bit,
             Mutator::inc_byte,
             Mutator::dec_byte,
             Mutator::neg_byte,
@@ -294,14 +287,14 @@ impl Mutator {
                 // Select a random input
                 if let Some(inp) = inputs.input(self.rng.rand(0, dblen - 1)) {
                     // Nothing to splice for an empty input
-                    if inp.is_empty() {
+                    /*                     if inp.is_empty() {
                         continue;
-                    }
-
+                    } */
+                    println!("Inputs selected => {:?}", inp);
                     // Pick a random offset and length from the input which
                     // we want to use for splicing
-                    let donor_offset = self.rng.rand_exp(0, inp.len() - 1);
-                    let donor_length = self.rng.rand_exp(1, inp.len() - donor_offset);
+                    let donor_offset = self.rng.rand_exp(0, inp.to_string().len() - 1);
+                    let donor_length = self.rng.rand_exp(1, inp.to_string().len() - donor_offset);
 
                     if splice_overwrite {
                         // Cannot overwrite an empty input
@@ -313,16 +306,21 @@ impl Mutator {
                         let offset = self.rand_offset();
                         let length = core::cmp::min(donor_length, self.input.len() - offset);
 
+                        println!("inputs to bytes => {:?}", &inp.to_be_bytes());
+                        println!(
+                            "inputs slices => {:?}",
+                            &inp.to_be_bytes()[donor_offset..donor_offset + length]
+                        );
                         // Overwrite it!
-                        self.overwrite(offset, &inp[donor_offset..donor_offset + length]);
+                        self.overwrite(
+                            offset,
+                            &inp.to_be_bytes()[donor_offset..donor_offset + length],
+                        );
                     } else {
                         // Find an offset to insert at in our input
                         let offset = self.rand_offset_int(true);
-                        let length =
-                            core::cmp::min(donor_length, self.max_input_size - self.input.len());
-
                         // Insert!
-                        self.insert(offset, &inp[donor_offset..donor_offset + length]);
+                        self.insert(offset, inp);
                     }
                 }
             } else {
@@ -379,7 +377,7 @@ impl Mutator {
 
     /// Dummy function, just used for RNG selection, logic is done in `mutate`
     fn splice_insert(&mut self) {}
-    /*
+
     /// Randomly delete a chunk of the input
     fn shrink(&mut self) {
         // Nothing to do on an empty input
@@ -410,10 +408,10 @@ impl Mutator {
         // Remove the bytes from the input
         let _ = self.input.drain(offset..offset + to_remove);
     }
-     */
+
     /// Make space in the input, filling with zeros if `printable` is not
     /// set, and if it is set, then fill with spaces.
-    /*     fn expand(&mut self) {
+    fn expand(&mut self) {
         // Nothing to do if the input size is >= the cap
         if self.input.len() >= self.max_input_size {
             return;
@@ -437,17 +435,17 @@ impl Mutator {
 
         // Create what to expand with
         let iter = if self.printable {
-            core::iter::repeat(b' ').take(self.rng.rand_exp(1, max_expand))
+            core::iter::repeat(Felt252::from(b' ')).take(self.rng.rand_exp(1, max_expand))
         } else {
-            core::iter::repeat(b'\0').take(self.rng.rand_exp(1, max_expand))
+            core::iter::repeat(Felt252::from(b'\0')).take(self.rng.rand_exp(1, max_expand))
         };
 
         // Expand at `offset` with `iter`
         self.input.splice(offset..offset, iter);
-    } */
+    }
 
     /// Add or subtract a random amount with a random endianness from a random
-    /// size `Felt` through `u64`
+    /// size `u8` through `u64`
     fn add_sub(&mut self) {
         // Nothing to do on an empty input
         if self.input.is_empty() {
@@ -486,40 +484,33 @@ impl Mutator {
         macro_rules! mutate {
             ($ty:ty) => {{
                 // Interpret the `offset` as a `$ty`
-                let tmp =
-                    <$ty>::from_ne_bytes(self.input[offset..offset + intsize].try_into().unwrap());
+                let tmp = self.input[offset].clone();
 
                 // Apply the delta, interpreting the bytes as a random
                 // endianness
                 let tmp = if self.rng.rand(0, 1) == 0 {
-                    tmp.wrapping_add(delta as $ty)
+                    (Felt252::from(delta) + Felt252::from(tmp))
                 } else {
-                    tmp.swap_bytes().wrapping_add(delta as $ty).swap_bytes()
+                    //tmp.swap_bytes().wrapping_add(delta as $ty).swap_bytes()
+                    Felt252::from(delta)
                 };
 
                 // Write the new value out to the input
-                self.input[offset..offset + intsize].copy_from_slice(&tmp.to_ne_bytes());
+                self.input[offset] += Felt252::from(tmp);
             }};
         }
 
         // Apply the delta to the offset
         match intsize {
-            1 => mutate!(Felt),
+            1 => mutate!(u8),
             2 => mutate!(u16),
             4 => mutate!(u32),
             8 => mutate!(u64),
+            16 => mutate!(Felt252),
             _ => unreachable!(),
         };
-
-        // If we're in printable mode, wrap the value modulo the
-        // printable boundaries
-        if self.printable {
-            for offset in offset..offset + intsize {
-                self.input[offset] = self.input[offset].wrapping_sub(32) % 95 + 32;
-            }
-        }
     }
-    /*
+
     /// Randomly replace a sequence of bytes with the same random character
     /// repeated a random amount of times
     fn set(&mut self) {
@@ -536,17 +527,19 @@ impl Mutator {
 
         // Pick the value to memset
         let chr = if self.printable {
-            (self.rng.rand(0, 94) + 32) as Felt
+            (self.rng.rand(0, 94) + 32) as u8
         } else {
-            self.rng.rand(0, 255) as Felt
+            self.rng.rand(0, 255) as u8
         };
 
         // Replace the selected bytes at the offset with `chr`
-        self.input[offset..offset + len].iter_mut().for_each(|x| *x = chr);
-    } */
+        self.input[offset..offset + len]
+            .iter_mut()
+            .for_each(|x| *x = Felt252::from(chr));
+    }
 
     /// Swap two ranges in an input buffer
-    fn swap_ranges(vec: &mut [Felt], mut offset1: usize, mut offset2: usize, mut len: usize) {
+    fn swap_ranges(vec: &mut [Felt252], mut offset1: usize, mut offset2: usize, mut len: usize) {
         if offset1 < offset2 && offset1 + len >= offset2 {
             // The ranges have the following layout here:
             // [o1--------]
@@ -559,7 +552,7 @@ impl Mutator {
             // values at offset1 are not mangled in the process of copying.
             // Same as memmove.
             for ii in (tail..len).rev() {
-                vec[offset2 + ii] = vec[offset1 + ii];
+                vec[offset2 + ii] = vec[offset1 + ii].clone();
             }
 
             // After this, the layout is the following:
@@ -575,7 +568,7 @@ impl Mutator {
             //      [head1][o1-]
             // [head2][o2-]
             for ii in 0..head {
-                vec[offset2 + ii] = vec[offset1 + ii];
+                vec[offset2 + ii] = vec[offset1 + ii].clone();
             }
 
             // After this, the layout is the following:
@@ -616,43 +609,36 @@ impl Mutator {
 
     /// Insert `buf` at `offset` in the input. `buf` will be truncated to
     /// ensure the input stays within the maximum input size
-    fn insert(&mut self, offset: usize, buf: &[Felt]) {
+    fn insert(&mut self, offset: usize, buf: Felt252) {
+        self.input.insert(offset, buf.clone());
         // Make sure we don't expand past the maximum input size
-        let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
+        //let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
 
         // Splice in the `buf`
-        self.input
-            .splice(offset..offset, buf[..len].iter().copied());
-
-        // If we're in printable mode, wrap the value modulo the
-        // printable boundaries
-        if self.printable {
-            for offset in offset..offset + len {
-                self.input[offset] = self.input[offset].wrapping_sub(32) % 95 + 32;
-            }
-        }
+        //self.input
+        //    .splice(offset..offset, buf[..len].iter().copied());
     }
 
     /// Overwrite the bytes in the input with `buf` at `offset`. If `buf`
     /// goes out of bounds of the input the `buf` will be truncated and the
     /// copy will stop.
-    fn overwrite(&mut self, offset: usize, buf: &[Felt]) {
+    fn overwrite(&mut self, offset: usize, buf: &[u8]) {
         // Get the slice that we may overwrite
-        let target = &mut self.input[offset..];
-
+        //let value = &self.input;
+        //println!("value {:?}", value);
+        //println!("buf => {:?}", buf);
+        let target = &mut self.input[offset..].to_vec();
+        //println!("Target before => {:?}", target);
         // Get the length to overwrite
         let len = core::cmp::min(buf.len(), target.len());
-
-        // Overwrite the bytes
-        target[..len].copy_from_slice(&buf[..len]);
-
-        // If we're in printable mode, wrap the value modulo the
-        // printable boundaries
-        if self.printable {
-            for offset in offset..offset + len {
-                self.input[offset] = self.input[offset].wrapping_sub(32) % 95 + 32;
-            }
+        let mut i = 0;
+        while i < len {
+            target[i] = Felt252::from(buf[i]);
+            i += 1;
         }
+        //println!("Target after => {:?}", target);
+        // Overwrite the bytes
+        //target.to[..len].copy_from_slice(&buf[..len]);
     }
 
     /// Take the bytes from `source` for `len` bytes in the input, and insert
@@ -667,7 +653,7 @@ impl Mutator {
         let len = core::cmp::min(len, self.max_input_size - self.input.len());
 
         // Create an interator to splice into the input
-        let rep = core::iter::repeat(b'\0').take(len);
+        let rep = core::iter::repeat(Felt252::from(b'\0')).take(len);
 
         // Expand at `dest` with `rep`, making room for the copy
         self.input.splice(dest..dest, rep);
@@ -676,11 +662,11 @@ impl Mutator {
         let split_point = dest.saturating_sub(source).min(len);
 
         for ii in 0..split_point {
-            self.input[dest + ii] = self.input[source + ii];
+            self.input[dest + ii] = self.input[source + ii].clone();
         }
 
         for ii in split_point..len {
-            self.input[dest + ii] = self.input[source + ii + len];
+            self.input[dest + ii] = self.input[source + ii + len].clone();
         }
     }
 
@@ -695,17 +681,25 @@ impl Mutator {
         if source < dest {
             // Copy forwards
             for ii in 0..len {
-                self.input[dest + ii] = self.input[source + ii];
+                self.input[dest + ii] = self.input[source + ii].clone();
             }
         } else {
             // Copy backwards
             for ii in (0..len).rev() {
-                self.input[dest + ii] = self.input[source + ii];
+                self.input[dest + ii] = self.input[source + ii].clone();
             }
         }
     }
 
     /// Copy bytes from one location in the input and overwrite them at another
+    /*     fn convert<'a>(arr: &'a [&'a [u8; 32]]) -> &'a [u8] {
+        let size = arr.iter().map(|a| a.len()).sum();
+        let ptr = arr.as_ptr() as *const u8;
+
+        // SAFETY: We have ensured that the pointer and length are valid
+        unsafe { std::slice::from_raw_parts(ptr, size) }
+    } */
+
     /// location in the input
     fn copy(&mut self) {
         // Nothing to do on an empty input
@@ -744,26 +738,29 @@ impl Mutator {
         // Perform an insertion inplace in the input
         self.insert_inplace(src, len, dst);
     }
-    /*
+
     /// Create 1 or 2 random bytes and insert them into the input
     fn insert_rand(&mut self) {
         // Pick some random values
         let bytes = if self.printable {
             [
-                (self.rng.rand(0, 94) + 32) as Felt,
-                (self.rng.rand(0, 94) + 32) as Felt,
+                Felt252::from(self.rng.rand(0, 94) + 32),
+                Felt252::from(self.rng.rand(0, 94) + 32),
             ]
         } else {
-            [self.rng.rand(0, 255) as Felt, self.rng.rand(0, 255) as Felt]
+            [
+                Felt252::from(self.rng.rand(0, 255)),
+                Felt252::from(self.rng.rand(0, 255)),
+            ]
         };
 
-        // Pick a random offset and length
+        // Pick a random offset
         let offset = self.rand_offset_int(true);
-        let len = self.rng.rand(1, 2);
-
-        // Insert the bytes
-        self.insert(offset, &bytes[..len]);
-    } */
+        self.insert(offset, bytes[0].clone());
+        // Pick a random offset
+        let offset = self.rand_offset_int(true);
+        self.insert(offset, bytes[1].clone());
+    }
 
     /// Create 1 or 2 random bytes and overwrite them at a location in the
     /// input
@@ -776,11 +773,14 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                (self.rng.rand(0, 94) + 32) as Felt,
-                (self.rng.rand(0, 94) + 32) as Felt,
+                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
             ]
         } else {
-            [self.rng.rand(0, 255) as Felt, self.rng.rand(0, 255) as Felt]
+            [
+                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
+            ]
         };
 
         // Pick a random offset and length
@@ -788,10 +788,19 @@ impl Mutator {
         let len = core::cmp::min(self.input.len() - offset, 2);
         let len = self.rng.rand(1, len);
 
-        // Overwrite the bytes
-        self.overwrite(offset, &bytes[..len]);
+        let test = &bytes[..len];
+
+        let size = test.iter().map(|a| a.len()).sum();
+        let ptr = test.as_ptr() as *const u8;
+
+        // SAFETY: We have ensured that the pointer and length are valid
+        unsafe {
+            let new_arr = std::slice::from_raw_parts(ptr, size);
+            // Overwrite the bytes
+            self.overwrite(offset, new_arr);
+        };
     }
-    /*
+
     /// Find a byte and repeat it multiple times by overwriting the data after
     /// it
     fn byte_repeat_overwrite(&mut self) {
@@ -807,12 +816,12 @@ impl Mutator {
         let amount = self.rng.rand_exp(1, self.input.len() - offset);
 
         // Get the old value and repeat it
-        let val = self.input[offset];
+        let val = self.input[offset].clone();
         self.input[offset + 1..offset + amount]
-            .iter_mut().for_each(|x| *x = val);
+            .iter_mut()
+            .for_each(|x| *x = val.clone());
     }
-     */
-    /*
+
     /// Find a byte and repeat it multiple times by splicing a random amount
     /// of the byte in
     fn byte_repeat_insert(&mut self) {
@@ -829,11 +838,10 @@ impl Mutator {
         let amount = self.rng.rand_exp(1, self.input.len() - offset) - 1;
 
         // Make sure we don't expand past the maximum input size
-        let amount =
-            core::cmp::min(self.max_input_size - self.input.len(), amount);
+        let amount = core::cmp::min(self.max_input_size - self.input.len(), amount);
 
         // Get the value we want to repeat
-        let val = self.input[offset];
+        let val = self.input[offset].clone();
 
         // Create an interator we want to expand with
         let iter = core::iter::repeat(val).take(amount);
@@ -841,7 +849,6 @@ impl Mutator {
         // Expand at `offset` with `iter`
         self.input.splice(offset..offset, iter);
     }
-    */
 
     /// Write over the input with a random magic value
     fn magic_overwrite(&mut self) {
@@ -855,25 +862,30 @@ impl Mutator {
 
         // Pick a random magic value
         let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
-
+        let mut magic_felt = Vec::new();
+        for i in magic_value.iter() {
+            magic_felt.push(*i);
+        }
         // Overwrite it
-        self.overwrite(offset, magic_value);
+
+        let test = &magic_felt[..];
+
+        self.overwrite(offset, &test);
     }
 
-    /*
     /// Inject a magic value into the input
     fn magic_insert(&mut self) {
         // Pick a random offset
         let offset = self.rand_offset_int(true);
 
         // Pick a random magic value
-        let magic_value =
-            &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
-
+        let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
+        for i in magic_value.iter() {
+            self.insert(offset, Felt252::from(*i));
+        }
         // Insert it
-        self.insert(offset, magic_value);
     }
-    */
+
     /// Overwrite a random offset of the input with random bytes
     fn random_overwrite(&mut self) {
         // Nothing to do on an empty input
@@ -893,15 +905,15 @@ impl Mutator {
             self.input[offset..offset + amount]
                 .iter_mut()
                 .for_each(|x| {
-                    *x = (rng.rand(0, 94) + 32) as Felt;
+                    *x = Felt252::from(rng.rand(0, 94) + 32);
                 });
         } else {
             self.input[offset..offset + amount]
                 .iter_mut()
-                .for_each(|x| *x = rng.rand(0, 255) as Felt);
+                .for_each(|x| *x = Felt252::from(rng.rand(0, 255)));
         }
     }
-    /*
+
     /// Insert random bytes into a random offset in the input
     fn random_insert(&mut self) {
         // Pick a random offset
@@ -911,38 +923,38 @@ impl Mutator {
         let amount = self.rng.rand_exp(0, self.input.len() - offset);
 
         // Make sure the amount doesn't expand us past the maximum input size
-        let amount = core::cmp::min(amount,
-            self.max_input_size - self.input.len());
+        let amount = core::cmp::min(amount, self.max_input_size - self.input.len());
 
         // Insert `amount` random bytes
         let rng = &mut self.rng;
         if self.printable {
-            self.input.splice(offset..offset, (0..amount).map(|_| {
-                (rng.rand(0, 94) + 32) as Felt
-            }));
+            self.input.splice(
+                offset..offset,
+                (0..amount).map(|_| Felt252::from(rng.rand(0, 94) + 32)),
+            );
         } else {
-            self.input.splice(offset..offset, (0..amount).map(|_| {
-                rng.rand(0, 255) as Felt
-            }));
+            self.input.splice(
+                offset..offset,
+                (0..amount).map(|_| Felt252::from(rng.rand(0, 255))),
+            );
         }
     }
-    */
 
     // Corrupt a random bit in the input
-    byte_corruptor!(bit, |obj: &mut Self, x: Felt| -> Felt {
-        x ^ (1u8 << obj.rng.rand(0, 7))
-    });
+    /*     byte_corruptor!(bit, |obj: &mut Self, x: Felt252| -> Felt252 {
+        x ^ Felt252::from(1u8 << obj.rng.rand(0, 7))
+    }); */
 
     // Increment a byte in the input
-    byte_corruptor!(inc_byte, |_: &mut Self, x: Felt| -> Felt {
-        x.wrapping_add(1)
+    byte_corruptor!(inc_byte, |_: &mut Self, x: Felt252| -> Felt252 {
+        x + Felt252::from(1)
     });
 
     // Decrement a byte in the input
-    byte_corruptor!(dec_byte, |_: &mut Self, x: Felt| -> Felt {
-        x.wrapping_sub(1)
+    byte_corruptor!(dec_byte, |_: &mut Self, x: Felt252| -> Felt252 {
+        x - Felt252::from(1)
     });
 
     // Negate a byte in the input
-    byte_corruptor!(neg_byte, |_: &mut Self, x: Felt| -> Felt { !x });
+    byte_corruptor!(neg_byte, |_: &mut Self, x: Felt252| -> Felt252 { -x });
 }

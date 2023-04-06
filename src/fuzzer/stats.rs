@@ -1,9 +1,7 @@
+use felt::Felt252;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-
-use crate::cairo_vm::cairo_types::Felt;
-
-pub type FuzzInput = Arc<Vec<Felt>>;
+pub type FuzzInput = Arc<Vec<Felt252>>;
 
 /// Fuzz case statistics
 #[derive(Default, Debug)]
