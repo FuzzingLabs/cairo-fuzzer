@@ -52,6 +52,7 @@ fn main() {
                 crash_file: opt.crashfile,
                 input_folder: opt.inputfolder,
                 crash_folder: opt.crashfolder,
+                dict: opt.dict,
                 cores: opt.cores,
                 logs: opt.logs,
                 seed: opt.seed,

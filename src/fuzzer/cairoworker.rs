@@ -4,6 +4,7 @@ use felt::Felt252;
 use std::sync::{Arc, Mutex};
 
 use super::corpus::{CrashFile, InputFile};
+//use super::dict::Dict;
 use super::stats::*;
 
 use crate::cairo_vm::cairo_runner;
@@ -25,6 +26,7 @@ pub struct Cairoworker {
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
     iter: i64,
+    //dict: Dict,
 }
 
 impl Cairoworker {
@@ -37,6 +39,7 @@ impl Cairoworker {
         input_file: Arc<Mutex<InputFile>>,
         crash_file: Arc<Mutex<CrashFile>>,
         iter: i64,
+        //dict: Dict,
     ) -> Self {
         Cairoworker {
             stats,
@@ -47,6 +50,7 @@ impl Cairoworker {
             input_file,
             crash_file,
             iter,
+            //dict,
         }
     }
 
@@ -79,7 +83,13 @@ impl Cairoworker {
             }
 
             // Corrupt it with 4 mutation passes
-            mutator.mutate(4, &EmptyDatabase);
+            //if self.dict.inputs.is_empty() {
+                mutator.mutate(4, &EmptyDatabase);
+            //} else {
+                //println!("dict values {:?}", self.dict.inputs);
+            //    mutator.mutate(4, &self.dict);
+                //println!("value {:?}", mutator.input);
+            //}
 
             // not the good size, drop this input
             if mutator.input.len() != self.function.num_args as usize {
@@ -93,7 +103,7 @@ impl Cairoworker {
 
             // Wrap up the fuzz input in an `Arc`
             let fuzz_input = Arc::new(mutator.input.clone());
-
+            //println!("Inputs =>>> {:?}", &mutator.input);
             // run the cairo vm
             match cairo_runner::runner(&self.program, &self.function.name, &mutator.input) {
                 Ok(traces) => {

@@ -25,7 +25,6 @@
 extern crate alloc;
 
 use super::magic_values;
-
 use alloc::vec::Vec;
 use felt::Felt252;
 use magic_values::MAGIC_VALUES;
@@ -37,7 +36,7 @@ impl InputDatabase for EmptyDatabase {
     fn num_inputs(&self) -> usize {
         0
     }
-    fn input(&self, _idx: usize) -> Option<&[Felt252]> {
+    fn input(&self, _idx: usize) -> Option<Felt252> {
         None
     }
 }
@@ -58,7 +57,7 @@ pub trait InputDatabase {
 
     /// Get an input with a specific zero-index identifier
     /// If the `idx` is invalid or otherwise not available, this returns `None`
-    fn input(&self, idx: usize) -> Option<&[Felt252]>;
+    fn input(&self, idx: usize) -> Option<Felt252>;
 }
 
 /// A basic random number generator based on xorshift64 with 64-bits of state
@@ -288,14 +287,14 @@ impl Mutator {
                 // Select a random input
                 if let Some(inp) = inputs.input(self.rng.rand(0, dblen - 1)) {
                     // Nothing to splice for an empty input
-                    if inp.is_empty() {
+/*                     if inp.is_empty() {
                         continue;
-                    }
-
+                    } */
+                    println!("Inputs selected => {:?}", inp);
                     // Pick a random offset and length from the input which
                     // we want to use for splicing
-                    let donor_offset = self.rng.rand_exp(0, inp.len() - 1);
-                    let donor_length = self.rng.rand_exp(1, inp.len() - donor_offset);
+                    let donor_offset = self.rng.rand_exp(0, inp.to_string().len() - 1);
+                    let donor_length = self.rng.rand_exp(1, inp.to_string().len() - donor_offset);
 
                     if splice_overwrite {
                         // Cannot overwrite an empty input
@@ -307,16 +306,15 @@ impl Mutator {
                         let offset = self.rand_offset();
                         let length = core::cmp::min(donor_length, self.input.len() - offset);
 
+                        println!("inputs to bytes => {:?}", &inp.to_be_bytes());
+                        println!("inputs slices => {:?}", &inp.to_be_bytes()[donor_offset..donor_offset + length]);
                         // Overwrite it!
-                        self.overwrite(offset, &inp[donor_offset..donor_offset + length]);
+                        self.overwrite(offset, &inp.to_be_bytes()[donor_offset..donor_offset + length]);
                     } else {
                         // Find an offset to insert at in our input
                         let offset = self.rand_offset_int(true);
-                        let length =
-                            core::cmp::min(donor_length, self.max_input_size - self.input.len());
-
                         // Insert!
-                        self.insert(offset, &inp[donor_offset..donor_offset + length]);
+                        self.insert(offset, inp);
                     }
                 }
             } else {
@@ -605,10 +603,8 @@ impl Mutator {
 
     /// Insert `buf` at `offset` in the input. `buf` will be truncated to
     /// ensure the input stays within the maximum input size
-    fn insert(&mut self, offset: usize, buf: &[Felt252]) {
-        for i in buf {
-            self.input.push((*i).clone());
-        }
+    fn insert(&mut self, offset: usize, buf: Felt252) {
+            self.input.insert(offset, buf.clone());
         // Make sure we don't expand past the maximum input size
         //let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
 
@@ -620,16 +616,23 @@ impl Mutator {
     /// Overwrite the bytes in the input with `buf` at `offset`. If `buf`
     /// goes out of bounds of the input the `buf` will be truncated and the
     /// copy will stop.
-    fn overwrite(&mut self, offset: usize, buf: &[Felt252]) {
-        /*         // Get the slice that we may overwrite
-        let target = &mut self.input[offset..];
-
+    fn overwrite(&mut self, offset: usize, buf: &[u8]) {
+        // Get the slice that we may overwrite
+        //let value = &self.input;
+        //println!("value {:?}", value);
+        //println!("buf => {:?}", buf);
+        let target = &mut self.input[offset..].to_vec();
+        //println!("Target before => {:?}", target);
         // Get the length to overwrite
         let len = core::cmp::min(buf.len(), target.len());
-
+        let mut i = 0;
+        while i < len {
+            target[i] = Felt252::from(buf[i]);
+            i += 1;
+        }
+        //println!("Target after => {:?}", target);
         // Overwrite the bytes
-        target[..len].copy_from_slice(&buf[..len]); */
-        self.input[offset] = buf[0].clone();
+        //target.to[..len].copy_from_slice(&buf[..len]);
     }
 
     /// Take the bytes from `source` for `len` bytes in the input, and insert
@@ -683,6 +686,14 @@ impl Mutator {
     }
 
     /// Copy bytes from one location in the input and overwrite them at another
+/*     fn convert<'a>(arr: &'a [&'a [u8; 32]]) -> &'a [u8] {
+        let size = arr.iter().map(|a| a.len()).sum();
+        let ptr = arr.as_ptr() as *const u8;
+    
+        // SAFETY: We have ensured that the pointer and length are valid
+        unsafe { std::slice::from_raw_parts(ptr, size) }
+    } */
+    
     /// location in the input
     fn copy(&mut self) {
         // Nothing to do on an empty input
@@ -737,12 +748,12 @@ impl Mutator {
             ]
         };
 
-        // Pick a random offset and length
+        // Pick a random offset
         let offset = self.rand_offset_int(true);
-        let len = self.rng.rand(1, 2);
-
-        // Insert the bytes
-        self.insert(offset, &bytes[..len]);
+        self.insert(offset, bytes[0].clone());
+        // Pick a random offset
+        let offset = self.rand_offset_int(true);
+        self.insert(offset, bytes[1].clone());
     }
 
     /// Create 1 or 2 random bytes and overwrite them at a location in the
@@ -756,13 +767,13 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                Felt252::from(self.rng.rand(0, 94) + 32),
-                Felt252::from(self.rng.rand(0, 94) + 32),
+                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
             ]
         } else {
             [
-                Felt252::from(self.rng.rand(0, 255)),
-                Felt252::from(self.rng.rand(0, 255)),
+                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
             ]
         };
 
@@ -771,8 +782,17 @@ impl Mutator {
         let len = core::cmp::min(self.input.len() - offset, 2);
         let len = self.rng.rand(1, len);
 
-        // Overwrite the bytes
-        self.overwrite(offset, &bytes[..len]);
+        let test = &bytes[..len];
+
+        let size = test.iter().map(|a| a.len()).sum();
+        let ptr = test.as_ptr() as *const u8;
+    
+        // SAFETY: We have ensured that the pointer and length are valid
+        unsafe { 
+            let new_arr = std::slice::from_raw_parts(ptr, size); 
+                // Overwrite the bytes
+                self.overwrite(offset, new_arr);
+            };
     }
 
     /// Find a byte and repeat it multiple times by overwriting the data after
@@ -838,10 +858,13 @@ impl Mutator {
         let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
         let mut magic_felt = Vec::new();
         for i in magic_value.iter() {
-            magic_felt.push(Felt252::from(*i));
+            magic_felt.push(*i);
         }
         // Overwrite it
-        self.overwrite(offset, &magic_felt);
+
+        let test = &magic_felt[..];
+
+        self.overwrite(offset, &test);
     }
 
     /// Inject a magic value into the input
@@ -851,12 +874,10 @@ impl Mutator {
 
         // Pick a random magic value
         let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
-        let mut magic_felt = Vec::new();
         for i in magic_value.iter() {
-            magic_felt.push(Felt252::from(*i));
+            self.insert(offset,Felt252::from(*i));
         }
         // Insert it
-        self.insert(offset, &magic_felt);
     }
 
     /// Overwrite a random offset of the input with random bytes

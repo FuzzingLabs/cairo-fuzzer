@@ -12,6 +12,7 @@ pub struct Config {
     pub crash_file: String,
     pub input_folder: String,
     pub crash_folder: String,
+    pub dict: String,
     pub cores: i32,
     pub logs: bool,
     pub seed: Option<u64>,

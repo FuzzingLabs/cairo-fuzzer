@@ -9,11 +9,13 @@ use crate::{
     cli::config::Config,
     fuzzer::cairoworker::Cairoworker,
     fuzzer::starknetworker::Starknetworker,
+    fuzzer::dict::{Dict, read_dict},
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
 use cairo_rs::types::program::Program;
 use felt::Felt252;
+use rand::Rng;
 use starknet_rs::services::api::contract_class::ContractClass;
 
 use super::{
@@ -65,6 +67,8 @@ pub struct Fuzzer {
     pub iter: i64,
     /// Usage of property testing
     pub proptesting: bool,
+    /// Dictionnary struct
+    pub dict: Dict,
 }
 
 impl Fuzzer {
@@ -97,7 +101,7 @@ impl Fuzzer {
             },
         };
         // Load inputs from the input file if provided
-        let inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
+        let mut inputs: InputFile = match config.input_file.is_empty() && config.input_folder.is_empty()
         {
             true => InputFile::new_from_function(&function, &config.workspace),
             false => match config.input_folder.is_empty() {
@@ -106,6 +110,22 @@ impl Fuzzer {
             },
         };
         println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
+
+        let dict = match &config.dict.is_empty() {
+            true => Dict { inputs:Vec::new() },
+            false => read_dict(&config.dict)
+        };
+
+        let nbr_args = function.num_args;
+        for val in &dict.inputs {
+            let mut value_vec:Vec<Felt252> = Vec::new();
+            value_vec.push(val.clone()); // to ensure that all values of the dict will be in the inputs vector
+            for _ in 0..nbr_args - 1 {
+                value_vec.push(dict.inputs[rand::thread_rng().gen_range(0..dict.inputs.len())].clone());
+            }
+            inputs.inputs.push(value_vec);
+        }
+
 
         // Load existing inputs in shared database
         if inputs.inputs.len() > 0 {
@@ -137,10 +157,6 @@ impl Fuzzer {
             }
         }
 
-        // Setup the mutex for the inputs corpus and crash corpus
-        let inputs = Arc::new(Mutex::new(inputs));
-        let crashes = Arc::new(Mutex::new(crashes));
-
         let program = if !function._starknet {
             Some(
                 Program::from_string(&contents, Some(&function.name))
@@ -155,6 +171,10 @@ impl Fuzzer {
             None
         };
 
+        // Setup the mutex for the inputs corpus and crash corpus
+        let inputs = Arc::new(Mutex::new(inputs));
+        let crashes = Arc::new(Mutex::new(crashes));
+
         // Setup the fuzzer
         Fuzzer {
             stats: stats,
@@ -166,6 +186,7 @@ impl Fuzzer {
             contract_file: config.contract_file.clone(),
             contract_content: contents,
             program: program,
+            dict:dict,
             contract_class: contract_class,
             function: function.clone(),
             start_time: Instant::now(),
@@ -194,6 +215,7 @@ impl Fuzzer {
             let seed = self.seed + (i as u64);
             let starknet = self.starknet;
             let iter = self.iter;
+            //let dict = self.dict.clone();
             // Spawn threads
             std::thread::spawn(move || {
                 if !starknet {
@@ -206,6 +228,7 @@ impl Fuzzer {
                         input_file,
                         crash_file,
                         iter,
+                        //dict,
                     );
                     cairo_worker.fuzz();
                 } else {
@@ -265,7 +288,7 @@ impl Fuzzer {
             let program = self.program.clone();
             let contract_class = self.contract_class.clone();
             let iter = if self.proptesting { self.iter } else { 0 };
-
+            //let dict = self.dict.clone();
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
                 if !starknet {
@@ -278,6 +301,7 @@ impl Fuzzer {
                         input_file,
                         crash_file,
                         iter,
+                        //dict
                     );
                     cairo_worker.replay(chunk);
                 } else {
@@ -397,7 +421,7 @@ mod tests {
     use core::panic;
     use std::{thread, time::Duration};
 
-    use crate::cli::config::Config;
+    use crate::{cli::config::Config, fuzzer::dict::Dict};
 
     use super::Fuzzer;
     #[test]
@@ -448,6 +472,7 @@ mod tests {
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
         let iter: i64 = 0;
+        let dict: String = "".to_string();
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -464,6 +489,7 @@ mod tests {
             minimizer,
             iter,
             proptesting,
+            dict,
         };
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
@@ -488,6 +514,7 @@ mod tests {
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
         let iter: i64 = -1;
+        let dict: String = "".to_string();
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -504,6 +531,7 @@ mod tests {
             minimizer,
             iter,
             proptesting,
+            dict,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
@@ -541,6 +569,7 @@ mod tests {
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
         let iter: i64 = -1;
+        let dict: String = "".to_string();
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -557,6 +586,7 @@ mod tests {
             minimizer,
             iter,
             proptesting,
+            dict,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
@@ -595,6 +625,7 @@ mod tests {
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
         let iter: i64 = 0;
+        let dict: String = "".to_string();
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -611,6 +642,7 @@ mod tests {
             minimizer,
             iter,
             proptesting,
+            dict,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);
@@ -638,6 +670,7 @@ mod tests {
         let crash_folder: String = "".to_string();
         let proptesting: bool = false;
         let iter: i64 = 0;
+        let dict: String = "".to_string();
         let config = Config {
             input_folder: input_folder,
             crash_folder: crash_folder,
@@ -654,6 +687,7 @@ mod tests {
             minimizer,
             iter,
             proptesting,
+            dict,
         };
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(&config);

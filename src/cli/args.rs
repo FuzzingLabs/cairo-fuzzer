@@ -68,6 +68,14 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Path to the dictionnary file to load",
+        name = "DICT",
+        default_value = ""
+    )]
+    pub dict: String,
+
+    #[arg(
+        long,
         help = "Enable fuzzer logs in file",
         name = "LOGS",
         default_value = "false"
