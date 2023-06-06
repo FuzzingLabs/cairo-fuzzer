@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 cairo-rs = { git="https://github.com/FuzzingLabs/cairo-rs/", package = "cairo-vm", rev="80a032a203788b00ebe3f1655bd16396e547ef17"}
 felt = { git="https://github.com/FuzzingLabs/cairo-rs/", package = "cairo-felt", rev="80a032a203788b00ebe3f1655bd16396e547ef17"}
-starknet-rs = { git="https://github.com/FuzzingLabs/starknet_in_rust", rev="87da5fb74d8863d4fa591cf8ce05b6c700811898"}
+starknet-rs = { git="https://github.com/FuzzingLabs/starknet_in_rust", rev="d37aa809be70748f2187a54d3bd623c52ff44341"}
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }
