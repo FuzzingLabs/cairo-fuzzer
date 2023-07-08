@@ -2,13 +2,12 @@ use std::{fs, process};
 
 use clap::Parser;
 
-mod cairo_vm;
 mod cli;
 mod custom_rand;
 mod fuzzer;
 mod json;
 mod mutator;
-mod starknet;
+mod runner;
 
 use cli::args::Opt;
 use cli::config::Config;

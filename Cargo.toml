@@ -6,9 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cairo-rs = { path="/home/nabih/starknet-API/cairo-rs/vm", package = "cairo-vm"}
+cairo-rs = {path="/home/nabih/starknet-API/cairo-rs/vm", package = "cairo-vm"}
 felt = { path="/home/nabih/starknet-API/cairo-rs/felt", package = "cairo-felt"}
 starknet-rs = { path="/home/nabih/starknet-API/starknet_in_rust", package = "starknet_in_rust"}
+# starknet_api = "0.1.0"
+starknet-contract-class = { path = "/home/nabih/starknet-API/starknet_in_rust/crates/starknet-contract-class/" }
 chrono = "0.4.19"
 rand = "0.8.5"
 num-bigint = { version = "0.4", features = ["serde"] }

@@ -13,12 +13,11 @@ use crate::{
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
+use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
 use cairo_rs::types::program::Program;
 use felt::Felt252;
 use rand::Rng;
-use starknet_rs::services::api::contract_class::ContractClass;
-
-use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
+use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -156,14 +155,14 @@ impl Fuzzer {
 
         let program = if !function._starknet {
             Some(
-                Program::from_string(&contents, Some(&function.name))
+                Program::from_bytes(&contents.as_bytes(), Some(&function.name))
                     .expect("Failed to deserialize Program"),
             )
         } else {
             None
         };
         let contract_class = if function._starknet {
-            Some(ContractClass::from_string(&contents).expect("could not get contractclass"))
+            Some(ContractClass::try_from(contents.as_str()).expect("could not get contractclass"))
         } else {
             None
         };
