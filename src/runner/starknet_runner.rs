@@ -16,19 +16,19 @@ use std::collections::HashMap;
 use super::runner::Runner;
 
 #[derive(Clone)]
-pub struct StarknetFuzzer {
+pub struct RunnerStarknet {
     contract_class: ContractClass,
 }
 
-impl StarknetFuzzer {
+impl RunnerStarknet {
     pub fn new(contract_class: &ContractClass) -> Self {
-        return StarknetFuzzer {
+        return RunnerStarknet {
             contract_class: contract_class.clone(),
         };
     }
 }
 
-impl Runner for StarknetFuzzer {
+impl Runner for RunnerStarknet {
     fn runner(
         self,
         func_entrypoint: &String,

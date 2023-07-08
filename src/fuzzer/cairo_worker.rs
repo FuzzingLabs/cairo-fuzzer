@@ -18,7 +18,7 @@ pub enum CairoworkerError {
     // TODO implem
 }
 
-pub struct Cairoworker {
+pub struct CairoWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
     program: Program,
@@ -30,7 +30,7 @@ pub struct Cairoworker {
     //dict: Dict,
 }
 
-impl Cairoworker {
+impl CairoWorker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
@@ -42,7 +42,7 @@ impl Cairoworker {
         iter: i64,
         //dict: Dict,
     ) -> Self {
-        Cairoworker {
+        CairoWorker {
             stats,
             worker_id,
             program,
@@ -66,7 +66,7 @@ impl Cairoworker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
-        let cairo_runner = cairo_runner::CairoFuzzer::new(&self.program);
+        let cairo_runner = cairo_runner::RunnerCairo::new(&self.program);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -218,7 +218,7 @@ impl Cairoworker {
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-        let cairo_runner = cairo_runner::CairoFuzzer::new(&self.program);
+        let cairo_runner = cairo_runner::RunnerCairo::new(&self.program);
         for input in inputs {
             let fuzz_input = input.clone();
             match cairo_runner

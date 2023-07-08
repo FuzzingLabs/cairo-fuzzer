@@ -8,19 +8,19 @@ use felt::Felt252;
 
 use super::runner::Runner;
 #[derive(Clone)]
-pub struct CairoFuzzer {
+pub struct RunnerCairo {
     program: Program,
 }
 
-impl CairoFuzzer {
+impl RunnerCairo {
     pub fn new(program: &Program) -> Self {
-        return CairoFuzzer {
+        return RunnerCairo {
             program: program.clone(),
         };
     }
 }
 
-impl Runner for CairoFuzzer {
+impl Runner for RunnerCairo {
     fn runner(
         self,
         func_name: &String,

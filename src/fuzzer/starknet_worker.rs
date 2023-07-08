@@ -9,7 +9,7 @@ use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
-use crate::runner::starknet_runner::StarknetFuzzer;
+use crate::runner::starknet_runner::RunnerStarknet;
 
 use thiserror::Error;
 
@@ -18,7 +18,7 @@ pub enum StarknetworkerError {
     // TODO implem
 }
 
-pub struct Starknetworker {
+pub struct StarknetWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
     contract_class: ContractClass,
@@ -29,7 +29,7 @@ pub struct Starknetworker {
     iter: i64,
 }
 
-impl Starknetworker {
+impl StarknetWorker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
@@ -40,7 +40,7 @@ impl Starknetworker {
         crash_file: Arc<Mutex<CrashFile>>,
         iter: i64,
     ) -> Self {
-        Starknetworker {
+        StarknetWorker {
             stats,
             worker_id,
             contract_class,
@@ -64,7 +64,7 @@ impl Starknetworker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
-        let starknet_runner = StarknetFuzzer::new(&self.contract_class);
+        let starknet_runner = RunnerStarknet::new(&self.contract_class);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -210,7 +210,7 @@ impl Starknetworker {
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-        let starknet_runner = StarknetFuzzer::new(&self.contract_class);
+        let starknet_runner = RunnerStarknet::new(&self.contract_class);
         for input in inputs {
             let fuzz_input = input.clone();
             match starknet_runner
