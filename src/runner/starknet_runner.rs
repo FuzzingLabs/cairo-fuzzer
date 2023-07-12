@@ -63,9 +63,6 @@ impl Runner for RunnerStarknet {
         state_reader
             .address_to_class_hash_mut()
             .insert(address.clone(), class_hash);
-        /*     state_reader
-        .address_to_nonce_mut()
-        .insert(address.clone(), None); */
 
         //* ---------------------------------------
         //*    Create state with previous data

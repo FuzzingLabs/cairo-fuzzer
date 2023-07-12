@@ -180,19 +180,12 @@ impl InputFile {
         let _ = create_dir(&self.workspace);
         let _ = create_dir(format!("{}/{}", &self.workspace, self.name.clone()));
         let _ = create_dir(format!("{}/{}/inputs", &self.workspace, self.name.clone()));
-        //let _ = create_dir(self.workspace.input_folder);
         let buf = Vec::new();
         let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
         let mut inputs_ser = serde_json::Serializer::with_formatter(buf.clone(), formatter.clone());
         self.serialize(&mut inputs_ser)
             .expect("Failed to serialize");
-        let dump_file = format!(
-            "{}",
-            /*             "{}/{}/inputs/{}",
-            self.workspace,
-            self.name.clone(), */
-            self.path
-        );
+        let dump_file = format!("{}", self.path);
         write(
             &dump_file,
             String::from_utf8(inputs_ser.into_inner()).expect("Failed to dump string as utf8"),

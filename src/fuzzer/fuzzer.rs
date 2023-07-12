@@ -34,7 +34,6 @@ pub struct Fuzzer {
     pub program: Option<Program>,
     /// Contract_class for starknet-rs
     pub contract_class: Option<ContractClass>,
-
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs

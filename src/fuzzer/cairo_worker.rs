@@ -86,11 +86,6 @@ impl CairoWorker {
             // Corrupt it with 4 mutation passes
             //if self.dict.inputs.is_empty() {
             mutator.mutate(4, &EmptyDatabase);
-            //} else {
-            //println!("dict values {:?}", self.dict.inputs);
-            //    mutator.mutate(4, &self.dict);
-            //println!("value {:?}", mutator.input);
-            //}
 
             // not the good size, drop this input
             if mutator.input.len() != self.function.num_args as usize {
