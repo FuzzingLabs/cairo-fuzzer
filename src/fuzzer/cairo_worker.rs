@@ -1,4 +1,5 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use crate::runner::runner::Runner;
 use cairo_rs::types::program::Program;
 use felt::Felt252;
 use std::sync::{Arc, Mutex};
@@ -7,9 +8,9 @@ use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 //use super::dict::Dict;
 use super::stats::*;
 
-use crate::cairo_vm::cairo_runner;
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
+use crate::runner::cairo_runner;
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -17,7 +18,7 @@ pub enum CairoworkerError {
     // TODO implem
 }
 
-pub struct Cairoworker {
+pub struct CairoWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
     program: Program,
@@ -29,7 +30,7 @@ pub struct Cairoworker {
     //dict: Dict,
 }
 
-impl Cairoworker {
+impl CairoWorker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
@@ -41,7 +42,7 @@ impl Cairoworker {
         iter: i64,
         //dict: Dict,
     ) -> Self {
-        Cairoworker {
+        CairoWorker {
             stats,
             worker_id,
             program,
@@ -65,7 +66,7 @@ impl Cairoworker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
-
+        let cairo_runner = cairo_runner::RunnerCairo::new(&self.program);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -85,11 +86,6 @@ impl Cairoworker {
             // Corrupt it with 4 mutation passes
             //if self.dict.inputs.is_empty() {
             mutator.mutate(4, &EmptyDatabase);
-            //} else {
-            //println!("dict values {:?}", self.dict.inputs);
-            //    mutator.mutate(4, &self.dict);
-            //println!("value {:?}", mutator.input);
-            //}
 
             // not the good size, drop this input
             if mutator.input.len() != self.function.num_args as usize {
@@ -105,21 +101,12 @@ impl Cairoworker {
             let fuzz_input = Arc::new(mutator.input.clone());
             //println!("Inputs =>>> {:?}", &mutator.input);
             // run the cairo vm
-            match cairo_runner::runner(&self.program, &self.function.name, &mutator.input) {
+            match cairo_runner
+                .clone()
+                .runner(&self.function.name, &mutator.input)
+            {
                 Ok(traces) => {
-                    let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.expect("Failed to get traces") {
-                        vec_trace.push((
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                        ));
-                    }
+                    let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
 
                     // Mutex locking is limited to this scope
                     {
@@ -226,24 +213,15 @@ impl Cairoworker {
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-
+        let cairo_runner = cairo_runner::RunnerCairo::new(&self.program);
         for input in inputs {
             let fuzz_input = input.clone();
-            match cairo_runner::runner(&self.program, &self.function.name, &fuzz_input) {
+            match cairo_runner
+                .clone()
+                .runner(&self.function.name, &fuzz_input)
+            {
                 Ok(traces) => {
-                    let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.expect("Failed to get traces") {
-                        vec_trace.push((
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                        ));
-                    }
+                    let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");

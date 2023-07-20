@@ -1,6 +1,7 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use crate::runner::runner::Runner;
 use felt::Felt252;
-use starknet_rs::services::api::contract_class::ContractClass;
+use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
 use std::sync::{Arc, Mutex};
 
 use super::stats::*;
@@ -8,7 +9,7 @@ use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 
 use crate::custom_rand::rng::Rng;
 use crate::json::json_parser::Function;
-use crate::starknet::starknet_runner;
+use crate::runner::starknet_runner::RunnerStarknet;
 
 use thiserror::Error;
 
@@ -17,7 +18,7 @@ pub enum StarknetworkerError {
     // TODO implem
 }
 
-pub struct Starknetworker {
+pub struct StarknetWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
     contract_class: ContractClass,
@@ -28,7 +29,7 @@ pub struct Starknetworker {
     iter: i64,
 }
 
-impl Starknetworker {
+impl StarknetWorker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
@@ -39,7 +40,7 @@ impl Starknetworker {
         crash_file: Arc<Mutex<CrashFile>>,
         iter: i64,
     ) -> Self {
-        Starknetworker {
+        StarknetWorker {
             stats,
             worker_id,
             contract_class,
@@ -63,7 +64,7 @@ impl Starknetworker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.num_args as usize);
-
+        let starknet_runner = RunnerStarknet::new(&self.contract_class);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -97,25 +98,12 @@ impl Starknetworker {
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
-            match starknet_runner::runner(
-                &self.contract_class,
-                &self.function.entrypoint,
-                &mutator.input,
-            ) {
+            match starknet_runner
+                .clone()
+                .runner(&self.function.entrypoint, &mutator.input)
+            {
                 Ok(traces) => {
-                    let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.expect("Failed to get traces") {
-                        vec_trace.push((
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                        ));
-                    }
+                    let vec_trace = traces.expect("Could not get traces");
 
                     // Mutex locking is limited to this scope
                     {
@@ -222,28 +210,15 @@ impl Starknetworker {
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-
+        let starknet_runner = RunnerStarknet::new(&self.contract_class);
         for input in inputs {
             let fuzz_input = input.clone();
-            match starknet_runner::runner(
-                &self.contract_class,
-                &self.function.entrypoint,
-                &fuzz_input,
-            ) {
+            match starknet_runner
+                .clone()
+                .runner(&self.function.entrypoint, &fuzz_input)
+            {
                 Ok(traces) => {
-                    let mut vec_trace: Vec<(u32, u32)> = vec![];
-                    for trace in traces.expect("Failed to get traces") {
-                        vec_trace.push((
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                            trace
-                                .offset
-                                .try_into()
-                                .expect("Failed to transform offset into u32"),
-                        ));
-                    }
+                    let vec_trace = traces.expect("Could not get traces");
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");

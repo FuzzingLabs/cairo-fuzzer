@@ -7,18 +7,17 @@ use std::{
 
 use crate::{
     cli::config::Config,
-    fuzzer::cairoworker::Cairoworker,
+    fuzzer::cairo_worker::CairoWorker,
     fuzzer::dict::Dict,
-    fuzzer::starknetworker::Starknetworker,
+    fuzzer::starknet_worker::StarknetWorker,
     json::json_parser::{parse_json, parse_starknet_json, Function},
 };
 
+use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
 use cairo_rs::types::program::Program;
 use felt::Felt252;
 use rand::Rng;
-use starknet_rs::services::api::contract_class::ContractClass;
-
-use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
+use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -35,7 +34,6 @@ pub struct Fuzzer {
     pub program: Option<Program>,
     /// Contract_class for starknet-rs
     pub contract_class: Option<ContractClass>,
-
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs
@@ -156,14 +154,14 @@ impl Fuzzer {
 
         let program = if !function._starknet {
             Some(
-                Program::from_string(&contents, Some(&function.name))
+                Program::from_bytes(&contents.as_bytes(), Some(&function.name))
                     .expect("Failed to deserialize Program"),
             )
         } else {
             None
         };
         let contract_class = if function._starknet {
-            Some(ContractClass::from_string(&contents).expect("could not get contractclass"))
+            Some(ContractClass::try_from(contents.as_str()).expect("could not get contractclass"))
         } else {
             None
         };
@@ -216,7 +214,7 @@ impl Fuzzer {
             // Spawn threads
             std::thread::spawn(move || {
                 if !starknet {
-                    let cairo_worker = Cairoworker::new(
+                    let cairo_worker = CairoWorker::new(
                         stats,
                         i,
                         program.expect("Could not get Cairo Program (None)"),
@@ -229,7 +227,7 @@ impl Fuzzer {
                     );
                     cairo_worker.fuzz();
                 } else {
-                    let starknet_worker = Starknetworker::new(
+                    let starknet_worker = StarknetWorker::new(
                         stats,
                         i,
                         contract_class.expect("Could not get Cairo Program (None)"),
@@ -289,7 +287,7 @@ impl Fuzzer {
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
                 if !starknet {
-                    let mut cairo_worker = Cairoworker::new(
+                    let mut cairo_worker = CairoWorker::new(
                         stats_thread,
                         i as i32,
                         program.expect("Could not get Cairo Program (None)"),
@@ -302,7 +300,7 @@ impl Fuzzer {
                     );
                     cairo_worker.replay(chunk);
                 } else {
-                    let mut starknet_worker = Starknetworker::new(
+                    let mut starknet_worker = StarknetWorker::new(
                         stats_thread,
                         i as i32,
                         contract_class.expect("Could not get Cairo Program (None)"),
