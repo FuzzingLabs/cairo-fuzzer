@@ -1,22 +1,41 @@
 [package]
-name = "cairo-fuzzer"
-version = "0.1.1"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+name = 'cairo-fuzzer'
+version = '0.1.1'
+edition = '2021'
 
 [dependencies]
-cairo-rs = {path="/home/nabih/starknet-API/cairo-rs/vm", package = "cairo-vm"}
-felt = { path="/home/nabih/starknet-API/cairo-rs/felt", package = "cairo-felt"}
-starknet-rs = { path="/home/nabih/starknet-API/starknet_in_rust", package = "starknet_in_rust"}
-# starknet_api = "0.1.0"
-starknet-contract-class = { path = "/home/nabih/starknet-API/starknet_in_rust/crates/starknet-contract-class/" }
-chrono = "0.4.19"
-rand = "0.8.5"
-num-bigint = { version = "0.4", features = ["serde"] }
-serde_json = "1.0"
-serde = "*"
-clap = { version = " 4.1.16", features = ["derive"] }
-log = "*"
-thiserror = "1.0.32"
-num-traits = "0.2.15"
+chrono = '0.4.19'
+rand = '0.8.5'
+serde_json = '1.0'
+serde = '*'
+log = '*'
+thiserror = '1.0.32'
+num-traits = '0.2.15'
+
+[dependencies.cairo-rs]
+git = 'https://github.com/FuzzingLabs/cairo-rs'
+rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
+package = 'cairo-vm'
+
+[dependencies.felt]
+git = 'https://github.com/FuzzingLabs/cairo-rs'
+rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
+package = 'cairo-felt'
+
+[dependencies.starknet-rs]
+git = 'https://github.com/FuzzingLabs/starknet_in_rust/'
+rev = '1c6cf1da6d6e19221954ab24a3b140adb5de396f'
+package = 'starknet_in_rust'
+
+[dependencies.starknet-contract-class]
+git = 'https://github.com/FuzzingLabs/starknet_in_rust'
+rev = '1c6cf1da6d6e19221954ab24a3b140adb5de396f'
+package = 'starknet-contract-class'
+
+[dependencies.num-bigint]
+version = '0.4'
+features = ['serde']
+
+[dependencies.clap]
+version = ' 4.1.16'
+features = ['derive']
