@@ -39,7 +39,7 @@ impl InputFile {
                 timestamp_str
             ),
             name: function.name.clone(),
-            args: function.type_args.clone(),
+            args: function.inputs.clone(),
             inputs: Vec::<Vec<Felt252>>::new(),
         }
     }

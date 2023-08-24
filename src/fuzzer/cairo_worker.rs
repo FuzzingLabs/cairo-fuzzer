@@ -65,7 +65,7 @@ impl CairoWorker {
         // Create a mutator
         let mut mutator = Mutator::new()
             .seed(self.seed)
-            .max_input_size(self.function.num_args as usize);
+            .max_input_size(self.function.inputs.len());
         let cairo_runner = cairo_runner::RunnerCairo::new(&self.program);
         'next_case: loop {
             // clear previous data
@@ -77,10 +77,9 @@ impl CairoWorker {
                     .input
                     .extend_from_slice(&local_stats.get_input_by_index(index));
             } else {
-                mutator.input.extend_from_slice(&vec![
-                    Felt252::from(b'\0');
-                    self.function.num_args as usize
-                ]);
+                mutator
+                    .input
+                    .extend_from_slice(&vec![Felt252::from(b'\0'); self.function.inputs.len()]);
             }
 
             // Corrupt it with 4 mutation passes
@@ -88,11 +87,11 @@ impl CairoWorker {
             mutator.mutate(4, &EmptyDatabase);
 
             // not the good size, drop this input
-            if mutator.input.len() != self.function.num_args as usize {
+            if mutator.input.len() != self.function.inputs.len() {
                 println!(
                     "Corrupted input size {} != {}",
                     mutator.input.len(),
-                    self.function.num_args
+                    self.function.inputs.len()
                 );
                 continue 'next_case;
             }

@@ -14,6 +14,8 @@ use cli::config::Config;
 use fuzzer::fuzzer::Fuzzer;
 
 use log::error;
+
+use crate::json::json_parser::parse_json;
 fn main() {
     let header = r###"
                  _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
@@ -63,7 +65,6 @@ fn main() {
             }
         }
     };
-    //if proptesting enabled
     if config.proptesting {
         let contents = fs::read_to_string(&config.contract_file).unwrap();
         println!("\t\t\t\t\t\t\tSearching for Fuzzing functions ...");

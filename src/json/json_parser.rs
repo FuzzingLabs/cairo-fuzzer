@@ -3,210 +3,127 @@ use serde_json::Value;
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
+    pub idx: usize,
     pub entrypoint: String,
-    pub num_args: u64,
-    pub type_args: Vec<String>,
-    pub hints: bool,
-    pub decorators: Vec<String>,
-    pub _starknet: bool,
+    pub inputs: Vec<String>,
+    pub outputs: Vec<String>,
+    pub starknet: bool,
+}
+#[derive(Debug)]
+pub struct AbiFunction {
+    pub name: String,
+    pub inputs: Vec<String>,
+    pub outputs: Vec<String>,
 }
 
-/// Function that returns a vector of the args type of the function the user want to fuzz
-fn get_type_args(members: &Value) -> Vec<String> {
-    let mut type_args = Vec::<String>::new();
-    for (_, value) in members
-        .as_object()
-        .expect("Failed get member type_args as object from json")
-    {
-        type_args.push(value["cairo_type"].to_string().replace("\"", ""));
-    }
-    return type_args;
-}
-
-/// Function that return a vector of the decoratos of a function
-fn get_decorators(decorators: &Value) -> Vec<String> {
-    let mut decorators_list = Vec::<String>::new();
-    if let Some(data) = decorators.as_array() {
-        for elem in data {
-            decorators_list.push(elem.to_string().replace("\"", ""));
-        }
-    }
-    return decorators_list;
-}
-
-/// Function that return the PC of the wrapper
-fn get_pc_from_wrapper(identifiers: &Value, function_name: &String) -> String {
-    for (key, value) in identifiers
-        .as_object()
-        .expect("Failed to get identifier from json")
-    {
-        let key_split = key.split(".").collect::<Vec<&str>>();
-        if value["type"] == "function" && key.contains("wrapper") && key_split.len() == 2 {
-            let name = key_split[key_split.len() - 1];
-            if name == function_name {
-                return value["pc"].to_string();
-            }
-        }
-    }
-    return "".to_string();
-}
-
-/// Function to parse starknet json artifact
-pub fn parse_starknet_json(data: &String, function_name: &String) -> Option<Function> {
-    let mut starknet = false;
-    let mut data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(program) = data.get("program") {
-        data = program.clone();
-        starknet = true;
-    }
-    let hints = if let Some(field) = data.get("hints") {
-        field.as_object().unwrap().len() != 0
-    } else {
-        false
-    };
-    if let Some(identifiers) = data.get("identifiers") {
-        for (key, value) in identifiers
-            .as_object()
-            .expect("Failed to get identifier from json")
-        {
-            let key_split = key.split(".").collect::<Vec<&str>>();
-            if value["type"] == "function" && key.contains("main") && key_split.len() == 2 {
-                let name = key_split[key_split.len() - 1];
-                let pc = get_pc_from_wrapper(identifiers, function_name);
-                if pc.is_empty() {
-                    eprintln!("Error : Could not get PC");
-                    return None;
-                }
-                let mut decorators = Vec::<String>::new();
-                if let Some(decorators_data) = value.get("decorators") {
-                    decorators.append(&mut get_decorators(decorators_data));
-                }
-                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
-                    if let (Some(size), Some(members)) =
-                        (identifiers_key.get("size"), identifiers_key.get("members"))
-                    {
-                        if &name.to_string() == function_name && decorators[0] == "external" {
-                            return Some(Function {
-                                _starknet: starknet,
-                                entrypoint: pc,
-                                hints: hints,
-                                name: name.to_string(),
-                                num_args: size
-                                    .as_u64()
-                                    .expect("Failed to get number of arguments from json"),
-                                decorators: decorators,
-                                type_args: get_type_args(members),
-                            });
-                        }
+fn get_abi(data: &Value) -> Vec<AbiFunction> {
+    let mut res: Vec<AbiFunction> = vec![];
+    if let Some(abi) = data.get("abi") {
+        //println!("{:?}", abi);
+        for obj in abi.as_array().expect("Could not convert abi to array") {
+            let tmp = obj
+                .as_object()
+                .expect("could not convert abi obj to object");
+            let obj_type = tmp
+                .get("type")
+                .expect("Could not get abi object type")
+                .as_str()
+                .expect("Could not convert to str");
+            if obj_type == "function" {
+                let state_mutability = tmp
+                    .get("state_mutability")
+                    .expect("Could not get state_mutability")
+                    .as_str()
+                    .expect("Could not convert to str");
+                if state_mutability == "external" {
+                    let name = tmp
+                        .get("name")
+                        .expect("Could not get name of function from the abi")
+                        .as_str()
+                        .expect("Could not convert to str")
+                        .to_string();
+                    let inputs_data = tmp
+                        .get("inputs")
+                        .expect("Could not get inputs from the abi")
+                        .as_array()
+                        .expect("Could not convert inputs to array");
+                    let mut inputs: Vec<String> = vec![];
+                    for input in inputs_data {
+                        inputs.push(
+                            input
+                                .get("type")
+                                .expect("Could not get type from input")
+                                .as_str()
+                                .expect("Could not convert to str")
+                                .to_string(),
+                        );
                     }
+                    let outputs_data = tmp
+                        .get("outputs")
+                        .expect("Could not get outputs from the abi")
+                        .as_array()
+                        .expect("Could not convert outputs to array");
+                    let mut outputs: Vec<String> = vec![];
+                    for output in outputs_data {
+                        outputs.push(
+                            output
+                                .get("type")
+                                .expect("Could not get type from input")
+                                .as_str()
+                                .expect("Could not convert to str")
+                                .to_string(),
+                        );
+                    }
+                    res.push(AbiFunction {
+                        name: name,
+                        inputs: inputs,
+                        outputs: outputs,
+                    });
                 }
             }
         }
     }
-    eprintln!("Error : Could not get function");
-    return None;
+    res
 }
 
-/// Function to get all property testing functions
-pub fn get_proptesting_functions(data: &String) -> Vec<String> {
-    let mut functions: Vec<String> = Vec::new();
-    let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    if let Some(identifiers) = data.get("identifiers") {
-        for (key, value) in identifiers
-            .as_object()
-            .expect("Failed to get identifier from json")
-        {
-            let name = key.split(".").last().unwrap().to_string();
-            if value["type"] == "function" && name.contains("Fuzz_") {
-                functions.push(name);
-            }
-        }
-    }
-    return functions;
-}
-
-/// Function to parse cairo json artifact
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
-    let starknet = false;
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
-    let hints = if let Some(field) = data.get("hints") {
-        field.as_object().unwrap().len() != 0
-    } else {
-        false
-    };
-    if let Some(identifiers) = data.get("identifiers") {
-        for (key, value) in identifiers
-            .as_object()
-            .expect("Failed to get identifier from json")
-        {
-            let name = key.split(".").last().unwrap().to_string();
-            if value["type"] == "function" && &name == function_name {
-                let pc = value["pc"].to_string();
-                if let Some(identifiers_key) = identifiers.get(format!("{}.Args", key)) {
-                    if let (Some(size), Some(members)) =
-                        (identifiers_key.get("size"), identifiers_key.get("members"))
-                    {
-                        return Some(Function {
-                            decorators: Vec::new(),
-                            _starknet: starknet,
-                            entrypoint: pc,
-                            hints: hints,
-                            name: name,
-                            num_args: size
-                                .as_u64()
-                                .expect("Failed to get number of arguments from json"),
-                            type_args: get_type_args(members),
-                        });
-                    }
-                }
+    let abi = get_abi(&data);
+    if let Some(types) = data.get("entry_points_by_type") {
+        let external_functions = types
+            .get("EXTERNAL")
+            .expect("Could not get external functions")
+            .as_array()
+            .expect("Could not convert external functions to array");
+        let mut idx: usize = 0;
+        for function_abi in abi {
+            if function_name == &*function_abi.name {
+                return Some(Function {
+                    name: function_abi.name,
+                    idx: idx,
+                    entrypoint: external_functions[idx]
+                        .get("selector")
+                        .expect("Could not get selector")
+                        .to_string(),
+                    inputs: function_abi.inputs,
+                    outputs: function_abi.outputs,
+                    starknet: true,
+                });
             }
+            idx += 1;
         }
-    }
+    };
     return None;
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use core::panic;
-    use std::fs;
-    #[test]
-    fn test_good_json() {
-        let filename = "tests/fuzzinglabs.json";
-        let contents = fs::read_to_string(&filename.to_string())
-            .expect("Should have been able to read the file");
-        let function = parse_json(&contents, &"Fuzz_symbolic_execution".to_string());
-        if let Some(ok_function) = function {
-            assert_eq!(ok_function.name, "Fuzz_symbolic_execution".to_string());
-            assert_eq!(ok_function.num_args, 11);
-            assert_eq!(
-                ok_function.type_args,
-                vec![
-                    "felt", "felt", "felt", "felt", "felt", "felt", "felt", "felt", "felt", "felt",
-                    "felt"
-                ]
-            );
-        } else {
-            panic!("Should be parsed properly")
+pub fn get_proptesting_functions(data: &String) -> Vec<String> {
+    let content: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
+    let mut functions: Vec<String> = vec![];
+    let abi = get_abi(&content);
+    for func in abi {
+        if func.name.starts_with("Fuzz_") {
+            functions.push(func.name);
         }
     }
-    #[test]
-    fn test_bad_json() {
-        let content = r###"{
-            "name": "test_symbolic_execution"}"###;
-        let function = parse_json(&content.to_string(), &"test_symbolic_execution".to_string());
-        if let Some(_function) = function {
-            panic!("should not be parsed");
-        }
-    }
-    #[test]
-    fn test_good_json_bad_function_name() {
-        let filename = "tests/fuzzinglabs.json";
-        let contents = fs::read_to_string(&filename.to_string())
-            .expect("Should have been able to read the file");
-        let function = parse_json(&contents, &"bad_function_name".to_string());
-        if let Some(_function) = function {
-            panic!("should not be parser properly")
-        }
-    }
+    functions
 }

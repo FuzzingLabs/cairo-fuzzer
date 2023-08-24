@@ -11,11 +11,12 @@ serde = '*'
 log = '*'
 thiserror = '1.0.32'
 num-traits = '0.2.15'
+cairo-lang-starknet = "2.1.0-rc4"
 
-[dependencies.cairo-rs]
-git = 'https://github.com/FuzzingLabs/cairo-rs'
-rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
-package = 'cairo-vm'
+#[dependencies.cairo-rs]
+#git = 'https://github.com/FuzzingLabs/cairo-rs'
+#rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
+#package = 'cairo-vm'
 
 [dependencies.felt]
 git = 'https://github.com/FuzzingLabs/cairo-rs'

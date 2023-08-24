@@ -14,7 +14,6 @@
                     "type": "felt"
                 }
             ],
-            "stateMutability": "view",
             "type": "function"
         }
     ],
@@ -111,7 +110,7 @@
                         "end_col": 22,
                         "end_line": 57,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "start_col": 5,
                         "start_line": 57
@@ -128,7 +127,7 @@
                         "end_col": 22,
                         "end_line": 58,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "start_col": 5,
                         "start_line": 58
@@ -145,21 +144,21 @@
                         "end_col": 56,
                         "end_line": 62,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "parent_location": [
                             {
                                 "end_col": 46,
                                 "end_line": 56,
                                 "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                                    "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                                 },
                                 "parent_location": [
                                     {
                                         "end_col": 30,
                                         "end_line": 63,
                                         "input_file": {
-                                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                                         },
                                         "start_col": 5,
                                         "start_line": 63
@@ -186,14 +185,14 @@
                         "end_col": 38,
                         "end_line": 60,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "parent_location": [
                             {
                                 "end_col": 28,
                                 "end_line": 63,
                                 "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                                    "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                                 },
                                 "start_col": 21,
                                 "start_line": 63
@@ -215,7 +214,7 @@
                         "end_col": 30,
                         "end_line": 63,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "start_col": 5,
                         "start_line": 63
@@ -230,27 +229,27 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 49,
-                        "end_line": 8,
+                        "end_col": 48,
+                        "end_line": 7,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "parent_location": [
                             {
                                 "end_col": 46,
                                 "end_line": 56,
                                 "input_file": {
-                                    "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                                    "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                                 },
                                 "parent_location": [
                                     {
-                                        "end_col": 45,
-                                        "end_line": 9,
+                                        "end_col": 48,
+                                        "end_line": 8,
                                         "input_file": {
-                                            "filename": "xor.cairo"
+                                            "filename": "tests/xor.cairo"
                                         },
-                                        "start_col": 17,
-                                        "start_line": 9
+                                        "start_col": 20,
+                                        "start_line": 8
                                     },
                                     "While trying to retrieve the implicit argument 'bitwise_ptr' in:"
                                 ],
@@ -260,7 +259,7 @@
                             "While expanding the reference 'bitwise_ptr' in:"
                         ],
                         "start_col": 20,
-                        "start_line": 8
+                        "start_line": 7
                     }
                 },
                 "7": {
@@ -272,13 +271,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 34,
-                        "end_line": 9,
+                        "end_col": 37,
+                        "end_line": 8,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
-                        "start_col": 29,
-                        "start_line": 9
+                        "start_col": 32,
+                        "start_line": 8
                     }
                 },
                 "9": {
@@ -290,25 +289,25 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 66,
-                        "end_line": 8,
+                        "end_col": 64,
+                        "end_line": 7,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 44,
-                                "end_line": 9,
+                                "end_col": 47,
+                                "end_line": 8,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
-                                "start_col": 36,
-                                "start_line": 9
+                                "start_col": 39,
+                                "start_line": 8
                             },
                             "While expanding the reference 'password' in:"
                         ],
-                        "start_col": 51,
-                        "start_line": 8
+                        "start_col": 50,
+                        "start_line": 7
                     }
                 },
                 "10": {
@@ -320,13 +319,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 45,
-                        "end_line": 9,
+                        "end_col": 48,
+                        "end_line": 8,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
-                        "start_col": 17,
-                        "start_line": 9
+                        "start_col": 20,
+                        "start_line": 8
                     }
                 },
                 "12": {
@@ -339,12 +338,12 @@
                     "hints": [],
                     "inst": {
                         "end_col": 24,
-                        "end_line": 10,
+                        "end_line": 9,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "start_col": 9,
-                        "start_line": 10
+                        "start_line": 9
                     }
                 },
                 "14": {
@@ -357,12 +356,12 @@
                     "hints": [],
                     "inst": {
                         "end_col": 7,
-                        "end_line": 10,
+                        "end_line": 9,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 10
+                        "start_line": 9
                     }
                 },
                 "16": {
@@ -377,41 +376,41 @@
                         "end_col": 46,
                         "end_line": 56,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 45,
-                                "end_line": 9,
+                                "end_col": 48,
+                                "end_line": 8,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
-                                        "end_col": 49,
-                                        "end_line": 8,
+                                        "end_col": 48,
+                                        "end_line": 7,
                                         "input_file": {
-                                            "filename": "xor.cairo"
+                                            "filename": "tests/xor.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 25,
-                                                "end_line": 11,
+                                                "end_col": 24,
+                                                "end_line": 10,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 9,
-                                                "start_line": 11
+                                                "start_line": 10
                                             },
                                             "While trying to retrieve the implicit argument 'bitwise_ptr' in:"
                                         ],
                                         "start_col": 20,
-                                        "start_line": 8
+                                        "start_line": 7
                                     },
                                     "While expanding the reference 'bitwise_ptr' in:"
                                 ],
-                                "start_col": 17,
-                                "start_line": 9
+                                "start_col": 20,
+                                "start_line": 8
                             },
                             "While trying to update the implicit return value 'bitwise_ptr' in:"
                         ],
@@ -428,13 +427,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 23,
-                        "end_line": 11,
+                        "end_col": 22,
+                        "end_line": 10,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
-                        "start_col": 22,
-                        "start_line": 11
+                        "start_col": 21,
+                        "start_line": 10
                     }
                 },
                 "19": {
@@ -446,13 +445,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 25,
-                        "end_line": 11,
+                        "end_col": 24,
+                        "end_line": 10,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "start_col": 9,
-                        "start_line": 11
+                        "start_line": 10
                     }
                 },
                 "20": {
@@ -467,41 +466,41 @@
                         "end_col": 46,
                         "end_line": 56,
                         "input_file": {
-                            "filename": "/home/nabih/cairo_venv/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
+                            "filename": "/home/nabih/.local/lib/python3.9/site-packages/starkware/cairo/common/bitwise.cairo"
                         },
                         "parent_location": [
                             {
-                                "end_col": 45,
-                                "end_line": 9,
+                                "end_col": 48,
+                                "end_line": 8,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
-                                        "end_col": 49,
-                                        "end_line": 8,
+                                        "end_col": 48,
+                                        "end_line": 7,
                                         "input_file": {
-                                            "filename": "xor.cairo"
+                                            "filename": "tests/xor.cairo"
                                         },
                                         "parent_location": [
                                             {
-                                                "end_col": 21,
-                                                "end_line": 13,
+                                                "end_col": 20,
+                                                "end_line": 12,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 5,
-                                                "start_line": 13
+                                                "start_line": 12
                                             },
                                             "While trying to retrieve the implicit argument 'bitwise_ptr' in:"
                                         ],
                                         "start_col": 20,
-                                        "start_line": 8
+                                        "start_line": 7
                                     },
                                     "While expanding the reference 'bitwise_ptr' in:"
                                 ],
-                                "start_col": 17,
-                                "start_line": 9
+                                "start_col": 20,
+                                "start_line": 8
                             },
                             "While trying to update the implicit return value 'bitwise_ptr' in:"
                         ],
@@ -518,13 +517,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 19,
-                        "end_line": 13,
+                        "end_col": 18,
+                        "end_line": 12,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
-                        "start_col": 18,
-                        "start_line": 13
+                        "start_col": 17,
+                        "start_line": 12
                     }
                 },
                 "23": {
@@ -536,13 +535,13 @@
                     "flow_tracking_data": null,
                     "hints": [],
                     "inst": {
-                        "end_col": 21,
-                        "end_line": 13,
+                        "end_col": 20,
+                        "end_line": 12,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "start_col": 5,
-                        "start_line": 13
+                        "start_line": 12
                     }
                 },
                 "24": {
@@ -564,12 +563,12 @@
                                 "parent_location": [
                                     {
                                         "end_col": 19,
-                                        "end_line": 8,
+                                        "end_line": 7,
                                         "input_file": {
-                                            "filename": "xor.cairo"
+                                            "filename": "tests/xor.cairo"
                                         },
                                         "start_col": 6,
-                                        "start_line": 8
+                                        "start_line": 7
                                     },
                                     "While handling return value of"
                                 ],
@@ -588,12 +587,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling return value of"
                         ],
@@ -618,13 +617,13 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 82,
-                                "end_line": 8,
+                                "end_col": 79,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
-                                "start_col": 72,
-                                "start_line": 8
+                                "start_col": 70,
+                                "start_line": 7
                             },
                             "While handling return value 'res'"
                         ],
@@ -649,10 +648,10 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 82,
-                                "end_line": 8,
+                                "end_col": 79,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -664,12 +663,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While handling return value of"
                                         ],
@@ -678,8 +677,8 @@
                                     },
                                     "While expanding the reference '__return_value_ptr' in:"
                                 ],
-                                "start_col": 72,
-                                "start_line": 8
+                                "start_col": 70,
+                                "start_line": 7
                             },
                             "While handling return value 'res'"
                         ],
@@ -705,9 +704,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -719,12 +718,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While handling return value of"
                                         ],
@@ -734,7 +733,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling return value of"
                         ],
@@ -760,12 +759,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling return value of"
                         ],
@@ -791,9 +790,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -805,12 +804,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While handling return value of"
                                         ],
@@ -820,7 +819,7 @@
                                     "While expanding the reference '__return_value_ptr_start' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling return value of"
                         ],
@@ -846,12 +845,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling return value of"
                         ],
@@ -876,10 +875,10 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 66,
-                                "end_line": 8,
+                                "end_col": 64,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -891,9 +890,9 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "parent_location": [
                                                     {
@@ -905,12 +904,12 @@
                                                         "parent_location": [
                                                             {
                                                                 "end_col": 19,
-                                                                "end_line": 8,
+                                                                "end_line": 7,
                                                                 "input_file": {
-                                                                    "filename": "xor.cairo"
+                                                                    "filename": "tests/xor.cairo"
                                                                 },
                                                                 "start_col": 6,
-                                                                "start_line": 8
+                                                                "start_line": 7
                                                             },
                                                             "While handling calldata of"
                                                         ],
@@ -920,7 +919,7 @@
                                                     "While expanding the reference '__calldata_actual_size' in:"
                                                 ],
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While handling calldata of"
                                         ],
@@ -929,8 +928,8 @@
                                     },
                                     "While expanding the reference '__calldata_ptr' in:"
                                 ],
-                                "start_col": 51,
-                                "start_line": 8
+                                "start_col": 50,
+                                "start_line": 7
                             },
                             "While handling calldata argument 'password'"
                         ],
@@ -956,12 +955,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While handling calldata of"
                         ],
@@ -986,10 +985,10 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 49,
-                                "end_line": 8,
+                                "end_col": 48,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1001,12 +1000,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1016,7 +1015,7 @@
                                     "While expanding the reference 'bitwise_ptr' in:"
                                 ],
                                 "start_col": 20,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1041,10 +1040,10 @@
                         },
                         "parent_location": [
                             {
-                                "end_col": 66,
-                                "end_line": 8,
+                                "end_col": 64,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1056,12 +1055,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1070,8 +1069,8 @@
                                     },
                                     "While expanding the reference '__calldata_arg_password' in:"
                                 ],
-                                "start_col": 51,
-                                "start_line": 8
+                                "start_col": 50,
+                                "start_line": 7
                             },
                             "While handling calldata argument 'password'"
                         ],
@@ -1090,12 +1089,12 @@
                     "hints": [],
                     "inst": {
                         "end_col": 19,
-                        "end_line": 8,
+                        "end_line": 7,
                         "input_file": {
-                            "filename": "xor.cairo"
+                            "filename": "tests/xor.cairo"
                         },
                         "start_col": 6,
-                        "start_line": 8
+                        "start_line": 7
                     }
                 },
                 "40": {
@@ -1116,9 +1115,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1130,12 +1129,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1145,7 +1144,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1171,12 +1170,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1202,9 +1201,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1216,12 +1215,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1231,7 +1230,7 @@
                                     "While expanding the reference 'syscall_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1257,9 +1256,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1271,12 +1270,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1286,7 +1285,7 @@
                                     "While expanding the reference 'range_check_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1312,9 +1311,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1326,12 +1325,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1341,7 +1340,7 @@
                                     "While expanding the reference 'bitwise_ptr' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1367,9 +1366,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1381,12 +1380,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1396,7 +1395,7 @@
                                     "While expanding the reference 'retdata_size' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1422,9 +1421,9 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "parent_location": [
                                     {
@@ -1436,12 +1435,12 @@
                                         "parent_location": [
                                             {
                                                 "end_col": 19,
-                                                "end_line": 8,
+                                                "end_line": 7,
                                                 "input_file": {
-                                                    "filename": "xor.cairo"
+                                                    "filename": "tests/xor.cairo"
                                                 },
                                                 "start_col": 6,
-                                                "start_line": 8
+                                                "start_line": 7
                                             },
                                             "While constructing the external wrapper for:"
                                         ],
@@ -1451,7 +1450,7 @@
                                     "While expanding the reference 'retdata' in:"
                                 ],
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1477,12 +1476,12 @@
                         "parent_location": [
                             {
                                 "end_col": 19,
-                                "end_line": 8,
+                                "end_line": 7,
                                 "input_file": {
-                                    "filename": "xor.cairo"
+                                    "filename": "tests/xor.cairo"
                                 },
                                 "start_col": 6,
-                                "start_line": 8
+                                "start_line": 7
                             },
                             "While constructing the external wrapper for:"
                         ],
@@ -1523,7 +1522,7 @@
             },
             "__main__.test_password": {
                 "decorators": [
-                    "view"
+                    "external"
                 ],
                 "pc": 6,
                 "type": "function"
@@ -1560,7 +1559,7 @@
             },
             "__wrappers__.test_password": {
                 "decorators": [
-                    "view"
+                    "external"
                 ],
                 "pc": 33,
                 "type": "function"

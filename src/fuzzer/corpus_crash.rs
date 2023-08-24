@@ -39,7 +39,7 @@ impl CrashFile {
                 timestamp_str
             ),
             name: function.name.clone(),
-            args: function.type_args.clone(),
+            args: function.inputs.clone(),
             crashes: Vec::<Vec<Felt252>>::new(),
         }
     }

@@ -11,8 +11,8 @@ func write_and_read{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_
     res: felt
 ) {
     _counter.write(arg);
-    assert arg = 100;
+    // assert arg = 100;
     _counter.write(arg);
-    assert is_le(arg,300) = 1;
+    assert is_le(arg, 300) = 1;
     return _counter.read();
 }

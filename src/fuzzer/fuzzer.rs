@@ -10,14 +10,15 @@ use crate::{
     fuzzer::cairo_worker::CairoWorker,
     fuzzer::dict::Dict,
     fuzzer::starknet_worker::StarknetWorker,
-    json::json_parser::{parse_json, parse_starknet_json, Function},
+    json::json_parser::{parse_json, Function},
 };
 
 use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
+use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use cairo_rs::types::program::Program;
 use felt::Felt252;
 use rand::Rng;
-use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
+//use starknet_rs::services::api::contract_classes::ContractClass;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -33,7 +34,7 @@ pub struct Fuzzer {
     /// Program for cairo-rs
     pub program: Option<Program>,
     /// Contract_class for starknet-rs
-    pub contract_class: Option<ContractClass>,
+    pub contract_class: Option<CasmContractClass>,
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs
@@ -87,13 +88,13 @@ impl Fuzzer {
         // TODO - remove when support multiple txs
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
-            None => match parse_starknet_json(&contents, &config.function_name) {
+            None => /* match parse_starknet_json(&contents, &config.function_name) {
                 Some(func) => func,
-                None => {
+                None => */ {
                     eprintln!("Error: Could not parse json file");
                     process::exit(1)
                 }
-            },
+            //},
         };
         // Load inputs from the input file if provided
         let mut inputs: InputFile =
@@ -111,7 +112,7 @@ impl Fuzzer {
             false => Dict::read_dict(&config.dict),
         };
 
-        let nbr_args = function.num_args;
+        let nbr_args = function.inputs.len();
         for val in &dict.inputs {
             let mut value_vec: Vec<Felt252> = Vec::new();
             value_vec.push(val.clone()); // to ensure that all values of the dict will be in the inputs vector
@@ -152,7 +153,7 @@ impl Fuzzer {
             }
         }
 
-        let program = if !function._starknet {
+        let program = if !function.starknet {
             Some(
                 Program::from_bytes(&contents.as_bytes(), Some(&function.name))
                     .expect("Failed to deserialize Program"),
@@ -160,7 +161,7 @@ impl Fuzzer {
         } else {
             None
         };
-        let contract_class = if function._starknet {
+        let contract_class = if function.starknet {
             Some(ContractClass::try_from(contents.as_str()).expect("could not get contractclass"))
         } else {
             None
@@ -190,7 +191,7 @@ impl Fuzzer {
             crash_file: crashes,
             workspace: config.workspace.clone(),
             running_workers: 0,
-            starknet: function._starknet,
+            starknet: function.starknet,
             iter: config.iter,
             proptesting: config.proptesting,
         }
@@ -332,7 +333,7 @@ impl Fuzzer {
                 workspace: self.workspace.clone(),
                 path: format!("{}_min.json", self.function.name),
                 name: self.function.name.clone(),
-                args: self.function.type_args.clone(),
+                args: self.function.inputs.clone(),
                 inputs: Vec::<Vec<Felt252>>::new(),
             };
             // Push every input to the struct
