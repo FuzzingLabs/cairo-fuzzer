@@ -15,7 +15,6 @@ use fuzzer::fuzzer::Fuzzer;
 
 use log::error;
 
-use crate::json::json_parser::parse_json;
 fn main() {
     let header = r###"
                  _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
@@ -48,6 +47,7 @@ fn main() {
             Config {
                 workspace: opt.workspace,
                 contract_file: opt.contract,
+                casm_file: opt.casm,
                 function_name: opt.function,
                 input_file: opt.inputfile,
                 crash_file: opt.crashfile,

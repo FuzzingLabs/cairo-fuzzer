@@ -102,7 +102,7 @@ impl CairoWorker {
             // run the cairo vm
             match cairo_runner
                 .clone()
-                .runner(&self.function.name, &mutator.input)
+                .runner(self.function.selector_idx, &mutator.input)
             {
                 Ok(traces) => {
                     let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
@@ -217,7 +217,7 @@ impl CairoWorker {
             let fuzz_input = input.clone();
             match cairo_runner
                 .clone()
-                .runner(&self.function.name, &fuzz_input)
+                .runner(self.function.selector_idx, &fuzz_input)
             {
                 Ok(traces) => {
                     let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");

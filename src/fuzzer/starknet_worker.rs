@@ -1,7 +1,7 @@
 use crate::mutator::mutator::{EmptyDatabase, Mutator};
 use crate::runner::runner::Runner;
 use felt::Felt252;
-use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
+use starknet_rs::CasmContractClass;
 use std::sync::{Arc, Mutex};
 
 use super::stats::*;
@@ -21,7 +21,7 @@ pub enum StarknetworkerError {
 pub struct StarknetWorker {
     stats: Arc<Mutex<Statistics>>,
     worker_id: i32,
-    contract_class: ContractClass,
+    contract_class: CasmContractClass,
     function: Function,
     seed: u64,
     input_file: Arc<Mutex<InputFile>>,
@@ -33,7 +33,7 @@ impl StarknetWorker {
     pub fn new(
         stats: Arc<Mutex<Statistics>>,
         worker_id: i32,
-        contract_class: ContractClass,
+        contract_class: CasmContractClass,
         function: Function,
         seed: u64,
         input_file: Arc<Mutex<InputFile>>,
@@ -99,7 +99,7 @@ impl StarknetWorker {
             // run the cairo vm
             match starknet_runner
                 .clone()
-                .runner(&self.function.entrypoint, &mutator.input)
+                .runner(self.function.selector_idx, &mutator.input)
             {
                 Ok(traces) => {
                     let vec_trace = traces.expect("Could not get traces");
@@ -214,7 +214,7 @@ impl StarknetWorker {
             let fuzz_input = input.clone();
             match starknet_runner
                 .clone()
-                .runner(&self.function.entrypoint, &fuzz_input)
+                .runner(self.function.selector_idx, &fuzz_input)
             {
                 Ok(traces) => {
                     let vec_trace = traces.expect("Could not get traces");

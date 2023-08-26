@@ -7,6 +7,7 @@ use std::fs;
 pub struct Config {
     pub workspace: String,
     pub contract_file: String,
+    pub casm_file: String,
     pub function_name: String,
     pub input_file: String,
     pub crash_file: String,

@@ -1,27 +1,29 @@
-use cairo_rs::felt::Felt252;
+use cairo_lang_starknet::casm_contract_class::CasmContractClass;
+use felt::Felt252;
 use num_traits::Zero;
-use starknet_contract_class::EntryPointType;
+use starknet_rs::definitions::block_context::BlockContext;
+use starknet_rs::state::cached_state::CachedState;
+use starknet_rs::EntryPointType;
 use starknet_rs::{
-    definitions::{block_context::BlockContext, constants::TRANSACTION_VERSION},
+    definitions::constants::TRANSACTION_VERSION,
     execution::{
         execution_entry_point::ExecutionEntryPoint, CallType, TransactionExecutionContext,
     },
-    services::api::contract_classes::deprecated_contract_class::ContractClass,
-    state::cached_state::CachedState,
     state::{in_memory_state_reader::InMemoryStateReader, ExecutionResourcesManager},
-    utils::Address,
+    utils::{Address, ClassHash},
 };
-use std::collections::HashMap;
+
+use std::{collections::HashMap, sync::Arc};
 
 use super::runner::Runner;
 
 #[derive(Clone)]
 pub struct RunnerStarknet {
-    contract_class: ContractClass,
+    contract_class: CasmContractClass,
 }
 
 impl RunnerStarknet {
-    pub fn new(contract_class: &ContractClass) -> Self {
+    pub fn new(contract_class: &CasmContractClass) -> Self {
         return RunnerStarknet {
             contract_class: contract_class.clone(),
         };
@@ -31,12 +33,16 @@ impl RunnerStarknet {
 impl Runner for RunnerStarknet {
     fn runner(
         self,
-        func_entrypoint: &String,
+        func_entrypoint_idx: usize,
         data: &Vec<Felt252>,
     ) -> Result<Option<Vec<(u32, u32)>>, String> {
-        let contract_class: CasmContractClass = serde_json::from_slice(program_data).unwrap();
+        let contract_class: CasmContractClass = self.contract_class;
         let entrypoints = contract_class.clone().entry_points_by_type;
-        let fib_entrypoint_selector = &entrypoints.external.get(0).unwrap().selector;
+        let entrypoint_selector = &entrypoints
+            .external
+            .get(func_entrypoint_idx)
+            .unwrap()
+            .selector;
 
         // Create state reader with class hash data
         let mut contract_class_cache = HashMap::new();
@@ -58,14 +64,14 @@ impl Runner for RunnerStarknet {
         let mut state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
 
         // Create an execution entry point
-        let calldata = [0.into(), 1.into(), 12.into()].to_vec();
+        let calldata = data.to_vec();
         let caller_address = Address(0000.into());
         let entry_point_type = EntryPointType::External;
 
         let exec_entry_point = ExecutionEntryPoint::new(
             address,
             calldata.clone(),
-            Felt252::new(fib_entrypoint_selector.clone()),
+            Felt252::new(entrypoint_selector.clone()),
             caller_address,
             entry_point_type,
             Some(CallType::Delegate),
@@ -85,27 +91,23 @@ impl Runner for RunnerStarknet {
             TRANSACTION_VERSION.clone(),
         );
         let mut resources_manager = ExecutionResourcesManager::default();
-
-        // expected results
-        let expected_call_info = CallInfo {
-            caller_address: Address(0.into()),
-            call_type: Some(CallType::Delegate),
-            contract_address: Address(1111.into()),
-            entry_point_selector: Some(Felt252::new(fib_entrypoint_selector)),
-            entry_point_type: Some(EntryPointType::External),
-            calldata,
-            retdata: [144.into()].to_vec(),
-            execution_resources: ExecutionResources {
-                n_steps: 418,
-                n_memory_holes: 0,
-                builtin_instance_counter: HashMap::from([(
-                    RANGE_CHECK_BUILTIN_NAME.to_string(),
-                    15,
-                )]),
-            },
-            class_hash: Some(class_hash),
-            gas_consumed: 35220,
-            ..Default::default()
+        match exec_entry_point.execute(
+            &mut state,
+            &block_context,
+            &mut resources_manager,
+            &mut tx_execution_context,
+            false,
+            block_context.invoke_tx_max_n_steps(),
+        ) {
+            Ok(exec_info) => {
+                return Ok(Some(
+                    exec_info
+                        .call_info
+                        .expect("could not get call_info from starknet execution")
+                        .trace,
+                ));
+            }
+            Err(e) => return Err(e.to_string()),
         };
     }
 }

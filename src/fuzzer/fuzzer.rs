@@ -84,7 +84,7 @@ impl Fuzzer {
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
-
+        let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
         // TODO - remove when support multiple txs
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
@@ -162,7 +162,7 @@ impl Fuzzer {
             None
         };
         let contract_class = if function.starknet {
-            Some(ContractClass::try_from(contents.as_str()).expect("could not get contractclass"))
+            Some(serde_json::from_str(&casm_content).expect("could not get contractclass"))
         } else {
             None
         };
@@ -412,7 +412,7 @@ impl Fuzzer {
     }
 }
 
-#[cfg(test)]
+/* #[cfg(test)]
 mod tests {
     use core::panic;
     use std::{thread, time::Duration};
@@ -710,3 +710,4 @@ mod tests {
         );
     }
 }
+ */

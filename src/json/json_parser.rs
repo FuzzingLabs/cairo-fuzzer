@@ -3,8 +3,7 @@ use serde_json::Value;
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
-    pub idx: usize,
-    pub entrypoint: String,
+    pub selector_idx: usize,
     pub inputs: Vec<String>,
     pub outputs: Vec<String>,
     pub starknet: bool,
@@ -89,22 +88,18 @@ fn get_abi(data: &Value) -> Vec<AbiFunction> {
 pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let abi = get_abi(&data);
-    if let Some(types) = data.get("entry_points_by_type") {
-        let external_functions = types
-            .get("EXTERNAL")
-            .expect("Could not get external functions")
-            .as_array()
-            .expect("Could not convert external functions to array");
+    if let Some(_types) = data.get("entry_points_by_type") {
+        /*         let external_functions = types
+        .get("EXTERNAL")
+        .expect("Could not get external functions")
+        .as_array()
+        .expect("Could not convert external functions to array"); */
         let mut idx: usize = 0;
         for function_abi in abi {
             if function_name == &*function_abi.name {
                 return Some(Function {
                     name: function_abi.name,
-                    idx: idx,
-                    entrypoint: external_functions[idx]
-                        .get("selector")
-                        .expect("Could not get selector")
-                        .to_string(),
+                    selector_idx: idx,
                     inputs: function_abi.inputs,
                     outputs: function_abi.outputs,
                     starknet: true,

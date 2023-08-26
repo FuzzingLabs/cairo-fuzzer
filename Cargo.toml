@@ -8,30 +8,27 @@ chrono = '0.4.19'
 rand = '0.8.5'
 serde_json = '1.0'
 serde = '*'
-log = '*'
+log = '0.4.20'
 thiserror = '1.0.32'
+sha3 = '0.10.8'
 num-traits = '0.2.15'
-cairo-lang-starknet = "2.1.0-rc4"
+cairo-lang-starknet = { version = "2.1.0-rc2", default-features = false }
+cairo-lang-casm = { version = "2.1.0-rc2", default-features = false }
 
-#[dependencies.cairo-rs]
-#git = 'https://github.com/FuzzingLabs/cairo-rs'
-#rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
-#package = 'cairo-vm'
+[dependencies.cairo-rs]
+git = 'https://github.com/FuzzingLabs/cairo-rs'
+rev = '48af153240392992f18a09e969bae6518eec9639'
+package = 'cairo-vm'
 
 [dependencies.felt]
 git = 'https://github.com/FuzzingLabs/cairo-rs'
-rev = 'ebf64a45b0881cde11c114236a666a8edd9af10a'
+rev = '48af153240392992f18a09e969bae6518eec9639'
 package = 'cairo-felt'
 
 [dependencies.starknet-rs]
 git = 'https://github.com/FuzzingLabs/starknet_in_rust/'
-rev = '1c6cf1da6d6e19221954ab24a3b140adb5de396f'
+rev = '03bfc091df92a2e1e6449761442d98f6e3489490'
 package = 'starknet_in_rust'
-
-[dependencies.starknet-contract-class]
-git = 'https://github.com/FuzzingLabs/starknet_in_rust'
-rev = '1c6cf1da6d6e19221954ab24a3b140adb5de396f'
-package = 'starknet-contract-class'
 
 [dependencies.num-bigint]
 version = '0.4'

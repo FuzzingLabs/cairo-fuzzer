@@ -1,8 +1,11 @@
-use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
+#[allow(dead_code)]
+#[allow(unused_variables)]
+/* use cairo_rs::hint_processor::builtin_hint_processor::builtin_hint_processor_definition::BuiltinHintProcessor;
+ */
 use cairo_rs::types::program::Program;
-use cairo_rs::types::relocatable::MaybeRelocatable;
+/* use cairo_rs::types::relocatable::MaybeRelocatable;
 use cairo_rs::vm::runners::cairo_runner::CairoRunner;
-use cairo_rs::vm::vm_core::VirtualMachine;
+use cairo_rs::vm::vm_core::VirtualMachine; */
 
 use felt::Felt252;
 
@@ -23,10 +26,10 @@ impl RunnerCairo {
 impl Runner for RunnerCairo {
     fn runner(
         self,
-        func_name: &String,
+        func_name: usize,
         data: &Vec<Felt252>,
     ) -> Result<Option<Vec<(u32, u32)>>, String> {
-        // Init the cairo_runner, the VM and the hint_processor
+        /*         // Init the cairo_runner, the VM and the hint_processor
         let mut cairo_runner = CairoRunner::new(&self.program, "small", false)
             .expect("Failed to init the CairoRunner");
         let mut vm = VirtualMachine::new(true);
@@ -91,7 +94,8 @@ impl Runner for RunnerCairo {
                 i.fp.try_into()
                     .expect("Failed to transform offset into u32"),
             ))
-        }
+        } */
+        let ret = vec![];
         return Ok(Some(ret));
     }
 }
