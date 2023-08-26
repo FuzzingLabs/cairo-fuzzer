@@ -64,7 +64,7 @@ impl StarknetWorker {
         let mut mutator = Mutator::new()
             .seed(self.seed)
             .max_input_size(self.function.inputs.len());
-        let starknet_runner = RunnerStarknet::new(&self.contract_class);
+        let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -209,7 +209,7 @@ impl StarknetWorker {
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-        let starknet_runner = RunnerStarknet::new(&self.contract_class);
+        let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         for input in inputs {
             let fuzz_input = input.clone();
             match starknet_runner
