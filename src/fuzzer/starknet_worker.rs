@@ -11,12 +11,6 @@ use crate::custom_rand::rng::Rng;
 use crate::fuzzer::utils::hash_vector;
 use crate::json::json_parser::Function;
 use crate::runner::starknet_runner::RunnerStarknet;
-use thiserror::Error;
-
-#[derive(Debug, PartialEq, Error)]
-pub enum StarknetworkerError {
-    // TODO implem
-}
 
 pub struct StarknetWorker {
     stats: Arc<Mutex<Statistics>>,
@@ -104,10 +98,36 @@ impl StarknetWorker {
                 Ok(traces) => {
                     let vec_trace = traces.0;
                     let hash_vec = hash_vector(&vec_trace);
-                    //println!("{:?}", hash_vec);
+                    let failure_flag = traces.1;
+
                     // Mutex locking is limited to this scope
                     {
-                        let stats = self.stats.lock().expect("Failed to get mutex");
+                        let mut stats = self.stats.lock().expect("Failed to get mutex");
+                        if failure_flag {
+                            // Update crash counters
+                            local_stats.crashes += 1;
+                            stats.crashes += 1;
+
+                            /*                            // Check if this case ended due to a crash
+                            // Add the crashing input to the input databases
+                            local_stats.input_db.insert(fuzz_input.clone());
+                            if stats.input_db.insert(fuzz_input.clone()) {
+                                stats.input_list.push(fuzz_input.clone());
+                                stats.input_len += 1;
+                            } */
+                            // Add the crash input to the local crash database
+                            local_stats.crash_db.insert(fuzz_input.clone());
+
+                            // Add the crash input to the shared crash database
+                            if stats.crash_db.insert(fuzz_input.clone()) {
+                                // add input to the crash corpus
+                                // New crashing input, we dump the crash on the disk
+                                let mut crash_file_lock =
+                                    self.crash_file.lock().expect("Failed to get mutex");
+                                crash_file_lock.crashes.push(fuzz_input.to_vec());
+                                crash_file_lock.dump_json();
+                            }
+                        }
                         if self.iter > 0 && self.iter < stats.fuzz_cases as i64 {
                             return;
                         }
@@ -154,8 +174,9 @@ impl StarknetWorker {
                     }
                 }
                 Err(e) => {
+                    println!("{}", e);
                     // Mutex locking is limited to this scope
-                    {
+                    /*{
                         // Get access to global stats
                         let mut stats = self.stats.lock().expect("Failed to get mutex");
 
@@ -187,11 +208,9 @@ impl StarknetWorker {
                                 self.worker_id, &mutator.input, e
                             );
                         }
-                    }
+                    }*/
                 }
             }
-
-            // TODO - only update every 1k exec to prevent lock
             let counter_update = 1000;
             if local_stats.fuzz_cases % counter_update == 1 {
                 // Get access to global stats
@@ -203,6 +222,7 @@ impl StarknetWorker {
         }
     }
 
+    //TODO : Fix to match the new runner
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();

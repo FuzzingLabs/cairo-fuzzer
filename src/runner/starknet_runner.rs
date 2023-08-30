@@ -16,8 +16,6 @@ use starknet_rs::{
 
 use std::{collections::HashMap, sync::Arc};
 
-use crate::fuzzer::utils::hash_vector;
-
 use super::runner::Runner;
 
 #[derive(Clone, Debug)]

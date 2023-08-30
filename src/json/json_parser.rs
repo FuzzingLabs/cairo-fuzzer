@@ -6,7 +6,6 @@ pub struct Function {
     pub selector_idx: usize,
     pub inputs: Vec<String>,
     pub outputs: Vec<String>,
-    pub starknet: bool,
 }
 #[derive(Debug)]
 pub struct AbiFunction {
@@ -102,7 +101,6 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
                     selector_idx: idx,
                     inputs: function_abi.inputs,
                     outputs: function_abi.outputs,
-                    starknet: true,
                 });
             }
             idx += 1;
