@@ -29,7 +29,6 @@ pub struct RunnerStarknet {
     tx_execution_context: TransactionExecutionContext,
     block_context: BlockContext,
     resources_manager: ExecutionResourcesManager,
-    //exec_entry_point: ExecutionEntryPoint,
 }
 
 impl RunnerStarknet {
@@ -120,26 +119,6 @@ impl Runner for RunnerStarknet {
             self.block_context.invoke_tx_max_n_steps(),
         ) {
             Ok(exec_info) => {
-                /*                 println!(
-                    "########\n{:?}\n#######",
-                    exec_info
-                        .call_info
-                        .clone()
-                        .expect("could not get call_info from starknet execution")
-                        .trace
-                ); */
-                /*                 println!("-----{:?}", data);
-                println!(
-                    "{:?}------",
-                    exec_info
-                        .call_info
-                        .clone()
-                        .expect("could not get call info")
-                        .failure_flag
-                ); */
-                /* if &finalvec == data {
-                    println!("####################FOUND FUZZINGLABS##################");
-                } */
                 let call_info = exec_info
                     .call_info
                     .clone()

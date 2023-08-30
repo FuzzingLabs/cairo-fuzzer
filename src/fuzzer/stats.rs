@@ -32,6 +32,12 @@ pub struct Statistics {
     /// Contains the hash of the trace vector to verify if the crash is unique or not
     pub crash_coverage: u64,
 
+    /// Counter of crashes
+    pub tx_crashes: u64,
+
+    /// Set of all unique crashes
+    pub tx_crash_db: HashSet<FuzzInput>,
+
     // Number of threads that finished to run
     pub threads_finished: u64,
 }

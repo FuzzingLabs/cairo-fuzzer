@@ -316,26 +316,30 @@ impl Fuzzer {
                 let fuzz_case = stats.fuzz_cases;
                 print!(
                     "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
-                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
+                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique] | {:6} TX_crashes [{:6} unique]\n",
                     uptime,
                     fuzz_case,
                     fuzz_case as f64 / uptime,
                     stats.coverage_db.len(),
                     stats.input_len,
                     stats.crashes,
-                    stats.crash_db.len()
+                    stats.crash_db.len(),
+                    stats.tx_crashes,
+                    stats.tx_crash_db.len()
                 );
                 // Writing inside logging file
                 if let Some(ref mut file) = log {
                     write!(
                         file,
-                        "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+                        "{:12.0} {:7} {:8} {:5} {:6} {:6} {:6} {:6}\n",
                         uptime,
                         fuzz_case,
                         stats.coverage_db.len(),
                         stats.input_len,
                         stats.crashes,
-                        stats.crash_db.len()
+                        stats.crash_db.len(),
+                        stats.tx_crashes,
+                        stats.tx_crash_db.len()
                     )
                     .expect("Failed to write logs in log file");
                     file.flush().expect("Failed to flush the file");

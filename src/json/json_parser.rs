@@ -17,7 +17,6 @@ pub struct AbiFunction {
 fn get_abi(data: &Value) -> Vec<AbiFunction> {
     let mut res: Vec<AbiFunction> = vec![];
     if let Some(abi) = data.get("abi") {
-        //println!("{:?}", abi);
         for obj in abi.as_array().expect("Could not convert abi to array") {
             let tmp = obj
                 .as_object()
@@ -88,11 +87,6 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let abi = get_abi(&data);
     if let Some(_types) = data.get("entry_points_by_type") {
-        /*         let extetests/fuzzinglabs.jsonrnal_functions = types
-        .get("EXTERNAL")
-        .expect("Could not get external functions")
-        .as_array()
-        .expect("Could not convert external functions to array"); */
         let mut idx: usize = 0;
         for function_abi in abi {
             if function_name == &*function_abi.name {

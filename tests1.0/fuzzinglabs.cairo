@@ -26,7 +26,7 @@ ref self: ContractState,
     l: felt252,
     a: felt252,
     b: felt252,
-    s: felt252,
+    s: u8,
     ) {
         if (f == 'f') {
             if (u == 'u') {

@@ -624,11 +624,7 @@ impl Mutator {
     /// copy will stop.
     fn overwrite(&mut self, offset: usize, buf: &[u8]) {
         // Get the slice that we may overwrite
-        //let value = &self.input;
-        //println!("value {:?}", value);
-        //println!("buf => {:?}", buf);
         let target = &mut self.input[offset..].to_vec();
-        //println!("Target before => {:?}", target);
         // Get the length to overwrite
         let len = core::cmp::min(buf.len(), target.len());
         let mut i = 0;
@@ -636,9 +632,6 @@ impl Mutator {
             target[i] = Felt252::from(buf[i]);
             i += 1;
         }
-        //println!("Target after => {:?}", target);
-        // Overwrite the bytes
-        //target.to[..len].copy_from_slice(&buf[..len]);
     }
 
     /// Take the bytes from `source` for `len` bytes in the input, and insert

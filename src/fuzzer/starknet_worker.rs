@@ -103,18 +103,12 @@ impl StarknetWorker {
                     // Mutex locking is limited to this scope
                     {
                         let mut stats = self.stats.lock().expect("Failed to get mutex");
+                        // failure_flag is set if the smart contract raise an error or if for example the function could not be called because of an error in the arguments
+                        // TODO: to be more accurate in the args gen, we should generate the same type as in the prototype
                         if failure_flag {
                             // Update crash counters
                             local_stats.crashes += 1;
                             stats.crashes += 1;
-
-                            /*                            // Check if this case ended due to a crash
-                            // Add the crashing input to the input databases
-                            local_stats.input_db.insert(fuzz_input.clone());
-                            if stats.input_db.insert(fuzz_input.clone()) {
-                                stats.input_list.push(fuzz_input.clone());
-                                stats.input_len += 1;
-                            } */
                             // Add the crash input to the local crash database
                             local_stats.crash_db.insert(fuzz_input.clone());
 
@@ -139,6 +133,7 @@ impl StarknetWorker {
                             local_stats.input_db = stats.input_db.clone();
                             local_stats.input_list = stats.input_list.clone();
                             local_stats.crash_db = stats.crash_db.clone();
+                            local_stats.tx_crash_db = stats.tx_crash_db.clone();
                         }
                     }
 
@@ -174,28 +169,20 @@ impl StarknetWorker {
                     }
                 }
                 Err(e) => {
-                    println!("{}", e);
                     // Mutex locking is limited to this scope
-                    /*{
+                    {
                         // Get access to global stats
                         let mut stats = self.stats.lock().expect("Failed to get mutex");
 
                         // Update crash counters
-                        local_stats.crashes += 1;
-                        stats.crashes += 1;
+                        local_stats.tx_crashes += 1;
+                        stats.tx_crashes += 1;
 
-                        // Check if this case ended due to a crash
-                        // Add the crashing input to the input databases
-                        local_stats.input_db.insert(fuzz_input.clone());
-                        if stats.input_db.insert(fuzz_input.clone()) {
-                            stats.input_list.push(fuzz_input.clone());
-                            stats.input_len += 1;
-                        }
                         // Add the crash input to the local crash database
-                        local_stats.crash_db.insert(fuzz_input.clone());
+                        local_stats.tx_crash_db.insert(fuzz_input.clone());
 
                         // Add the crash input to the shared crash database
-                        if stats.crash_db.insert(fuzz_input.clone()) {
+                        if stats.tx_crash_db.insert(fuzz_input.clone()) {
                             // add input to the crash corpus
                             // New crashing input, we dump the crash on the disk
                             let mut crash_file_lock =
@@ -208,7 +195,7 @@ impl StarknetWorker {
                                 self.worker_id, &mutator.input, e
                             );
                         }
-                    }*/
+                    }
                 }
             }
             let counter_update = 1000;
