@@ -105,9 +105,9 @@ impl CairoWorker {
                 .runner(self.function.selector_idx, &mutator.input)
             {
                 Ok(traces) => {
-                    let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
-
-                    // Mutex locking is limited to this scope
+                    //let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
+                    let vec_trace = 0; // TODO
+                                       // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
                         if self.iter > 0 && self.iter < stats.fuzz_cases as i64 {
@@ -220,8 +220,9 @@ impl CairoWorker {
                 .runner(self.function.selector_idx, &fuzz_input)
             {
                 Ok(traces) => {
-                    let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
-                    // Mutex locking is limited to this scope
+                    //let vec_trace: Vec<(u32, u32)> = traces.expect("Could not get traces");
+                    let vec_trace = 0; // TODO
+                                       // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
                         // verify if new input has been found by other fuzzers

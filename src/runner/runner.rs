@@ -5,5 +5,5 @@ pub trait Runner {
         self,
         func_name: usize,
         data: &Vec<Felt252>,
-    ) -> Result<Option<Vec<(u32, u32)>>, String>;
+    ) -> Result<(Vec<(u32, u32)>, bool), String>;
 }

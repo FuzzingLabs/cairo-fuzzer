@@ -8,9 +8,9 @@ use super::stats::*;
 use super::{corpus_crash::CrashFile, corpus_input::InputFile};
 
 use crate::custom_rand::rng::Rng;
+use crate::fuzzer::utils::hash_vector;
 use crate::json::json_parser::Function;
 use crate::runner::starknet_runner::RunnerStarknet;
-
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -102,8 +102,9 @@ impl StarknetWorker {
                 .runner(self.function.selector_idx, &mutator.input)
             {
                 Ok(traces) => {
-                    let vec_trace = traces.expect("Could not get traces");
-
+                    let vec_trace = traces.0;
+                    let hash_vec = hash_vector(&vec_trace);
+                    //println!("{:?}", hash_vec);
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
@@ -124,19 +125,17 @@ impl StarknetWorker {
                     // Mutex locking is limited to this scope
                     {
                         // Check if this coverage entry is something we've never seen before
-                        if !local_stats.coverage_db.contains_key(&vec_trace) {
+                        if !local_stats.coverage_db.contains_key(&hash_vec) {
                             // Coverage entry is new, save the fuzz input in the input database
                             local_stats.input_db.insert(fuzz_input.clone());
 
                             // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
-                            local_stats
-                                .coverage_db
-                                .insert(vec_trace.clone(), fuzz_input.clone());
+                            local_stats.coverage_db.insert(hash_vec, fuzz_input.clone());
 
                             // Get access to global stats
                             let mut stats = self.stats.lock().expect("Failed to get mutex");
 
-                            if !stats.coverage_db.contains_key(&vec_trace) {
+                            if !stats.coverage_db.contains_key(&hash_vec) {
                                 // Save input to global input database
                                 if stats.input_db.insert(fuzz_input.clone()) {
                                     // Copy in the input list
@@ -149,9 +148,7 @@ impl StarknetWorker {
                                     input_file_lock.dump_json();
                                 }
                                 // Save coverage to global coverage database
-                                stats
-                                    .coverage_db
-                                    .insert(vec_trace.clone(), fuzz_input.clone());
+                                stats.coverage_db.insert(hash_vec, fuzz_input.clone());
                             }
                         }
                     }
@@ -217,7 +214,8 @@ impl StarknetWorker {
                 .runner(self.function.selector_idx, &fuzz_input)
             {
                 Ok(traces) => {
-                    let vec_trace = traces.expect("Could not get traces");
+                    let vec_trace = traces.0;
+                    let hash_vec = hash_vector(&vec_trace);
                     // Mutex locking is limited to this scope
                     {
                         let stats = self.stats.lock().expect("Failed to get mutex");
@@ -230,30 +228,26 @@ impl StarknetWorker {
                         }
                     }
                     // Check if this coverage entry is something we've never seen before
-                    if !local_stats.coverage_db.contains_key(&vec_trace) {
+                    if !local_stats.coverage_db.contains_key(&hash_vec) {
                         // Coverage entry is new, save the fuzz input in the input database
                         local_stats.input_db.insert(fuzz_input.clone());
 
                         // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
-                        local_stats
-                            .coverage_db
-                            .insert(vec_trace.clone(), fuzz_input.clone());
+                        local_stats.coverage_db.insert(hash_vec, fuzz_input.clone());
 
                         // Mutex locking is limited to this scope
                         {
                             // Get access to global stats
                             let mut stats = self.stats.lock().expect("Failed to get mutex");
 
-                            if !stats.coverage_db.contains_key(&vec_trace) {
+                            if !stats.coverage_db.contains_key(&hash_vec) {
                                 // Save input to global input database
                                 if stats.input_db.insert(fuzz_input.clone()) {
                                     stats.input_list.push(fuzz_input.clone());
                                     stats.input_len += 1;
                                 }
                                 // Save coverage to global coverage database
-                                stats
-                                    .coverage_db
-                                    .insert(vec_trace.clone(), fuzz_input.clone());
+                                stats.coverage_db.insert(hash_vec, fuzz_input.clone());
                             }
                         }
                     }

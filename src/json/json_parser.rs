@@ -89,7 +89,7 @@ pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let abi = get_abi(&data);
     if let Some(_types) = data.get("entry_points_by_type") {
-        /*         let external_functions = types
+        /*         let extetests/fuzzinglabs.jsonrnal_functions = types
         .get("EXTERNAL")
         .expect("Could not get external functions")
         .as_array()

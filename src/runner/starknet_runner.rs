@@ -16,6 +16,8 @@ use starknet_rs::{
 
 use std::{collections::HashMap, sync::Arc};
 
+use crate::fuzzer::utils::hash_vector;
+
 use super::runner::Runner;
 
 #[derive(Clone, Debug)]
@@ -58,12 +60,12 @@ impl RunnerStarknet {
             .insert(address.clone(), nonce);
 
         // Create state from the state_reader and contract cache.
-        let mut state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
+        let state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
         let caller_address = Address(0000.into());
         let entry_point_type = EntryPointType::External;
 
         let block_context = BlockContext::default();
-        let mut tx_execution_context = TransactionExecutionContext::new(
+        let tx_execution_context = TransactionExecutionContext::new(
             Address(0.into()),
             Felt252::zero(),
             Vec::new(),
@@ -72,7 +74,7 @@ impl RunnerStarknet {
             block_context.invoke_tx_max_n_steps(),
             TRANSACTION_VERSION.clone(),
         );
-        let mut resources_manager = ExecutionResourcesManager::default();
+        let resources_manager = ExecutionResourcesManager::default();
 
         let runner = RunnerStarknet {
             entrypoint_selector: entrypoint_selector.clone(),
@@ -85,7 +87,7 @@ impl RunnerStarknet {
             block_context: block_context,
             resources_manager: resources_manager,
         };
-        println!("Runner setup : {:?}", runner);
+        //println!("Runner setup : {:?}", runner);
         runner
     }
 }
@@ -95,7 +97,7 @@ impl Runner for RunnerStarknet {
         mut self,
         _func_entrypoint_idx: usize,
         data: &Vec<Felt252>,
-    ) -> Result<Option<Vec<(u32, u32)>>, String> {
+    ) -> Result<(Vec<(u32, u32)>, bool), String> {
         // Create an execution entry point
         let calldata = data.to_vec();
 
@@ -120,12 +122,31 @@ impl Runner for RunnerStarknet {
             self.block_context.invoke_tx_max_n_steps(),
         ) {
             Ok(exec_info) => {
-                return Ok(Some(
+                /*                 println!(
+                    "########\n{:?}\n#######",
                     exec_info
                         .call_info
+                        .clone()
                         .expect("could not get call_info from starknet execution")
-                        .trace,
-                ));
+                        .trace
+                ); */
+                /*                 println!("-----{:?}", data);
+                println!(
+                    "{:?}------",
+                    exec_info
+                        .call_info
+                        .clone()
+                        .expect("could not get call info")
+                        .failure_flag
+                ); */
+                /* if &finalvec == data {
+                    println!("####################FOUND FUZZINGLABS##################");
+                } */
+                let call_info = exec_info
+                    .call_info
+                    .clone()
+                    .expect("Could not get call info");
+                return Ok((call_info.trace, call_info.failure_flag));
             }
             Err(e) => return Err(e.to_string()),
         };

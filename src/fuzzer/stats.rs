@@ -10,7 +10,7 @@ pub struct Statistics {
     pub fuzz_cases: u64,
 
     /// Coverage database. Maps (module, offset) to `FuzzInput`s
-    pub coverage_db: HashMap<Vec<(u32, u32)>, FuzzInput>,
+    pub coverage_db: HashMap<u64, FuzzInput>,
 
     /// Counter of inputs
     pub input_len: usize,
@@ -28,6 +28,9 @@ pub struct Statistics {
 
     /// Set of all unique crashes
     pub crash_db: HashSet<FuzzInput>,
+
+    /// Contains the hash of the trace vector to verify if the crash is unique or not
+    pub crash_coverage: u64,
 
     // Number of threads that finished to run
     pub threads_finished: u64,
