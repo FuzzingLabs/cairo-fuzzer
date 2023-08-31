@@ -1,4 +1,4 @@
-use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use crate::mutator::mutator_felt252::{EmptyDatabase, Mutator};
 use crate::runner::runner::Runner;
 use felt::Felt252;
 use starknet_rs::CasmContractClass;
@@ -21,6 +21,50 @@ pub struct StarknetWorker {
     input_file: Arc<Mutex<InputFile>>,
     crash_file: Arc<Mutex<CrashFile>>,
     iter: i64,
+}
+
+pub fn fix_inputs_types(mut inputs: Vec<Felt252>, types: Vec<String>) -> Vec<Felt252> {
+    let mut idx = 0;
+    for input_type in types {
+        let bits_to_save;
+        match input_type.as_str() {
+            "core::integer::u8" => {
+                bits_to_save = 8;
+            }
+            "core::integer::u16" => {
+                bits_to_save = 16;
+            }
+            "core::integer::u32" => {
+                bits_to_save = 32;
+            }
+            "core::integer::u64" => {
+                bits_to_save = 64;
+            }
+            "core::integer::u128" => {
+                bits_to_save = 128;
+            }
+            "core::integer::u256" => {
+                bits_to_save = 256; // still need to fix for this
+            }
+            "core::felt252" => {
+                bits_to_save = 252;
+            }
+
+            _ => todo!(),
+        }
+        if bits_to_save == 256 {
+            println!("{:?} - Before {:?}", input_type, inputs[idx]);
+            let mut new_value = inputs[idx].to_be_bytes();
+            println!("array {:?}", new_value);
+            for i in 0..new_value.len() - (bits_to_save / 8) {
+                new_value[i] = 0;
+            }
+            inputs[idx] = Felt252::from_bytes_be(&new_value);
+            println!("{:?} - After  {:?}", input_type, inputs[idx]);
+        }
+        idx += 1;
+    }
+    return inputs;
 }
 
 impl StarknetWorker {
@@ -53,11 +97,9 @@ impl StarknetWorker {
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
-
+        let inputs_len = self.function.inputs.clone().len();
         // Create a mutator
-        let mut mutator = Mutator::new()
-            .seed(self.seed)
-            .max_input_size(self.function.inputs.len());
+        let mut mutator = Mutator::new().seed(self.seed).max_input_size(inputs_len);
         let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         'next_case: loop {
             // clear previous data
@@ -71,14 +113,14 @@ impl StarknetWorker {
             } else {
                 mutator
                     .input
-                    .extend_from_slice(&vec![Felt252::from(b'\0'); self.function.inputs.len()]);
+                    .extend_from_slice(&vec![Felt252::from(b'\0'); inputs_len]);
             }
 
             // Corrupt it with 4 mutation passes
             mutator.mutate(4, &EmptyDatabase);
 
             // not the good size, drop this input
-            if mutator.input.len() != self.function.inputs.len() {
+            if mutator.input.len() != inputs_len {
                 println!(
                     "Corrupted input size {} != {}",
                     mutator.input.len(),
@@ -86,14 +128,16 @@ impl StarknetWorker {
                 );
                 continue 'next_case;
             }
-
+            let mutator_input: Vec<Felt252> =
+                fix_inputs_types(mutator.input.clone(), self.function.inputs.clone());
             // Wrap up the fuzz input in an `Arc`
-            let fuzz_input = Arc::new(mutator.input.clone());
+            mutator.input = mutator_input.clone();
+            let fuzz_input = Arc::new(mutator_input.clone());
 
             // run the cairo vm
             match starknet_runner
                 .clone()
-                .runner(self.function.selector_idx, &mutator.input)
+                .runner(self.function.selector_idx, &mutator_input.clone())
             {
                 Ok(traces) => {
                     let vec_trace = traces.0;
