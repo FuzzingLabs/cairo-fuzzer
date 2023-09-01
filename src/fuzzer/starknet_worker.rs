@@ -223,9 +223,28 @@ impl StarknetWorker {
                 Ok(traces) => {
                     let vec_trace = traces.0;
                     let hash_vec = hash_vector(&vec_trace);
+                    let failure_flag = traces.1;
+
                     // Mutex locking is limited to this scope
                     {
-                        let stats = self.stats.lock().expect("Failed to get mutex");
+                        let mut stats = self.stats.lock().expect("Failed to get mutex");
+                        if failure_flag {
+                            // Update crash counters
+                            local_stats.crashes += 1;
+                            stats.crashes += 1;
+                            // Add the crash input to the local crash database
+                            local_stats.crash_db.insert(fuzz_input.clone());
+
+                            // Add the crash input to the shared crash database
+                            if stats.crash_db.insert(fuzz_input.clone()) {
+                                // add input to the crash corpus
+                                // New crashing input, we dump the crash on the disk
+                                let mut crash_file_lock =
+                                    self.crash_file.lock().expect("Failed to get mutex");
+                                crash_file_lock.crashes.push(fuzz_input.to_vec());
+                                crash_file_lock.dump_json();
+                            }
+                        }
                         // verify if new input has been found by other fuzzers
                         // if so, update our statistics
                         if local_stats.input_db.len() != stats.input_db.len() {
@@ -264,23 +283,26 @@ impl StarknetWorker {
                     {
                         // Get access to global stats
                         let mut stats = self.stats.lock().expect("Failed to get mutex");
-                        local_stats.crashes += 1;
-                        stats.crashes += 1;
-                        // Check if this case ended due to a crash
-                        // Add the crashing input to the input databases
-                        local_stats.input_db.insert(fuzz_input.clone());
-                        if stats.input_db.insert(fuzz_input.clone()) {
-                            stats.input_list.push(fuzz_input.clone());
-                            stats.input_len += 1;
-                        }
 
-                        // Add the crash name and corresponding fuzz input to the crash database
-                        local_stats.crash_db.insert(fuzz_input.clone());
-                        if stats.crash_db.insert(fuzz_input.clone()) {
+                        // Update crash counters
+                        local_stats.tx_crashes += 1;
+                        stats.tx_crashes += 1;
+
+                        // Add the crash input to the local crash database
+                        local_stats.tx_crash_db.insert(fuzz_input.clone());
+
+                        // Add the crash input to the shared crash database
+                        if stats.tx_crash_db.insert(fuzz_input.clone()) {
                             // add input to the crash corpus
+                            // New crashing input, we dump the crash on the disk
+                            let mut crash_file_lock =
+                                self.crash_file.lock().expect("Failed to get mutex");
+                            crash_file_lock.crashes.push(fuzz_input.to_vec());
+                            crash_file_lock.dump_json();
+
                             println!(
                                 "WORKER {} -- INPUT => {:?} -- ERROR \"{:?}\"",
-                                self.worker_id, &input, e
+                                self.worker_id, fuzz_input, e
                             );
                         }
                     }
