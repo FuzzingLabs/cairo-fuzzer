@@ -52,15 +52,15 @@ pub fn fix_inputs_types(mut inputs: Vec<Felt252>, types: Vec<String>) -> Vec<Fel
 
             _ => todo!(),
         }
-        if bits_to_save == 256 {
-            println!("{:?} - Before {:?}", input_type, inputs[idx]);
+        if bits_to_save != 256 || bits_to_save != 252 {
+            //println!("{:?} - Before {:?}", input_type, inputs[idx]);
             let mut new_value = inputs[idx].to_be_bytes();
-            println!("array {:?}", new_value);
+            //println!("array {:?}", new_value);
             for i in 0..new_value.len() - (bits_to_save / 8) {
                 new_value[i] = 0;
             }
             inputs[idx] = Felt252::from_bytes_be(&new_value);
-            println!("{:?} - After  {:?}", input_type, inputs[idx]);
+            //println!("{:?} - After  {:?}", input_type, inputs[idx]);
         }
         idx += 1;
     }
