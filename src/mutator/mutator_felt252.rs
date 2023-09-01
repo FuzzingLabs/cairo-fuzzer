@@ -131,7 +131,7 @@ pub struct Mutator {
     /// `input.extend_from_slice()` to update this buffer, to prevent the
     /// backing from being deallocated and reallocated.
     pub input: Vec<Felt252>,
-
+    pub types: Vec<String>,
     /// If non-zero length, this contains a list of valid indicies into
     /// `input`, indicating which bytes of the input should mutated. This often
     /// comes from instrumentation like access tracking or taint tracking to
@@ -188,6 +188,7 @@ impl Mutator {
     pub fn new() -> Self {
         Mutator {
             input: Vec::new(),
+            types: Vec::new(),
             accessed: Vec::new(),
             max_input_size: 1024,
             printable: false,
@@ -198,6 +199,48 @@ impl Mutator {
         }
     }
 
+    pub fn fix_inputs_types(&mut self) {
+        let mut idx = 0;
+        self.types.clone().into_iter().for_each(|input_type| {
+            let bits_to_save;
+            match input_type.as_str() {
+                "core::integer::u8" => {
+                    bits_to_save = 8;
+                }
+                "core::integer::u16" => {
+                    bits_to_save = 16;
+                }
+                "core::integer::u32" => {
+                    bits_to_save = 32;
+                }
+                "core::integer::u64" => {
+                    bits_to_save = 64;
+                }
+                "core::integer::u128" => {
+                    bits_to_save = 128;
+                }
+                "core::integer::u256" => {
+                    bits_to_save = 256; // still need to fix for this
+                }
+                "core::felt252" => {
+                    bits_to_save = 252;
+                }
+
+                _ => todo!(),
+            }
+            if bits_to_save != 256 && bits_to_save != 252 {
+                //println!("{:?} - Before {:?}", input_type, self.input[idx]);
+                let mut new_value = self.input[idx].to_be_bytes();
+                //println!("array {:?}", new_value);
+                for i in 0..new_value.len() - (bits_to_save / 8) {
+                    new_value[i] = 0;
+                }
+                self.input[idx] = Felt252::from_bytes_be(&new_value);
+                //println!("{:?} - After  {:?}", input_type, self.input[idx]);
+            }
+            idx += 1;
+        });
+    }
     /// Set whether or not this mutator should produce only ASCII-printable
     /// characters.
     ///
@@ -222,6 +265,10 @@ impl Mutator {
         self
     }
 
+    pub fn types(mut self, types: Vec<String>) -> Self {
+        self.types.clone_from(&types);
+        self
+    }
     /// Sets the maximum input size
     pub fn max_input_size(mut self, size: usize) -> Self {
         self.max_input_size = size;
@@ -331,6 +378,7 @@ impl Mutator {
 
         // Restore exponential random state to the old state
         self.rng.exp_disabled = old_exp_state;
+        self.fix_inputs_types();
     }
 
     /// Pick a random offset in the input to corrupt. Any mutation
