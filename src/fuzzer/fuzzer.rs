@@ -363,7 +363,7 @@ impl Fuzzer {
     }
 }
 
-/* #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use core::panic;
     use std::{thread, time::Duration};
@@ -373,7 +373,7 @@ mod tests {
     use super::Fuzzer;
     #[test]
     fn test_loading_config_file() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
@@ -383,7 +383,7 @@ mod tests {
 
     #[test]
     fn test_run_fuzzer_from_config_file() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let mut fuzzer = Fuzzer::new(&config);
         // Create a new thread
@@ -410,7 +410,8 @@ mod tests {
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
@@ -425,6 +426,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -445,14 +447,15 @@ mod tests {
     }
 
     #[test]
-    fn test_run_fuzzer_with_cairo_file() {
+    fn test_run_fuzzer_two() {
         let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
@@ -467,6 +470,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -500,15 +504,16 @@ mod tests {
     }
 
     #[test]
-    fn test_run_fuzzer_with_starknet_file() {
+    fn test_run_fuzzer_one() {
         let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs-starknet.json".to_string();
-        let function_name: String = "fuzzinglabs_starknet".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
+        let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
@@ -522,6 +527,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -555,17 +561,18 @@ mod tests {
     }
 
     #[test]
-    fn test_replay_cairo() {
+    fn test_replay_one() {
         let cores: i32 = 3;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = true;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String =
-            "tests/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
+            "tests1.0/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
@@ -578,6 +585,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -601,16 +609,18 @@ mod tests {
     }
 
     #[test]
-    fn test_replay_starknet() {
+    fn test_replay_two() {
         let cores: i32 = 3;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = true;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs-starknet.json".to_string();
-        let function_name: String = "fuzzinglabs_starknet".to_string();
-        let input_file: String = "tests/fuzzinglabs_starknet_2023-04-04--12:38:47.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
+        let function_name: String = "Fuzz_symbolic_execution".to_string();
+        let input_file: String =
+            "tests1.0/fuzzinglabs_starknet_2023-04-04--12:38:47.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
@@ -623,6 +633,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -647,7 +658,7 @@ mod tests {
 
     #[test]
     fn test_dict() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_ne!(
@@ -661,4 +672,3 @@ mod tests {
         );
     }
 }
- */
