@@ -1,4 +1,4 @@
-use crate::mutator::mutator::{EmptyDatabase, Mutator};
+use crate::mutator::mutator_felt252::{EmptyDatabase, Mutator};
 use crate::runner::runner::Runner;
 use felt::Felt252;
 use starknet_rs::CasmContractClass;
@@ -53,11 +53,12 @@ impl StarknetWorker {
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
-
+        let inputs_len = self.function.inputs.clone().len();
         // Create a mutator
         let mut mutator = Mutator::new()
             .seed(self.seed)
-            .max_input_size(self.function.inputs.len());
+            .max_input_size(inputs_len)
+            .types(self.function.inputs);
         let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         'next_case: loop {
             // clear previous data
@@ -71,29 +72,28 @@ impl StarknetWorker {
             } else {
                 mutator
                     .input
-                    .extend_from_slice(&vec![Felt252::from(b'\0'); self.function.inputs.len()]);
+                    .extend_from_slice(&vec![Felt252::from(b'\0'); inputs_len]);
             }
 
             // Corrupt it with 4 mutation passes
             mutator.mutate(4, &EmptyDatabase);
 
             // not the good size, drop this input
-            if mutator.input.len() != self.function.inputs.len() {
+            if mutator.input.len() != inputs_len {
                 println!(
                     "Corrupted input size {} != {}",
                     mutator.input.len(),
-                    self.function.inputs.len()
+                    inputs_len
                 );
                 continue 'next_case;
             }
-
             // Wrap up the fuzz input in an `Arc`
             let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
             match starknet_runner
                 .clone()
-                .runner(self.function.selector_idx, &mutator.input)
+                .runner(self.function.selector_idx, &fuzz_input)
             {
                 Ok(traces) => {
                     let vec_trace = traces.0;
