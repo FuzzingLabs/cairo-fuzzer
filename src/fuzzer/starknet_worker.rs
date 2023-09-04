@@ -78,7 +78,7 @@ impl StarknetWorker {
             // Corrupt it with 4 mutation passes
             mutator.mutate(4, &EmptyDatabase);
 
-            // not the good size, drop this input
+            // not the good size, drop this input // Useless verification
             if mutator.input.len() != inputs_len {
                 println!(
                     "Corrupted input size {} != {}",
@@ -129,7 +129,7 @@ impl StarknetWorker {
                             local_stats.coverage_db = stats.coverage_db.clone();
                             local_stats.input_len = stats.input_len;
                             local_stats.input_db = stats.input_db.clone();
-                            local_stats.input_list = stats.input_list.clone();
+                            //local_stats.input_list = stats.input_list.clone();
                             local_stats.crash_db = stats.crash_db.clone();
                             local_stats.tx_crash_db = stats.tx_crash_db.clone();
                         }
@@ -154,7 +154,7 @@ impl StarknetWorker {
                                 // Save input to global input database
                                 if stats.input_db.insert(mutator.input.clone()) {
                                     // Copy in the input list
-                                    stats.input_list.push(mutator.input.clone());
+                                    //stats.input_list.push(mutator.input.clone()); Useless since we have the unique hashset input_db
                                     stats.input_len += 1;
                                     // Copy locally
                                     let mut input_file_lock =
@@ -198,7 +198,7 @@ impl StarknetWorker {
                     }
                 }
             }
-            let counter_update = 1000;
+            let counter_update = 10000;
             if local_stats.fuzz_cases % counter_update == 1 {
                 // Get access to global stats
                 let mut stats = self.stats.lock().expect("Failed to get mutex");
@@ -215,7 +215,7 @@ impl StarknetWorker {
         let mut local_stats = Statistics::default();
         let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         for input in inputs {
-            let fuzz_input = input.clone();
+            let fuzz_input = input;
             match starknet_runner
                 .clone()
                 .runner(self.function.selector_idx, &fuzz_input)
@@ -269,7 +269,7 @@ impl StarknetWorker {
                             if !stats.coverage_db.contains_key(&hash_vec) {
                                 // Save input to global input database
                                 if stats.input_db.insert(fuzz_input.clone()) {
-                                    stats.input_list.push(fuzz_input.clone());
+                                    //stats.input_list.push(fuzz_input.clone());
                                     stats.input_len += 1;
                                 }
                                 // Save coverage to global coverage database
