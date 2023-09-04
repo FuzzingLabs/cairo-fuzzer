@@ -121,8 +121,8 @@ impl Fuzzer {
         if inputs.inputs.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &inputs.inputs {
-                if stats_db.input_db.insert(Arc::new(input.clone())) {
-                    stats_db.input_list.push(Arc::new(input.clone()));
+                if stats_db.input_db.insert(input.clone()) {
+                    stats_db.input_list.push(input.clone());
                     stats_db.input_len += 1;
                 }
             }
@@ -142,7 +142,7 @@ impl Fuzzer {
         if crashes.crashes.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &crashes.crashes {
-                stats_db.crash_db.insert(Arc::new(input.clone()));
+                stats_db.crash_db.insert(input.clone());
                 stats_db.crashes += 1;
             }
         }

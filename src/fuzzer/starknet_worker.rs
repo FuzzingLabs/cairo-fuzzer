@@ -53,7 +53,7 @@ impl StarknetWorker {
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
-        let inputs_len = self.function.inputs.clone().len();
+        let inputs_len = self.function.inputs.len();
         // Create a mutator
         let mut mutator = Mutator::new()
             .seed(self.seed)
@@ -87,13 +87,11 @@ impl StarknetWorker {
                 );
                 continue 'next_case;
             }
-            // Wrap up the fuzz input in an `Arc`
-            let fuzz_input = Arc::new(mutator.input.clone());
 
             // run the cairo vm
             match starknet_runner
                 .clone()
-                .runner(self.function.selector_idx, &fuzz_input)
+                .runner(self.function.selector_idx, &mutator.input)
             {
                 Ok(traces) => {
                     let vec_trace = traces.0;
@@ -110,15 +108,15 @@ impl StarknetWorker {
                             local_stats.crashes += 1;
                             stats.crashes += 1;
                             // Add the crash input to the local crash database
-                            local_stats.crash_db.insert(fuzz_input.clone());
+                            local_stats.crash_db.insert(mutator.input.clone());
 
                             // Add the crash input to the shared crash database
-                            if stats.crash_db.insert(fuzz_input.clone()) {
+                            if stats.crash_db.insert(mutator.input.clone()) {
                                 // add input to the crash corpus
                                 // New crashing input, we dump the crash on the disk
                                 let mut crash_file_lock =
                                     self.crash_file.lock().expect("Failed to get mutex");
-                                crash_file_lock.crashes.push(fuzz_input.to_vec());
+                                crash_file_lock.crashes.push(mutator.input.to_vec());
                                 crash_file_lock.dump_json();
                             }
                         }
@@ -142,28 +140,30 @@ impl StarknetWorker {
                         // Check if this coverage entry is something we've never seen before
                         if !local_stats.coverage_db.contains_key(&hash_vec) {
                             // Coverage entry is new, save the fuzz input in the input database
-                            local_stats.input_db.insert(fuzz_input.clone());
+                            local_stats.input_db.insert(mutator.input.clone());
 
                             // Update the module+offset in the coverage database to reflect that this input caused this coverage to occur
-                            local_stats.coverage_db.insert(hash_vec, fuzz_input.clone());
+                            local_stats
+                                .coverage_db
+                                .insert(hash_vec, mutator.input.clone());
 
                             // Get access to global stats
                             let mut stats = self.stats.lock().expect("Failed to get mutex");
 
                             if !stats.coverage_db.contains_key(&hash_vec) {
                                 // Save input to global input database
-                                if stats.input_db.insert(fuzz_input.clone()) {
+                                if stats.input_db.insert(mutator.input.clone()) {
                                     // Copy in the input list
-                                    stats.input_list.push(fuzz_input.clone());
+                                    stats.input_list.push(mutator.input.clone());
                                     stats.input_len += 1;
                                     // Copy locally
                                     let mut input_file_lock =
                                         self.input_file.lock().expect("Failed to get mutex");
-                                    input_file_lock.inputs.push(fuzz_input.to_vec());
+                                    input_file_lock.inputs.push(mutator.input.clone());
                                     input_file_lock.dump_json();
                                 }
                                 // Save coverage to global coverage database
-                                stats.coverage_db.insert(hash_vec, fuzz_input.clone());
+                                stats.coverage_db.insert(hash_vec, mutator.input.clone());
                             }
                         }
                     }
@@ -179,15 +179,15 @@ impl StarknetWorker {
                         stats.tx_crashes += 1;
 
                         // Add the crash input to the local crash database
-                        local_stats.tx_crash_db.insert(fuzz_input.clone());
+                        local_stats.tx_crash_db.insert(mutator.input.clone());
 
                         // Add the crash input to the shared crash database
-                        if stats.tx_crash_db.insert(fuzz_input.clone()) {
+                        if stats.tx_crash_db.insert(mutator.input.clone()) {
                             // add input to the crash corpus
                             // New crashing input, we dump the crash on the disk
                             let mut crash_file_lock =
                                 self.crash_file.lock().expect("Failed to get mutex");
-                            crash_file_lock.crashes.push(fuzz_input.to_vec());
+                            crash_file_lock.crashes.push(mutator.input.clone());
                             crash_file_lock.dump_json();
 
                             println!(
@@ -210,7 +210,7 @@ impl StarknetWorker {
     }
 
     //TODO : Fix to match the new runner
-    pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
+    pub fn replay(&mut self, inputs: Vec<Vec<Felt252>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
         let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
