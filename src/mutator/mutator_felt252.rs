@@ -226,7 +226,9 @@ impl Mutator {
                     bits_to_save = 252;
                 }
 
-                _ => todo!(),
+                _ => {
+                    bits_to_save = 252; // Should be a Todo! but since the runner take a felt252 vector, it's a good idea to send random data
+                }
             }
             if bits_to_save != 256 && bits_to_save != 252 {
                 //println!("{:?} - Before {:?}", input_type, self.input[idx]);
