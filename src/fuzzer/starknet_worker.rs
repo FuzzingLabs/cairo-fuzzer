@@ -209,7 +209,6 @@ impl StarknetWorker {
         }
     }
 
-    //TODO : Fix to match the new runner
     pub fn replay(&mut self, inputs: Vec<Arc<Vec<Felt252>>>) {
         // Local stats database
         let mut local_stats = Statistics::default();

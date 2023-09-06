@@ -73,22 +73,18 @@ impl Fuzzer {
                 .expect("Failed to get actual time")
                 .as_millis() as u64,
         };
-        println!("\t\t\t\t\t\t\tSeed: {}", seed);
+        //println!("\t\t\t\t\t\t\tSeed: {}", seed);
 
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
         let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
-        // TODO - remove when support multiple txs
         let function = match parse_json(&contents, &config.function_name) {
             Some(func) => func,
-            None => /* match parse_starknet_json(&contents, &config.function_name) {
-                Some(func) => func,
-                None => */ {
-                    eprintln!("Error: Could not parse json file");
-                    process::exit(1)
-                }
-            //},
+            None => {
+                eprintln!("Error: Could not parse json file");
+                process::exit(1)
+            }
         };
         // Load inputs from the input file if provided
         let mut inputs: InputFile =
@@ -99,7 +95,7 @@ impl Fuzzer {
                     false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
                 },
             };
-        println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
+        //println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
         let dict = match &config.dict.is_empty() {
             true => Dict { inputs: Vec::new() },
@@ -149,11 +145,19 @@ impl Fuzzer {
 
         let contract_class =
             serde_json::from_str(&casm_content).expect("could not get contractclass");
-
+        println!(
+            "
+        =============================================================================================================================================================
+        ╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
+        ║   ├─┤ │ ├┬┘ │1.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | Inputs loaded -- {}
+        ╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      | Threads to run -- {}",
+            seed,
+            inputs.inputs.len(),
+            config.cores,
+        );
         // Setup the mutex for the inputs corpus and crash corpus
         let inputs = Arc::new(Mutex::new(inputs));
         let crashes = Arc::new(Mutex::new(crashes));
-
         // Setup the fuzzer
         Fuzzer {
             stats: stats,
@@ -207,8 +211,7 @@ impl Fuzzer {
             });
             self.running_workers += 1;
         }
-        println!("\t\t\t\t\t\t\tRunning {} threads", self.running_workers);
-        println!("        =========================================================================================================================");
+        println!("\t=============================================================================================================================================================");
         // Call the stats monitoring/printer
         self.monitor();
     }
