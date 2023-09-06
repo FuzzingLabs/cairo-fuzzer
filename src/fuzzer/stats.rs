@@ -1,7 +1,6 @@
 use felt::Felt252;
 use std::collections::{HashMap, HashSet};
-use std::sync::Arc;
-pub type FuzzInput = Arc<Vec<Felt252>>;
+pub type FuzzInput = Vec<Felt252>;
 
 /// Fuzz case statistics
 #[derive(Default, Debug)]
@@ -19,7 +18,7 @@ pub struct Statistics {
     pub input_db: HashSet<FuzzInput>,
 
     /// List of inputs
-    pub input_list: Vec<FuzzInput>,
+    /* pub input_list: Vec<FuzzInput>, */
 
     /// List of all unique fuzzer actions
 
@@ -44,6 +43,9 @@ pub struct Statistics {
 
 impl Statistics {
     pub fn get_input_by_index(&self, index: usize) -> &FuzzInput {
-        &self.input_list[index]
+        let mut iterator = self.input_db.iter();
+        iterator
+            .nth(index)
+            .expect("Could not get element from input_db")
     }
 }

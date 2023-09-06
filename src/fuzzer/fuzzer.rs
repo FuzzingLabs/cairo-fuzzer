@@ -16,7 +16,6 @@ use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics}
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use felt::Felt252;
 use rand::Rng;
-//use starknet_rs::services::api::contract_classes::ContractClass;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -117,8 +116,8 @@ impl Fuzzer {
         if inputs.inputs.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &inputs.inputs {
-                if stats_db.input_db.insert(Arc::new(input.clone())) {
-                    stats_db.input_list.push(Arc::new(input.clone()));
+                if stats_db.input_db.insert(input.clone()) {
+                    stats_db.input_db.insert(input.clone());
                     stats_db.input_len += 1;
                 }
             }
@@ -138,7 +137,7 @@ impl Fuzzer {
         if crashes.crashes.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &crashes.crashes {
-                stats_db.crash_db.insert(Arc::new(input.clone()));
+                stats_db.crash_db.insert(input.clone());
                 stats_db.crashes += 1;
             }
         }
@@ -222,11 +221,12 @@ impl Fuzzer {
         // Replay all inputs
         let stats_db = self.stats.lock().expect("Failed to lock stats mutex");
         // Load inputs
-        let mut corpus = stats_db.input_list.clone();
-        println!("Total inputs to replay => {}", corpus.len());
+        let mut corpus_hashset = stats_db.input_db.clone();
+        println!("Total inputs to replay => {}", corpus_hashset.len());
         // Load crashes
-        let mut crashes = stats_db.crash_db.clone().into_iter().collect();
-        corpus.append(&mut crashes);
+        let crashes_hashset = stats_db.crash_db.clone();
+        corpus_hashset = corpus_hashset.union(&crashes_hashset).cloned().collect();
+        let corpus: Vec<Vec<Felt252>> = corpus_hashset.into_iter().collect();
         drop(stats_db);
         // Split the inputs into chunks
         let chunk_size = match corpus.len() > (self.cores as usize) {
