@@ -47,7 +47,6 @@ impl StarknetWorker {
     }
 
     pub fn fuzz(self) {
-        println!("Fuzzing");
         // Local stats database
         let mut local_stats = Statistics::default();
 
