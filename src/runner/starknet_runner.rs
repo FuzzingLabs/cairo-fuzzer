@@ -3,6 +3,7 @@ use felt::Felt252;
 use num_bigint::BigUint;
 use num_traits::Zero;
 use starknet_rs::definitions::block_context::BlockContext;
+use starknet_rs::execution::CallInfo;
 use starknet_rs::state::cached_state::CachedState;
 use starknet_rs::EntryPointType;
 use starknet_rs::{
@@ -90,23 +91,19 @@ impl RunnerStarknet {
 }
 
 impl Runner for RunnerStarknet {
-    fn runner(
-        mut self,
-        _func_entrypoint_idx: usize,
-        data: &Vec<Felt252>,
-    ) -> Result<(Vec<(u32, u32)>, bool), String> {
+    fn runner(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
         // Create an execution entry point
         let calldata = data.to_vec();
-
+        //println!("here {:?}", self.state);
         let exec_entry_point = ExecutionEntryPoint::new(
-            self.address,
+            self.address.clone(),
             calldata.clone(),
-            Felt252::new(self.entrypoint_selector),
-            self.caller_address,
+            Felt252::new(self.entrypoint_selector.clone()),
+            self.caller_address.clone(),
             self.entry_point_type,
             Some(CallType::Delegate),
             Some(self.class_hash),
-            100000,
+            1000000,
         );
 
         // Execute the entrypoint
@@ -119,11 +116,12 @@ impl Runner for RunnerStarknet {
             self.block_context.invoke_tx_max_n_steps(),
         ) {
             Ok(exec_info) => {
+                //println!("here 2{:?}", self.state);
                 let call_info = exec_info
                     .call_info
                     .clone()
                     .expect("Could not get call info");
-                return Ok((call_info.trace, call_info.failure_flag));
+                return Ok((self, call_info));
             }
             Err(e) => return Err(e.to_string()),
         };

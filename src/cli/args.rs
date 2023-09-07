@@ -129,6 +129,13 @@ pub struct Opt {
     )]
     pub proptesting: bool,
 
+    #[arg(
+        long,
+        help = "Dump functions prototypes",
+        name = "ANALYZE",
+        default_value = "false"
+    )]
+    pub analyze: bool,
     #[arg(long, help = "Iteration Number", name = "ITER", default_value = "-1")]
     pub iter: i64,
 }

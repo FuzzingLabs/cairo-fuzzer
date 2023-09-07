@@ -47,6 +47,7 @@ impl StarknetWorker {
     }
 
     pub fn fuzz(self) {
+        println!("Fuzzing");
         // Local stats database
         let mut local_stats = Statistics::default();
 
@@ -59,7 +60,8 @@ impl StarknetWorker {
             .seed(self.seed)
             .max_input_size(inputs_len)
             .types(self.function.inputs);
-        let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
+        let mut starknet_runner =
+            RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         'next_case: loop {
             // clear previous data
             mutator.input.clear();
@@ -89,14 +91,13 @@ impl StarknetWorker {
             }
 
             // run the cairo vm
-            match starknet_runner
-                .clone()
-                .runner(self.function.selector_idx, &mutator.input)
-            {
-                Ok(traces) => {
-                    let vec_trace = traces.0;
+            match starknet_runner.clone().runner(&mutator.input) {
+                Ok(res) => {
+                    starknet_runner = res.0;
+                    let call_info = res.1;
+                    let vec_trace = call_info.trace;
                     let hash_vec = hash_vector(&vec_trace);
-                    let failure_flag = traces.1;
+                    let failure_flag = call_info.failure_flag;
 
                     // Mutex locking is limited to this scope
                     {
@@ -198,7 +199,7 @@ impl StarknetWorker {
                     }
                 }
             }
-            let counter_update = 10000;
+            let counter_update = 1000;
             if local_stats.fuzz_cases % counter_update == 1 {
                 // Get access to global stats
                 let mut stats = self.stats.lock().expect("Failed to get mutex");
@@ -213,17 +214,17 @@ impl StarknetWorker {
     pub fn replay(&mut self, inputs: Vec<Vec<Felt252>>) {
         // Local stats database
         let mut local_stats = Statistics::default();
-        let starknet_runner = RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
+        let mut starknet_runner =
+            RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         for input in inputs {
             let fuzz_input = input;
-            match starknet_runner
-                .clone()
-                .runner(self.function.selector_idx, &fuzz_input)
-            {
-                Ok(traces) => {
-                    let vec_trace = traces.0;
+            match starknet_runner.clone().runner(&fuzz_input) {
+                Ok(res) => {
+                    starknet_runner = res.0;
+                    let call_info = res.1;
+                    let vec_trace = call_info.trace;
                     let hash_vec = hash_vector(&vec_trace);
-                    let failure_flag = traces.1;
+                    let failure_flag = call_info.failure_flag;
 
                     // Mutex locking is limited to this scope
                     {

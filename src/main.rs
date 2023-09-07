@@ -28,6 +28,11 @@ fn main() {
     */
     // get cli args
     let opt = Opt::parse();
+    if opt.analyze {
+        let contents = fs::read_to_string(&opt.contract).unwrap();
+        json::json_parser::analyze_json(&contents);
+        return;
+    }
     // create config file
     let mut config = match opt.config {
         // config file provided
