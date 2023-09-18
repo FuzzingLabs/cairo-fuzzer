@@ -47,10 +47,8 @@ impl StarknetWorker {
     }
 
     pub fn fuzz(self) {
-        println!("Fuzzing");
         // Local stats database
         let mut local_stats = Statistics::default();
-
         // Create an RNG for this thread, seed is unique per thread
         // to prevent duplication of efforts
         let rng = Rng::seeded(self.seed);
@@ -91,7 +89,7 @@ impl StarknetWorker {
             }
 
             // run the cairo vm
-            match starknet_runner.clone().runner(&mutator.input) {
+            match starknet_runner.clone().run(&mutator.input) {
                 Ok(res) => {
                     starknet_runner = res.0;
                     let call_info = res.1;
@@ -218,7 +216,7 @@ impl StarknetWorker {
             RunnerStarknet::new(&self.contract_class, self.function.selector_idx);
         for input in inputs {
             let fuzz_input = input;
-            match starknet_runner.clone().runner(&fuzz_input) {
+            match starknet_runner.clone().run(&fuzz_input) {
                 Ok(res) => {
                     starknet_runner = res.0;
                     let call_info = res.1;

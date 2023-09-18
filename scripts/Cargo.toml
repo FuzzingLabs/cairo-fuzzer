@@ -1,0 +1,11 @@
+[package]
+name = "scripts"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cairo-fuzzer = { path="/home/nabih/cairo-fuzzer" }
+serde_json = '1.0'
+cairo-lang-starknet = { version = "2.1.0-rc2", default-features = false }

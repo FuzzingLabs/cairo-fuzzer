@@ -102,7 +102,7 @@ fn get_abi(data: &Value) -> Vec<AbiFunction> {
     res
 }
 
-pub fn parse_json(data: &String, function_name: &String) -> Option<Function> {
+pub fn get_function_from_json(data: &String, function_name: &String) -> Option<Function> {
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let abi = get_abi(&data);
     if let Some(_types) = data.get("entry_points_by_type") {
