@@ -44,9 +44,9 @@ impl RunnerStarknet {
         // Create state reader with class hash data
         let mut contract_class_cache: HashMap<[u8; 32], CasmContractClass> = HashMap::new();
 
-        let address = Address(1111.into());
+        let address = Address(1111.into()); //todo - make it configurable from the config
         let class_hash: ClassHash = [1; 32];
-        let nonce = Felt252::zero();
+        let nonce = Felt252::zero(); //todo - make it configurable from the config
 
         contract_class_cache.insert(class_hash, contract_class.clone());
         let mut state_reader = InMemoryStateReader::default();
@@ -59,7 +59,7 @@ impl RunnerStarknet {
 
         // Create state from the state_reader and contract cache.
         let state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
-        let caller_address = Address(0000.into());
+        let caller_address = Address(0000.into()); //todo - make it configurable from the config
         let entry_point_type = EntryPointType::External;
 
         let block_context = BlockContext::default();
@@ -88,10 +88,18 @@ impl RunnerStarknet {
         //println!("Runner setup : {:?}", runner);
         runner
     }
+
+    pub fn get_state(mut self) -> CachedState<InMemoryStateReader> {
+        return self.state;
+    }
+
+    pub fn set_state(mut self, state: CachedState<InMemoryStateReader>) {
+        self.state = state;
+    }
 }
 
 impl Runner for RunnerStarknet {
-    fn runner(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
+    fn run(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
         // Create an execution entry point
         let calldata = data.to_vec();
         //println!("here {:?}", self.state);

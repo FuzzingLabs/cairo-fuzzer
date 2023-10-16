@@ -9,7 +9,7 @@ use crate::{
     cli::config::Config,
     fuzzer::dict::Dict,
     fuzzer::starknet_worker::StarknetWorker,
-    json::json_parser::{parse_json, Function},
+    json::json_parser::{get_function_from_json, Function},
 };
 
 use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
@@ -78,7 +78,7 @@ impl Fuzzer {
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
         let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
-        let function = match parse_json(&contents, &config.function_name) {
+        let function = match get_function_from_json(&contents, &config.function_name) {
             Some(func) => func,
             None => {
                 eprintln!("Error: Could not parse json file");
