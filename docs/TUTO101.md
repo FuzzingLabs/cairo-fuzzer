@@ -2,32 +2,49 @@
 
 We will take this Smart Contract as an example:
 ```rust
-%builtins output
-func Fuzz_symbolic_execution(
-    f: felt,
-    u: felt,
-    z: felt,
-    z2: felt,
-    i: felt,
-    n: felt,
-    g: felt,
-    l: felt,
-    a: felt,
-    b: felt,
-    s: felt,
-) {
-    if (f == 'f') {
-        if (u == 'u') {
-            if (z == 'z') {
-                if (z2 == 'z') {
-                    if (i == 'i') {
-                        if (n == 'n') {
-                            if (g == 'g') {
-                                if (l == 'l') {
-                                    if (a == 'a') {
-                                        if (b == 'b') {
-                                            if (s == 's') {
-                                                assert 0 = 2;
+use starknet::{
+    Store, SyscallResult, StorageBaseAddress, storage_read_syscall, storage_write_syscall,
+    storage_address_from_base_and_offset
+};
+use integer::{
+    U128IntoFelt252, Felt252IntoU256, Felt252TryIntoU64, U256TryIntoFelt252, u256_from_felt252
+};
+
+
+#[starknet::contract]
+mod test_contract {
+    #[storage]
+    struct Storage {
+        bal:u8
+    }
+ #[external(v0)]
+    fn Fuzz_symbolic_execution(
+ref self: ContractState,
+    f: felt252,
+    u: felt252,
+    z: u16,
+    z2: u32,
+    i: u64,
+    n: u128,
+    g: u128,
+    l: u128,
+    a: felt252,
+    b: felt252,
+    s: u8,
+    ) {
+        if (f == 'f') {
+            if (u == 'u') {
+                if (z == 'z') {
+                    if (z2 == 'z') {
+                        if (i == 'i') {
+                            if (n == 'n') {
+                                if (g == 'g') {
+                                    if (l == 'l') {
+                                        if (a == 'a') {
+                                            if (b == 'b') {
+                                                if (s == 's') {
+                                                    assert(1==0 , '!(f & t)');
+                                                }
                                             }
                                         }
                                     }
@@ -38,28 +55,25 @@ func Fuzz_symbolic_execution(
                 }
             }
         }
+        return ();
     }
-    return ();
-}
-
-func main{output_ptr: felt*}() {
-    return ();
 }
 ```
 
 ## Compile contract:
-- Follow these [steps](https://www.cairo-lang.org/docs/quickstart.html) to setup cairo-lang in your environment
+- Follow these [steps](https://github.com/starkware-libs/cairo#getting-started) to setup cairo in your environment
 - Next, create the file `fuzzinglabs.cairo` that will contain the code above.
-- run `cairo-compile fuzzinglabs.cairo --output fuzzinglabs.json`
+- run `cargo run --bin starknet-compile -- --single-file /path/to/fuzzinglabs.cairo /path/to/fuzzinglabs.json`
+- then `cargo run --bin starknet-sierra-compile -- /path/to/fuzzinglabs.json /path/to/fuzzinglabs.casm`
 
 ## Analyze the code:
-Looking at the code, we deduce that the function we want to fuzz is `Fuzz_symbolic_execution`, the goal is to find the good arguments to reach the `assert 0 = 2`.
+Looking at the code, we deduce that the function we want to fuzz is `Fuzz_symbolic_execution`, the goal is to find the good arguments to reach the `assert 1 == 0`.
 
 ## Running the fuzzer:
 The simple command line to fuzz the function `Fuzz_symbolic_execution` of the `fuzzinglabs.cairo` contract is:
 
 ```sh
-cargo run --release -- --cores 3 --contract tests/fuzzinglabs.json --function Fuzz_symbolic_execution
+	cargo run --release -- --cores 10 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "Fuzz_symbolic_execution"
 ```
 
 ![fuzzer_running](fuzzer_running.png)
