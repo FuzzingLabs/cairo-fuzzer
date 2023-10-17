@@ -159,8 +159,8 @@ pub fn analyze_json(data: &String) {
                 output_idx += 1;
             }
             println!("{}\n", prototype);
+            idx += 1;
         }
-        idx += 1;
     }
 }
 
