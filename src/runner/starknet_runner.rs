@@ -86,7 +86,6 @@ impl RunnerStarknet {
             block_context: block_context,
             resources_manager: resources_manager,
         };
-        //println!("Runner setup : {:?}", runner);
         runner
     }
     #[allow(dead_code)]
@@ -104,7 +103,6 @@ impl Runner for RunnerStarknet {
     fn run(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
         // Create an execution entry point
         let calldata = data.to_vec();
-        //println!("here {:?}", self.state);
         let exec_entry_point = ExecutionEntryPoint::new(
             self.address.clone(),
             calldata.clone(),

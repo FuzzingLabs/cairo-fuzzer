@@ -72,7 +72,6 @@ impl Fuzzer {
                 .expect("Failed to get actual time")
                 .as_millis() as u64,
         };
-        //println!("\t\t\t\t\t\t\tSeed: {}", seed);
 
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
@@ -94,7 +93,6 @@ impl Fuzzer {
                     false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
                 },
             };
-        //println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
         let dict = match &config.dict.is_empty() {
             true => Dict { inputs: Vec::new() },
@@ -222,7 +220,12 @@ impl Fuzzer {
         let stats_db = self.stats.lock().expect("Failed to lock stats mutex");
         // Load inputs
         let mut corpus_hashset = stats_db.input_db.clone();
-        println!("Total inputs to replay => {}", corpus_hashset.len());
+        println!(
+            "\t\t\t\t\t\t\t   | Total inputs to replay -- {}",
+            corpus_hashset.len()
+        );
+        println!("\t=============================================================================================================================================================");
+
         // Load crashes
         let crashes_hashset = stats_db.crash_db.clone();
         corpus_hashset = corpus_hashset.union(&crashes_hashset).cloned().collect();
