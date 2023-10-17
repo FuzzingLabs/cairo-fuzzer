@@ -6,16 +6,15 @@ use integer::{
     U128IntoFelt252, Felt252IntoU256, Felt252TryIntoU64, U256TryIntoFelt252, u256_from_felt252
 };
 
-
 #[starknet::contract]
 mod test_contract {
     #[storage]
     struct Storage {
-        bal: u128
+        bal:u128,
     }
-
-    #[external(v0)]
-    fn init(ref self: ContractState, value: u128) {
-        self.bal.write(value);
+ #[external(v0)]
+    fn storage_test(ref self: ContractState) {
+        let value = self.bal.read();
+        assert(value < 100000, 'value sup to 100k');
     }
 }
