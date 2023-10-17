@@ -27,7 +27,7 @@ package = 'cairo-felt'
 
 [dependencies.starknet-rs]
 git = 'https://github.com/FuzzingLabs/starknet_in_rust/'
-rev = '03bfc091df92a2e1e6449761442d98f6e3489490'
+rev = '6ee8eef52af4c0fea78d951ee29e52940363be69'
 package = 'starknet_in_rust'
 
 [dependencies.num-bigint]

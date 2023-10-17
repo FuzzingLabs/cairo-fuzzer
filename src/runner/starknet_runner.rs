@@ -5,6 +5,7 @@ use num_traits::Zero;
 use starknet_rs::definitions::block_context::BlockContext;
 use starknet_rs::execution::CallInfo;
 use starknet_rs::state::cached_state::CachedState;
+use starknet_rs::state::state_cache::StateCache;
 use starknet_rs::EntryPointType;
 use starknet_rs::{
     definitions::constants::TRANSACTION_VERSION,
@@ -88,13 +89,14 @@ impl RunnerStarknet {
         //println!("Runner setup : {:?}", runner);
         runner
     }
-
-    pub fn get_state(mut self) -> CachedState<InMemoryStateReader> {
+    #[allow(dead_code)]
+    pub fn get_state(self) -> CachedState<InMemoryStateReader> {
         return self.state;
     }
-
-    pub fn set_state(mut self, state: CachedState<InMemoryStateReader>) {
-        self.state = state;
+    #[allow(dead_code)]
+    pub fn set_state(mut self, state: StateCache) -> Self {
+        self.state.cache = state;
+        self
     }
 }
 
@@ -124,7 +126,6 @@ impl Runner for RunnerStarknet {
             self.block_context.invoke_tx_max_n_steps(),
         ) {
             Ok(exec_info) => {
-                //println!("here 2{:?}", self.state);
                 let call_info = exec_info
                     .call_info
                     .clone()
