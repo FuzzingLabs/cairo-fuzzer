@@ -1,0 +1,16 @@
+[package]
+name = "scripts"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cairo-fuzzer = { path="../" }
+serde_json = '1.0'
+cairo-lang-starknet = { version = "2.1.0-rc2", default-features = false }
+
+[dependencies.felt]
+git = 'https://github.com/FuzzingLabs/cairo-rs'
+rev = '48af153240392992f18a09e969bae6518eec9639'
+package = 'cairo-felt'

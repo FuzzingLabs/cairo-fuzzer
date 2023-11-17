@@ -3,7 +3,8 @@
     "logs": false,
     "replay": false,
     "minimizer": false,
-    "contract_file": "tests/fuzzinglabs.json",
+    "contract_file": "tests1.0/fuzzinglabs.json",
+    "casm_file": "tests1.0/fuzzinglabs.casm",
     "function_name": "Fuzz_symbolic_execution",
     "input_file": "",
     "crash_file": "",
@@ -12,5 +13,5 @@
     "workspace": "fuzzer_workspace",
     "proptesting": false,
     "iter": -1,
-    "dict": "tests/dict"
+    "dict": "tests1.0/dict"
 }

@@ -20,6 +20,14 @@ pub struct Opt {
 
     #[arg(
         long,
+        help = "Set the path of the JSON CASM artifact to load",
+        name = "CASM",
+        default_value = ""
+    )]
+    pub casm: String,
+
+    #[arg(
+        long,
         help = "Set the function to fuzz",
         name = "FUNCTION",
         default_value = ""
@@ -121,6 +129,13 @@ pub struct Opt {
     )]
     pub proptesting: bool,
 
+    #[arg(
+        long,
+        help = "Dump functions prototypes",
+        name = "ANALYZE",
+        default_value = "false"
+    )]
+    pub analyze: bool,
     #[arg(long, help = "Iteration Number", name = "ITER", default_value = "-1")]
     pub iter: i64,
 }

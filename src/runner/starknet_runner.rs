@@ -1,101 +1,70 @@
-use cairo_rs::felt::Felt252;
+use cairo_lang_starknet::casm_contract_class::CasmContractClass;
+use felt::Felt252;
+use num_bigint::BigUint;
 use num_traits::Zero;
-use starknet_contract_class::EntryPointType;
+use starknet_rs::definitions::block_context::BlockContext;
+use starknet_rs::execution::CallInfo;
+use starknet_rs::state::cached_state::CachedState;
+use starknet_rs::state::state_cache::StateCache;
+use starknet_rs::EntryPointType;
 use starknet_rs::{
-    definitions::{block_context::BlockContext, constants::TRANSACTION_VERSION},
+    definitions::constants::TRANSACTION_VERSION,
     execution::{
         execution_entry_point::ExecutionEntryPoint, CallType, TransactionExecutionContext,
     },
-    services::api::contract_classes::deprecated_contract_class::ContractClass,
-    state::cached_state::CachedState,
     state::{in_memory_state_reader::InMemoryStateReader, ExecutionResourcesManager},
-    utils::Address,
+    utils::{Address, ClassHash},
 };
-use std::collections::HashMap;
+
+use std::{collections::HashMap, sync::Arc};
 
 use super::runner::Runner;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct RunnerStarknet {
-    contract_class: ContractClass,
+    entrypoint_selector: BigUint,
+    address: Address,
+    class_hash: ClassHash,
+    state: CachedState<InMemoryStateReader>,
+    caller_address: Address,
+    entry_point_type: EntryPointType,
+    tx_execution_context: TransactionExecutionContext,
+    block_context: BlockContext,
+    resources_manager: ExecutionResourcesManager,
 }
 
 impl RunnerStarknet {
-    pub fn new(contract_class: &ContractClass) -> Self {
-        return RunnerStarknet {
-            contract_class: contract_class.clone(),
-        };
-    }
-}
-
-impl Runner for RunnerStarknet {
-    fn runner(
-        self,
-        func_entrypoint: &String,
-        data: &Vec<Felt252>,
-    ) -> Result<Option<Vec<(u32, u32)>>, String> {
-        // ---------------------------------------------------------
-        //  Create program and entry point types for contract class
-        // ---------------------------------------------------------
-
-        let entry_points_by_type = self.contract_class.entry_points_by_type();
-        let entrypoint_selector = entry_points_by_type
-            .get(&EntryPointType::External) // Should we call only "External" functions?
+    pub fn new(contract_class: &CasmContractClass, func_entrypoint_idx: usize) -> Self {
+        let entrypoints = contract_class.clone().entry_points_by_type;
+        let entrypoint_selector = &entrypoints
+            .external
+            .get(func_entrypoint_idx)
             .unwrap()
-            .iter()
-            .find(|entrypoint| &entrypoint.offset().to_string() == func_entrypoint)
-            .unwrap()
-            .selector()
-            .clone();
-        //* --------------------------------------------
-        //*    Create state reader with class hash data
-        //* --------------------------------------------
+            .selector;
 
-        let mut contract_class_cache = HashMap::new();
+        // Create state reader with class hash data
+        let mut contract_class_cache: HashMap<[u8; 32], CasmContractClass> = HashMap::new();
 
-        //  ------------ contract data --------------------
+        let address = Address(1111.into()); //todo - make it configurable from the config
+        let class_hash: ClassHash = [1; 32];
+        let nonce = Felt252::zero(); //todo - make it configurable from the config
 
-        let address = Address(1111.into());
-        let class_hash = [1; 32];
-
-        contract_class_cache.insert(class_hash, self.contract_class);
+        contract_class_cache.insert(class_hash, contract_class.clone());
         let mut state_reader = InMemoryStateReader::default();
         state_reader
             .address_to_class_hash_mut()
             .insert(address.clone(), class_hash);
+        state_reader
+            .address_to_nonce_mut()
+            .insert(address.clone(), nonce);
 
-        //* ---------------------------------------
-        //*    Create state with previous data
-        //* ---------------------------------------
-
-        let mut state = CachedState::new(state_reader, Some(contract_class_cache), None);
-
-        //* ------------------------------------
-        //*    Create execution entry point
-        //* ------------------------------------
-
-        let mut calldata: Vec<Felt252> = [].to_vec();
-        for i in data {
-            calldata.push((*i).clone());
-        }
-        let caller_address = Address(0000.into());
+        // Create state from the state_reader and contract cache.
+        let state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
+        let caller_address = Address(0000.into()); //todo - make it configurable from the config
         let entry_point_type = EntryPointType::External;
-        let exec_entry_point = ExecutionEntryPoint::new(
-            address.clone(),
-            calldata.clone(),
-            entrypoint_selector,
-            caller_address,
-            entry_point_type,
-            Some(CallType::Delegate),
-            Some(class_hash),
-            0,
-        );
 
-        //* --------------------
-        //*   Execute contract
-        //* ---------------------
         let block_context = BlockContext::default();
-        let mut tx_execution_context = TransactionExecutionContext::new(
+        let tx_execution_context = TransactionExecutionContext::new(
             Address(0.into()),
             Felt252::zero(),
             Vec::new(),
@@ -104,17 +73,62 @@ impl Runner for RunnerStarknet {
             block_context.invoke_tx_max_n_steps(),
             TRANSACTION_VERSION.clone(),
         );
-        let mut resources_manager = ExecutionResourcesManager::default();
+        let resources_manager = ExecutionResourcesManager::default();
+
+        let runner = RunnerStarknet {
+            entrypoint_selector: entrypoint_selector.clone(),
+            address: address,
+            class_hash: class_hash,
+            state: state,
+            caller_address: caller_address,
+            entry_point_type: entry_point_type,
+            tx_execution_context: tx_execution_context,
+            block_context: block_context,
+            resources_manager: resources_manager,
+        };
+        runner
+    }
+    #[allow(dead_code)]
+    pub fn get_state(self) -> CachedState<InMemoryStateReader> {
+        return self.state;
+    }
+    #[allow(dead_code)]
+    pub fn set_state(mut self, state: StateCache) -> Self {
+        self.state.cache = state;
+        self
+    }
+}
+
+impl Runner for RunnerStarknet {
+    fn run(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
+        // Create an execution entry point
+        let calldata = data.to_vec();
+        let exec_entry_point = ExecutionEntryPoint::new(
+            self.address.clone(),
+            calldata.clone(),
+            Felt252::new(self.entrypoint_selector.clone()),
+            self.caller_address.clone(),
+            self.entry_point_type,
+            Some(CallType::Delegate),
+            Some(self.class_hash),
+            1000000,
+        );
+
+        // Execute the entrypoint
         match exec_entry_point.execute(
-            &mut state,
-            &block_context,
-            &mut resources_manager,
-            &mut tx_execution_context,
+            &mut self.state,
+            &self.block_context,
+            &mut self.resources_manager,
+            &mut self.tx_execution_context,
             false,
-            true,
+            self.block_context.invoke_tx_max_n_steps(),
         ) {
             Ok(exec_info) => {
-                return Ok(Some(exec_info.trace));
+                let call_info = exec_info
+                    .call_info
+                    .clone()
+                    .expect("Could not get call info");
+                return Ok((self, call_info));
             }
             Err(e) => return Err(e.to_string()),
         };

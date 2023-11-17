@@ -13,7 +13,6 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 	<img src="cairo-fuzzer.png"/>
 </p>
 
-- Run Cairo contract
 - Run Starknet contract
 - Replayer of fuzzing corpus
 - Minimizer of fuzzing corpus
@@ -26,7 +25,8 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 
 ## Usage:
 ```
-cargo run --release -- --cores 3 --contract tests/fuzzinglabs.json --function "Fuzz_symbolic_execution"
+	cargo run --release -- --cores 10 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "Fuzz_symbolic_execution"
+
 ```
 
 For more usage information, follow our [tutorial](docs/TUTO101.md)
@@ -39,27 +39,32 @@ Usage: cairo-fuzzer [OPTIONS]
 Options:
       --cores <CORES>              Set the number of threads to run [default: 1]
       --contract <CONTRACT>        Set the path of the JSON artifact to load [default: ]
+      --casm <CASM>                Set the path of the JSON CASM artifact to load [default: ]
       --function <FUNCTION>        Set the function to fuzz [default: ]
       --workspace <WORKSPACE>      Workspace of the fuzzer [default: fuzzer_workspace]
       --inputfolder <INPUTFOLDER>  Path to the inputs folder to load [default: ]
       --crashfolder <CRASHFOLDER>  Path to the crashes folder to load [default: ]
       --inputfile <INPUTFILE>      Path to the inputs file to load [default: ]
       --crashfile <CRASHFILE>      Path to the crashes file to load [default: ]
+      --dict <DICT>                Path to the dictionnary file to load [default: ]
       --logs                       Enable fuzzer logs in file
       --seed <SEED>                Set a custom seed (only applicable for 1 core run)
       --run-time <RUN_TIME>        Number of seconds this fuzzing session will last
       --config <CONFIG>            Load config file
       --replay                     Replay the corpus folder
       --minimizer                  Minimize Corpora
-  -h, --help                       Print help information
+      --proptesting                Property Testing
+      --analyze                    Dump functions prototypes
+      --iter <ITER>                Iteration Number [default: -1]
+  -h, --help                       Print help
 ```
 
 # F.A.Q
 
 ## How to find a Cairo/Starknet compilation artifact (json file)?
 
-Cairo-Fuzzer supports cairo compilation artifact (json file) generated after compilation using `cairo-compile`.
-Cairo-Fuzzer does not support Cairo1.0 for starknet contract (Lambdaclass is working on this for the next release of `starknet_in_rust` which is used by our fuzzer)
+Cairo-Fuzzer supports starknet compilation artifact (json and casm files) generated after compilation using `starknet-compile` and `starknet-sierra-compile`.
+Cairo-Fuzzer does not support Cairo2.0 and pure cairo contract.
 
 ## How to run the tests?
 

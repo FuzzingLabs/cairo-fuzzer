@@ -1,9 +1,8 @@
 use felt::Felt252;
+use starknet_rs::execution::CallInfo;
 
 pub trait Runner {
-    fn runner(
-        self,
-        func_name: &String,
-        data: &Vec<Felt252>,
-    ) -> Result<Option<Vec<(u32, u32)>>, String>;
+    fn run(self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String>
+    where
+        Self: Sized;
 }

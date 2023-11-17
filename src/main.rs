@@ -14,21 +14,15 @@ use cli::config::Config;
 use fuzzer::fuzzer::Fuzzer;
 
 use log::error;
+
 fn main() {
-    let header = r###"
-                 _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
-                (  ____ \(  ___  )\__   __/(  ____ )(  ___  )       (  ____ \|\     /|/ ___   )/ ___   )(  ____ \(  ____ )
-                | (    \/| (   ) |   ) (   | (    )|| (   ) |       | (    \/| )   ( |\/   )  |\/   )  || (    \/| (    )|
-                | |      | (___) |   | |   | (____)|| |   | | _____ | (__    | |   | |    /   )    /   )| (__    | (____)|
-                | |      |  ___  |   | |   |     __)| |   | |(_____)|  __)   | |   | |   /   /    /   / |  __)   |     __)
-                | |      | (   ) |   | |   | (\ (   | |   | |       | (      | |   | |  /   /    /   /  | (      | (\ (   
-                | (____/\| )   ( |___) (___| ) \ \__| (___) |       | )      | (___) | /   (_/\ /   (_/\| (____/\| ) \ \__
-                (_______/|/     \|\_______/|/   \__/(_______)       |/       (_______)(_______/(_______/(_______/|/   \__/"###;
-    println!("\t=========================================================================================================================");
-    println!("{}", header);
-    println!("\n\t=========================================================================================================================");
     // get cli args
     let opt = Opt::parse();
+    if opt.analyze {
+        let contents = fs::read_to_string(&opt.contract).unwrap();
+        json::json_parser::analyze_json(&contents);
+        return;
+    }
     // create config file
     let mut config = match opt.config {
         // config file provided
@@ -46,6 +40,7 @@ fn main() {
             Config {
                 workspace: opt.workspace,
                 contract_file: opt.contract,
+                casm_file: opt.casm,
                 function_name: opt.function,
                 input_file: opt.inputfile,
                 crash_file: opt.crashfile,
@@ -63,7 +58,6 @@ fn main() {
             }
         }
     };
-    //if proptesting enabled
     if config.proptesting {
         let contents = fs::read_to_string(&config.contract_file).unwrap();
         println!("\t\t\t\t\t\t\tSearching for Fuzzing functions ...");

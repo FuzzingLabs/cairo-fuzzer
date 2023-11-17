@@ -7,17 +7,15 @@ use std::{
 
 use crate::{
     cli::config::Config,
-    fuzzer::cairo_worker::CairoWorker,
     fuzzer::dict::Dict,
     fuzzer::starknet_worker::StarknetWorker,
-    json::json_parser::{parse_json, parse_starknet_json, Function},
+    json::json_parser::{get_function_from_json, Function},
 };
 
 use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
-use cairo_rs::types::program::Program;
+use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use felt::Felt252;
 use rand::Rng;
-use starknet_rs::services::api::contract_classes::deprecated_contract_class::ContractClass;
 use std::io::Write;
 
 #[derive(Clone)]
@@ -30,10 +28,8 @@ pub struct Fuzzer {
     pub contract_file: String,
     /// Contract JSON content
     pub contract_content: String,
-    /// Program for cairo-rs
-    pub program: Option<Program>,
     /// Contract_class for starknet-rs
-    pub contract_class: Option<ContractClass>,
+    pub contract_class: CasmContractClass,
     /// Contract function to fuzz
     pub function: Function,
     /// Store local/on-disk logs
@@ -56,8 +52,6 @@ pub struct Fuzzer {
     pub start_time: Instant,
     /// Running workers
     pub running_workers: u64,
-    /// Starknet or cairo contract
-    pub starknet: bool,
     /// Number of iterations to run
     pub iter: i64,
     /// Usage of property testing
@@ -78,22 +72,17 @@ impl Fuzzer {
                 .expect("Failed to get actual time")
                 .as_millis() as u64,
         };
-        println!("\t\t\t\t\t\t\tSeed: {}", seed);
 
         // Read contract JSON artifact and get its content
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
-
-        // TODO - remove when support multiple txs
-        let function = match parse_json(&contents, &config.function_name) {
+        let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
+        let function = match get_function_from_json(&contents, &config.function_name) {
             Some(func) => func,
-            None => match parse_starknet_json(&contents, &config.function_name) {
-                Some(func) => func,
-                None => {
-                    eprintln!("Error: Could not parse json file");
-                    process::exit(1)
-                }
-            },
+            None => {
+                eprintln!("Error: Could not parse json file");
+                process::exit(1)
+            }
         };
         // Load inputs from the input file if provided
         let mut inputs: InputFile =
@@ -104,14 +93,13 @@ impl Fuzzer {
                     false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
                 },
             };
-        println!("\t\t\t\t\t\t\tInputs loaded {}", inputs.inputs.len());
 
         let dict = match &config.dict.is_empty() {
             true => Dict { inputs: Vec::new() },
             false => Dict::read_dict(&config.dict),
         };
 
-        let nbr_args = function.num_args;
+        let nbr_args = function.inputs.len();
         for val in &dict.inputs {
             let mut value_vec: Vec<Felt252> = Vec::new();
             value_vec.push(val.clone()); // to ensure that all values of the dict will be in the inputs vector
@@ -126,8 +114,8 @@ impl Fuzzer {
         if inputs.inputs.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &inputs.inputs {
-                if stats_db.input_db.insert(Arc::new(input.clone())) {
-                    stats_db.input_list.push(Arc::new(input.clone()));
+                if stats_db.input_db.insert(input.clone()) {
+                    stats_db.input_db.insert(input.clone());
                     stats_db.input_len += 1;
                 }
             }
@@ -147,29 +135,26 @@ impl Fuzzer {
         if crashes.crashes.len() > 0 {
             let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
             for input in &crashes.crashes {
-                stats_db.crash_db.insert(Arc::new(input.clone()));
+                stats_db.crash_db.insert(input.clone());
                 stats_db.crashes += 1;
             }
         }
 
-        let program = if !function._starknet {
-            Some(
-                Program::from_bytes(&contents.as_bytes(), Some(&function.name))
-                    .expect("Failed to deserialize Program"),
-            )
-        } else {
-            None
-        };
-        let contract_class = if function._starknet {
-            Some(ContractClass::try_from(contents.as_str()).expect("could not get contractclass"))
-        } else {
-            None
-        };
-
+        let contract_class =
+            serde_json::from_str(&casm_content).expect("could not get contractclass");
+        println!(
+            "
+        =============================================================================================================================================================
+        ╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
+        ║   ├─┤ │ ├┬┘ │1.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | Inputs loaded -- {}
+        ╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      | Threads to run -- {}",
+            seed,
+            inputs.inputs.len(),
+            config.cores,
+        );
         // Setup the mutex for the inputs corpus and crash corpus
         let inputs = Arc::new(Mutex::new(inputs));
         let crashes = Arc::new(Mutex::new(crashes));
-
         // Setup the fuzzer
         Fuzzer {
             stats: stats,
@@ -180,7 +165,6 @@ impl Fuzzer {
             minimizer: config.minimizer,
             contract_file: config.contract_file.clone(),
             contract_content: contents,
-            program: program,
             dict: dict,
             contract_class: contract_class,
             function: function.clone(),
@@ -190,7 +174,6 @@ impl Fuzzer {
             crash_file: crashes,
             workspace: config.workspace.clone(),
             running_workers: 0,
-            starknet: function._starknet,
             iter: config.iter,
             proptesting: config.proptesting,
         }
@@ -205,45 +188,27 @@ impl Fuzzer {
             let function = self.function.clone();
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
-            let program = self.program.clone();
             let contract_class = self.contract_class.clone();
             let seed = self.seed + (i as u64);
-            let starknet = self.starknet;
             let iter = self.iter;
             //let dict = self.dict.clone();
             // Spawn threads
             std::thread::spawn(move || {
-                if !starknet {
-                    let cairo_worker = CairoWorker::new(
-                        stats,
-                        i,
-                        program.expect("Could not get Cairo Program (None)"),
-                        function,
-                        seed,
-                        input_file,
-                        crash_file,
-                        iter,
-                        //dict,
-                    );
-                    cairo_worker.fuzz();
-                } else {
-                    let starknet_worker = StarknetWorker::new(
-                        stats,
-                        i,
-                        contract_class.expect("Could not get Cairo Program (None)"),
-                        function,
-                        seed,
-                        input_file,
-                        crash_file,
-                        iter,
-                    );
-                    starknet_worker.fuzz();
-                }
+                let starknet_worker = StarknetWorker::new(
+                    stats,
+                    i,
+                    contract_class,
+                    function,
+                    seed,
+                    input_file,
+                    crash_file,
+                    iter,
+                );
+                starknet_worker.fuzz();
             });
             self.running_workers += 1;
         }
-        println!("\t\t\t\t\t\t\tRunning {} threads", self.running_workers);
-        println!("        =========================================================================================================================");
+        println!("\t=============================================================================================================================================================");
         // Call the stats monitoring/printer
         self.monitor();
     }
@@ -254,11 +219,17 @@ impl Fuzzer {
         // Replay all inputs
         let stats_db = self.stats.lock().expect("Failed to lock stats mutex");
         // Load inputs
-        let mut corpus = stats_db.input_list.clone();
-        println!("Total inputs to replay => {}", corpus.len());
+        let mut corpus_hashset = stats_db.input_db.clone();
+        println!(
+            "\t\t\t\t\t\t\t   | Total inputs to replay -- {}",
+            corpus_hashset.len()
+        );
+        println!("\t=============================================================================================================================================================");
+
         // Load crashes
-        let mut crashes = stats_db.crash_db.clone().into_iter().collect();
-        corpus.append(&mut crashes);
+        let crashes_hashset = stats_db.crash_db.clone();
+        corpus_hashset = corpus_hashset.union(&crashes_hashset).cloned().collect();
+        let corpus: Vec<Vec<Felt252>> = corpus_hashset.into_iter().collect();
         drop(stats_db);
         // Split the inputs into chunks
         let chunk_size = match corpus.len() > (self.cores as usize) {
@@ -279,39 +250,22 @@ impl Fuzzer {
             let seed = self.seed;
             let input_file = self.input_file.clone();
             let crash_file = self.crash_file.clone();
-            let starknet = self.starknet.clone();
-            let program = self.program.clone();
             let contract_class = self.contract_class.clone();
             let iter = if self.proptesting { self.iter } else { 0 };
             //let dict = self.dict.clone();
             let chunk = chunks[i].clone();
             threads.push(std::thread::spawn(move || {
-                if !starknet {
-                    let mut cairo_worker = CairoWorker::new(
-                        stats_thread,
-                        i as i32,
-                        program.expect("Could not get Cairo Program (None)"),
-                        function,
-                        seed,
-                        input_file,
-                        crash_file,
-                        iter,
-                        //dict
-                    );
-                    cairo_worker.replay(chunk);
-                } else {
-                    let mut starknet_worker = StarknetWorker::new(
-                        stats_thread,
-                        i as i32,
-                        contract_class.expect("Could not get Cairo Program (None)"),
-                        function,
-                        seed,
-                        input_file,
-                        crash_file,
-                        iter,
-                    );
-                    starknet_worker.replay(chunk);
-                }
+                let mut starknet_worker = StarknetWorker::new(
+                    stats_thread,
+                    i as i32,
+                    contract_class,
+                    function,
+                    seed,
+                    input_file,
+                    crash_file,
+                    iter,
+                );
+                starknet_worker.replay(chunk);
             }));
             println!("Thread {} Spawned", i);
             self.running_workers += 1;
@@ -332,7 +286,7 @@ impl Fuzzer {
                 workspace: self.workspace.clone(),
                 path: format!("{}_min.json", self.function.name),
                 name: self.function.name.clone(),
-                args: self.function.type_args.clone(),
+                args: self.function.inputs.clone(),
                 inputs: Vec::<Vec<Felt252>>::new(),
             };
             // Push every input to the struct
@@ -368,26 +322,30 @@ impl Fuzzer {
                 let fuzz_case = stats.fuzz_cases;
                 print!(
                     "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
-                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique]\n",
+                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique] | {:6} TX_crashes [{:6} unique]\n",
                     uptime,
                     fuzz_case,
                     fuzz_case as f64 / uptime,
                     stats.coverage_db.len(),
                     stats.input_len,
                     stats.crashes,
-                    stats.crash_db.len()
+                    stats.crash_db.len(),
+                    stats.tx_crashes,
+                    stats.tx_crash_db.len()
                 );
                 // Writing inside logging file
                 if let Some(ref mut file) = log {
                     write!(
                         file,
-                        "{:12.0} {:7} {:8} {:5} {:6} {:6}\n",
+                        "{:12.0} {:7} {:8} {:5} {:6} {:6} {:6} {:6}\n",
                         uptime,
                         fuzz_case,
                         stats.coverage_db.len(),
                         stats.input_len,
                         stats.crashes,
-                        stats.crash_db.len()
+                        stats.crash_db.len(),
+                        stats.tx_crashes,
+                        stats.tx_crash_db.len()
                     )
                     .expect("Failed to write logs in log file");
                     file.flush().expect("Failed to flush the file");
@@ -421,7 +379,7 @@ mod tests {
     use super::Fuzzer;
     #[test]
     fn test_loading_config_file() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_eq!(fuzzer.cores, 1);
@@ -431,7 +389,7 @@ mod tests {
 
     #[test]
     fn test_run_fuzzer_from_config_file() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let mut fuzzer = Fuzzer::new(&config);
         // Create a new thread
@@ -458,7 +416,8 @@ mod tests {
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
@@ -473,6 +432,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -493,14 +453,15 @@ mod tests {
     }
 
     #[test]
-    fn test_run_fuzzer_with_cairo_file() {
+    fn test_run_fuzzer_two() {
         let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
@@ -515,6 +476,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -548,15 +510,16 @@ mod tests {
     }
 
     #[test]
-    fn test_run_fuzzer_with_starknet_file() {
+    fn test_run_fuzzer_one() {
         let cores: i32 = 1;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = false;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs-starknet.json".to_string();
-        let function_name: String = "fuzzinglabs_starknet".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
+        let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String = "".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
@@ -570,6 +533,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -603,17 +567,18 @@ mod tests {
     }
 
     #[test]
-    fn test_replay_cairo() {
+    fn test_replay_one() {
         let cores: i32 = 3;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = true;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
         let function_name: String = "Fuzz_symbolic_execution".to_string();
         let input_file: String =
-            "tests/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
+            "tests1.0/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
@@ -626,6 +591,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -649,16 +615,18 @@ mod tests {
     }
 
     #[test]
-    fn test_replay_starknet() {
+    fn test_replay_two() {
         let cores: i32 = 3;
         let logs: bool = false;
         let seed: Option<u64> = Some(1000);
         let run_time: Option<u64> = Some(10);
         let replay: bool = true;
         let minimizer: bool = false;
-        let contract_file: String = "tests/fuzzinglabs-starknet.json".to_string();
-        let function_name: String = "fuzzinglabs_starknet".to_string();
-        let input_file: String = "tests/fuzzinglabs_starknet_2023-04-04--12:38:47.json".to_string();
+        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
+        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
+        let function_name: String = "Fuzz_symbolic_execution".to_string();
+        let input_file: String =
+            "tests1.0/fuzzinglabs_starknet_2023-04-04--12:38:47.json".to_string();
         let crash_file: String = "".to_string();
         let workspace: String = "fuzzer_workspace".to_string();
         let input_folder: String = "".to_string();
@@ -671,6 +639,7 @@ mod tests {
             crash_folder: crash_folder,
             workspace,
             contract_file,
+            casm_file,
             function_name,
             input_file,
             crash_file,
@@ -695,7 +664,7 @@ mod tests {
 
     #[test]
     fn test_dict() {
-        let config_file = "tests/config.json".to_string();
+        let config_file = "tests1.0/config.json".to_string();
         let config = Config::load_config(&config_file);
         let fuzzer = Fuzzer::new(&config);
         assert_ne!(
