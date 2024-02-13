@@ -1,0 +1,10 @@
+{
+  "use_ui": true,
+  "nb_threads": 8,
+  "seed": 4242,
+  "contract_file": "./examples/fuzzinglabs_package/build/fuzzinglabs_package/bytecode_modules/fuzzinglabs_module.mv",
+  "execs_before_cov_update": 10000,
+  "corpus_dir": "./corpus",
+  "crashes_dir": "./crashes",
+  "fuzz_functions_prefix": "fuzz_"
+}
