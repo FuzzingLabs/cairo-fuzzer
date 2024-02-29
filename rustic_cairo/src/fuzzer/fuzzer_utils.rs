@@ -7,9 +7,9 @@ use std::{
 
 use chrono::{DateTime, Utc};
 
-use crate::runner::runner::Runner;
+use super::{coverage::Coverage, crash::Crash};
 use crate::cli::config::Config;
-use super::{ coverage::Coverage, crash::Crash};
+use crate::runner::runner::Runner;
 
 pub fn write_crashfile(path: &str, crash: Crash) {
     if let Err(err) = fs::create_dir_all(path) {
@@ -44,9 +44,8 @@ pub fn write_corpusfile(path: &str, cov: &Coverage) {
 }
 
 pub fn replay(config: &Config, crashfile_path: &str) {
-
     todo!()
-/*     let data = fs::read_to_string(crashfile_path).expect("Could not read crash file !");
+    /*     let data = fs::read_to_string(crashfile_path).expect("Could not read crash file !");
     let crash: Crash = serde_json::from_str(&data).expect("Could not load crash file !");
 
     if let Some(contract_file) = &config.contract_file {

@@ -1,3 +1,5 @@
+use crate::fuzzer::error::Error;
+use crate::json_helper::json_parser::Function;
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use felt::Felt252;
 use num_bigint::BigUint;
@@ -15,16 +17,20 @@ use starknet_rs::{
     state::{in_memory_state_reader::InMemoryStateReader, ExecutionResourcesManager},
     utils::{Address, ClassHash},
 };
-use crate::fuzzer::error::Error;
+use std::thread::sleep;
 use std::{collections::HashMap, sync::Arc};
 
-use crate::fuzzer::coverage::{self, Coverage, CoverageData};
+use crate::fuzzer::coverage::{self, Coverage /*  CoverageData */};
 use crate::mutator::types::Type;
 
 use super::runner::Runner;
+use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub struct RunnerStarknet {
+    target_function: Function,
+    contract_class: CasmContractClass,
+    func_entrypoint_idx: usize,
     entrypoint_selector: BigUint,
     address: Address,
     class_hash: ClassHash,
@@ -37,7 +43,11 @@ pub struct RunnerStarknet {
 }
 
 impl RunnerStarknet {
-    pub fn new(contract_class: &CasmContractClass, func_entrypoint_idx: usize) -> Self {
+    pub fn new(
+        contract_class: &CasmContractClass,
+        func_entrypoint_idx: usize,
+        target_function: Function,
+    ) -> Self {
         let entrypoints = contract_class.clone().entry_points_by_type;
         let entrypoint_selector = &entrypoints
             .external
@@ -79,6 +89,9 @@ impl RunnerStarknet {
         let resources_manager = ExecutionResourcesManager::default();
 
         let runner = RunnerStarknet {
+            target_function: target_function,
+            contract_class: contract_class.clone(),
+            func_entrypoint_idx: func_entrypoint_idx,
             entrypoint_selector: entrypoint_selector.clone(),
             address: address,
             class_hash: class_hash,
@@ -102,13 +115,48 @@ impl RunnerStarknet {
     }
 }
 
+pub fn convert_calldata(inputs: Vec<Type>) -> Vec<Felt252> {
+    let mut res: Vec<Felt252> = vec![];
+    for i in inputs {
+        match i {
+            Type::Felt252(value) => res.push(value),
+            Type::U8(value) => res.push(Felt252::from(value)),
+            Type::U16(value) => res.push(Felt252::from(value)),
+            Type::U32(value) => res.push(Felt252::from(value)),
+            Type::U64(value) => res.push(Felt252::from(value)),
+            Type::U128(value) => res.push(Felt252::from(value)),
+            Type::Bool(value) => res.push(Felt252::from(value)),
+            Type::Vector(_, vec) => res.append(&mut convert_calldata(vec)),
+        }
+    }
+    res
+}
+
 impl Runner for RunnerStarknet {
-    fn execute(&mut self, inputs: Vec<Type>) -> Result<std::option::Option<Coverage>, (Coverage, Error)> {
+    fn get_contract_class(&self) -> CasmContractClass {
+        self.contract_class.clone()
+    }
+    fn get_func_entrypoint_idx(&self) -> usize {
+        self.func_entrypoint_idx
+    }
+    fn execute(
+        &mut self,
+        inputs: Vec<Type>,
+    ) -> Result<std::option::Option<Coverage>, (Coverage, Error)> {
         // Create an execution entry point
-        let calldata: Vec<Felt252> = inputs.to_vec().iter().map(|x| match x {
-            Type::Felt252(x) => x.clone(),
-            _ => Felt252::zero(),
-        }).collect();
+        let calldata: Vec<Felt252> = convert_calldata(inputs.clone());
+        if calldata.len() != 11 {
+            return Err((
+                Coverage {
+                    failure: false,
+                    inputs: inputs,
+                    data: vec![],
+                },
+                Error::Abort {
+                    message: "Invalid calldata".to_string(),
+                },
+            ));
+        }
         let exec_entry_point = ExecutionEntryPoint::new(
             self.address.clone(),
             calldata.clone(),
@@ -119,8 +167,6 @@ impl Runner for RunnerStarknet {
             Some(self.class_hash),
             1000000,
         );
-        eprintln!("inputs {:?}", inputs);
-        eprintln!("call data {:?}", calldata);
         // Execute the entrypoint
         match exec_entry_point.execute(
             &mut self.state,
@@ -134,28 +180,41 @@ impl Runner for RunnerStarknet {
                 let call_info = exec_info
                     .call_info
                     .clone()
-                    .expect("Could not get call info").trace;
-                let coverage = Coverage { inputs: inputs, data: call_info.into_iter().map(|(a, b)| CoverageData {pc_ap : (a, b) }).collect() };
+                    .expect("Could not get call info");
+                let coverage = Coverage {
+                    failure: call_info.clone().failure_flag,
+                    inputs: inputs,
+                    data: call_info.clone().trace,
+                };
+                //eprintln!("DEBUG INPUTS {:?}", calldata.clone());
                 return Ok(Some(coverage));
             }
-            Err(e) =>{
-                let fuzz_error = Error::Abort { message: e.to_string() };
-                let coverage = Coverage { inputs: inputs, data: Vec::new() };
-             return Err((coverage, fuzz_error));
-             }
+            Err(e) => {
+                let fuzz_error = Error::Unknown {
+                    message: e.to_string(),
+                };
+
+                let coverage = Coverage {
+                    failure: false,
+                    inputs: inputs,
+                    data: vec![],
+                };
+                return Err((coverage, fuzz_error));
+            }
         };
     }
 
     fn get_target_parameters(&self) -> Vec<crate::mutator::types::Type> {
-        return vec![Type::Vector(Box::new(Type::Felt252(Felt252::zero())), vec![Type::Felt252(Felt252::zero())])];
+        //eprintln!("Target function inputs {:?}", self.target_function.inputs.clone());
+        self.target_function.inputs.clone()
     }
 
     fn get_target_module(&self) -> String {
-        todo!()
+        return "fuzzinglabs".to_string();
     }
 
     fn get_target_function(&self) -> String {
-        todo!()
+        return "fuzzinglabs".to_string();
     }
 
     fn get_max_coverage(&self) -> usize {

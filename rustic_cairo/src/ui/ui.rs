@@ -271,7 +271,7 @@ impl Ui {
         ));
         let paragraph = Paragraph::new(text)
             .block(global_stats_block)
-            .wrap(Wrap { trim: true });
+            .wrap(Wrap { trim: false });
         frame.render_widget(paragraph, infos_chunk[0]);
 
         let text = vec![
@@ -346,6 +346,7 @@ impl Ui {
             .split(area);
 
         // Generates listitems for events
+
         let events: Vec<ListItem> = events
             .iter()
             .map(|event| match event {

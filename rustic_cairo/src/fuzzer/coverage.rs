@@ -1,19 +1,23 @@
-use std::{collections::hash_map::DefaultHasher, hash::{Hash, Hasher}};
+use std::{
+    collections::hash_map::DefaultHasher,
+    hash::{Hash, Hasher},
+};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::mutator::types::Type;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Coverage {
+    pub failure: bool,
     pub inputs: Vec<Type>,
-    pub data: Vec<CoverageData>
+    pub data: Vec<(u32, u32)>,
 }
 
-#[derive(Hash, Eq, PartialEq, Debug, Clone, Serialize, Deserialize)]
+/* #[derive(Hash, Eq, PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct CoverageData {
     pub pc_ap: (u32, u32),
-}
+} */
 
 impl Hash for Coverage {
     fn hash<H: Hasher>(&self, state: &mut H) {

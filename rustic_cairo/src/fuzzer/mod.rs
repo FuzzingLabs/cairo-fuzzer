@@ -1,6 +1,6 @@
-pub mod fuzzer;
-pub mod stats;
 pub mod coverage;
-pub mod error;
 pub mod crash;
+pub mod error;
+pub mod fuzzer;
 pub mod fuzzer_utils;
+pub mod stats;

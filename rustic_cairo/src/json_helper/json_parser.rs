@@ -1,16 +1,19 @@
+use felt::Felt252;
 use serde_json::Value;
+
+use crate::mutator::types::Type;
 
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
     pub selector_idx: usize,
-    pub inputs: Vec<String>,
+    pub inputs: Vec<Type>,
     pub outputs: Vec<String>,
 }
 #[derive(Debug)]
 pub struct AbiFunction {
     pub name: String,
-    pub inputs: Vec<String>,
+    pub inputs: Vec<Type>,
     pub outputs: Vec<String>,
 }
 
@@ -26,15 +29,28 @@ fn extract_function(tmp: &serde_json::Map<String, Value>) -> AbiFunction {
         .expect("Could not get inputs from the abi")
         .as_array()
         .expect("Could not convert inputs to array");
-    let mut inputs: Vec<String> = vec![];
+    let mut inputs: Vec<Type> = vec![];
     for input in inputs_data {
         inputs.push(
-            input
+            match input
                 .get("type")
                 .expect("Could not get type from input")
                 .as_str()
                 .expect("Could not convert to str")
-                .to_string(),
+            {
+                "core::integer::u8" => Type::U8(0),
+                "core::integer::u16" => Type::U16(0),
+                "core::integer::u32" => Type::U32(0),
+                "core::integer::u64" => Type::U64(0),
+                "core::integer::u128" => Type::U128(0),
+                "core::integer::u256" => {
+                    todo!() // still need to fix for this
+                }
+                "core::felt252" => Type::Felt252(Felt252::from(b'\0')),
+                _ => {
+                    todo!() // still need to fix for this
+                }
+            },
         );
     }
     let outputs_data = tmp
@@ -123,7 +139,6 @@ pub fn get_function_from_json(data: &String, function_name: &String) -> Option<F
 }
 
 pub fn analyze_json(data: &String) {
-    println!("Running json analyzer ... \n");
     let data: Value = serde_json::from_str(&data).expect("JSON was not well-formatted");
     let abi = get_abi(&data);
     if let Some(_types) = data.get("entry_points_by_type") {
@@ -135,30 +150,6 @@ pub fn analyze_json(data: &String) {
                 inputs: function_abi.inputs,
                 outputs: function_abi.outputs,
             };
-            let mut prototype = "".to_string();
-            prototype += &func.name;
-            prototype += "(";
-            let mut input_idx = 0;
-            for input in &func.inputs {
-                prototype += &input;
-                if input_idx != func.inputs.len() - 1 {
-                    prototype += ", ";
-                }
-                input_idx += 1;
-            }
-            prototype += ")";
-            if &func.outputs.len() > &0 {
-                prototype += " -> ";
-            }
-            let mut output_idx = 0;
-            for output in &func.outputs {
-                prototype += &output;
-                if output_idx != func.outputs.len() - 1 {
-                    prototype += " ,";
-                }
-                output_idx += 1;
-            }
-            println!("{}\n", prototype);
             idx += 1;
         }
     }

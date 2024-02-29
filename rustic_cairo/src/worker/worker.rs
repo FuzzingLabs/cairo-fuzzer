@@ -12,6 +12,7 @@ use crate::mutator::mutator::Mutator;
 use crate::mutator::rng::Rng;
 use crate::mutator::types::Type;
 use crate::runner::runner::Runner;
+use crate::runner::starknet_runner::RunnerStarknet;
 
 #[derive(Clone)]
 pub enum WorkerEvent {
@@ -42,7 +43,6 @@ impl Worker {
         seed: u64,
         execs_before_cov_update: u64,
     ) -> Self {
-
         Worker {
             channel,
             stats,
@@ -64,19 +64,20 @@ impl Worker {
             .iter()
             .nth(self.rng.rand(0, self.coverage_set.len() - 1))
             .unwrap();
-        self.mutator.mutate(&cov.inputs, 4)
+        self.mutator.mutate(&cov.inputs, 2)
     }
 
     fn init_inputs(inputs: Vec<Type>) -> Vec<Type> {
         let mut res = vec![];
         for param in inputs {
+            //eprintln!("init param {:?}", param);
             res.push(match param {
-                Type::Felt252(_) => Type::Felt252(Felt252::from(b'\0')),
-                Type::U8(_) => Type::U8(0),
-                Type::U16(_) => Type::U16(0),
-                Type::U32(_) => Type::U32(0),
-                Type::U64(_) => Type::U64(0),
-                Type::U128(_) => Type::U128(0),
+                Type::Felt252(_) => Type::Felt252(Felt252::from(b'\x00')),
+                Type::U8(_) => Type::U8(0x00),
+                Type::U16(_) => Type::U16(0x00),
+                Type::U32(_) => Type::U32(0x00),
+                Type::U64(_) => Type::U64(0x00),
+                Type::U128(_) => Type::U128(0x00),
                 Type::Bool(_) => Type::Bool(true),
                 Type::Vector(t, vec) => Type::Vector(t, Self::init_inputs(vec)),
             })
@@ -91,10 +92,10 @@ impl Worker {
 
         // Input initialization
         let mut inputs = Self::init_inputs(self.runner.get_target_parameters());
-        eprintln!("created inputs {:?}", inputs);
-
+        //eprintln!("debug type Inputs {:?}", inputs.clone());
         loop {
-            let exec_result = self.runner.execute(inputs.clone());
+            //inputs = vec![Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0))];//
+            let exec_result = self.runner.execute(inputs.clone()); //self.runner.execute(inputs.clone());
 
             self.stats.write().unwrap().execs += 1;
 
@@ -106,35 +107,59 @@ impl Worker {
                 self.stats.write().unwrap().secs_since_last_cov += 1;
                 self.stats.write().unwrap().execs_per_sec = tmp / sec_elapsed;
             }
-
             match exec_result {
                 Ok(cov) => {
                     if let Some(coverage) = cov {
                         // Execute all activated detectors
+                        //eprintln!("Coverage len : {:?}", self.coverage_set.len());
                         if !self.coverage_set.contains(&coverage) {
-                            self.coverage_set.insert(coverage);
+                            self.coverage_set.insert(coverage.clone());
                             self.stats.write().unwrap().secs_since_last_cov = 0;
+                        }
+                        if coverage.failure {
+                            let crash = Crash::new(
+                                &self.runner.get_target_module(),
+                                &self.runner.get_target_function(),
+                                &inputs,
+                                &Error::Abort {
+                                    message: ("Failure flag1").to_string(),
+                                },
+                            );
+                            if !self.unique_crashes_set.contains(&crash) {
+                                self.channel
+                                    .send(WorkerEvent::NewCrash(
+                                        inputs.clone(),
+                                        Error::Abort {
+                                            message: ("Failure flag2").to_string(),
+                                        },
+                                    ))
+                                    .unwrap();
+                            }
+
+                            self.stats.write().unwrap().crashes += 1;
                         }
                     }
                 }
                 Err((coverage, error)) => {
+                    //eprintln!("Error: {:?}", error);
                     // Execute all activated detectors
                     if !self.coverage_set.contains(&coverage) {
                         self.coverage_set.insert(coverage);
-                        self.stats.write().unwrap().secs_since_last_cov = 0;
-                        // Might be wring location for this (maybe outside the if)
-                        let crash = Crash::new(
-                            &self.runner.get_target_module(),
-                            &self.runner.get_target_function(),
-                            &inputs,
-                            &error,
-                        );
-                        if !self.unique_crashes_set.contains(&crash) {
-                            self.channel
-                                .send(WorkerEvent::NewCrash(inputs.clone(), error))
-                                .unwrap();
-                        }
                     }
+                    self.stats.write().unwrap().secs_since_last_cov = 0;
+                    // Might be wring location for this (maybe outside the if)
+                    let crash = Crash::new(
+                        &self.runner.get_target_module(),
+                        &self.runner.get_target_function(),
+                        &inputs,
+                        &error,
+                    );
+                    if !self.unique_crashes_set.contains(&crash) {
+                        self.channel
+                            .send(WorkerEvent::NewCrash(inputs.clone(), error))
+                            .unwrap();
+                    }
+
                     self.stats.write().unwrap().crashes += 1;
                 }
             }
@@ -142,6 +167,7 @@ impl Worker {
             // Handle coverage updates every execs_before_cov_update execs (configurable in
             // configfile)
             if self.stats.read().unwrap().execs % self.execs_before_cov_update == 0 {
+                //eprintln!("Sending coverage update request");
                 self.channel
                     .send(WorkerEvent::CoverageUpdateRequest(
                         self.coverage_set.clone(),
@@ -164,6 +190,7 @@ impl Worker {
 
             // Updates input
             if self.coverage_set.len() > 0 {
+                //eprintln!("Picking and mutating inputs");
                 inputs = self.pick_and_mutate_inputs();
             }
         }

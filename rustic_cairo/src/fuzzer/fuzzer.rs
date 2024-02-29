@@ -1,4 +1,7 @@
+use crate::json_helper::json_parser::get_function_from_json;
+use crate::json_helper::json_parser::Function;
 use bichannel::Channel;
+use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use std::collections::HashSet;
 use std::collections::VecDeque;
 use std::fs;
@@ -7,10 +10,6 @@ use std::sync::Arc;
 use std::sync::RwLock;
 use std::time::Instant;
 use time::Duration;
-use cairo_lang_starknet::casm_contract_class::CasmContractClass;
-use crate::json_helper::json_parser::get_function_from_json;
-use crate::json_helper::json_parser::Function;
-
 
 use crate::cli::config::Config;
 use crate::fuzzer::coverage::Coverage;
@@ -57,13 +56,11 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
-    pub fn new(
-        config: Config,
-    ) -> Self {
+    pub fn new(config: Config) -> Self {
         let nb_threads = config.cores as u8;
         let ui = /* if config.use_ui { */
             Some(Ui::new(nb_threads, config.seed.unwrap()));
-/*         } else {
+        /*         } else {
             None
         }; */
         // Read contract JSON artifact and get its content
@@ -98,6 +95,7 @@ impl Fuzzer {
     }
 
     fn start_threads(&mut self) {
+        let test_seed: u64 = 1709166479660;
         for i in 0..self.config.cores {
             // Creates the communication channel for the fuzzer and worker sides
             let (fuzzer, worker) = bichannel::channel::<WorkerEvent, WorkerEvent>();
@@ -105,30 +103,36 @@ impl Fuzzer {
             let stats = Arc::new(RwLock::new(Stats::new()));
             self.threads_stats.push(stats.clone());
             // Change here the runner you want to create
-                // Creates the sui runner with the runner parameter found in the config
-                let runner = Box::new(starknet_runner::RunnerStarknet::new(&self.contract_class, self.target_function.selector_idx));
-                self.target_parameters = runner.get_target_parameters();
-                self.max_coverage = runner.get_max_coverage();
-                // Increment seed so that each worker doesn't do the same thing
-                let seed = self.config.seed.unwrap() + (i as u64);
-                let execs_before_cov_update = 1000;//xxx todo //self.config.execs_before_cov_update;
-                let mutator = Box::new(mutator::mutator_felt252::FeltMutator::new(seed, self.target_function.inputs.len()));
-                let coverage_set = self.coverage_set.clone();
-                let _ = std::thread::Builder::new()
-                    .name(format!("Worker {}", i).to_string())
-                    .spawn(move || {
-                        // Creates generic worker and starts it
-                        let mut w = Worker::new(
-                            worker,
-                            stats,
-                            coverage_set,
-                            runner,
-                            mutator,
-                            seed,
-                            execs_before_cov_update,
-                        );
-                        w.run();
-                    });
+            let runner = Box::new(starknet_runner::RunnerStarknet::new(
+                &self.contract_class,
+                self.target_function.selector_idx,
+                self.target_function.clone(),
+            ));
+            self.target_parameters = runner.get_target_parameters();
+            self.max_coverage = runner.get_max_coverage();
+            // Increment seed so that each worker doesn't do the same thing
+            let seed = test_seed + (i as u64);
+            let execs_before_cov_update = 10000; //xxx todo //self.config.execs_before_cov_update;
+            let mutator = Box::new(mutator::mutator_felt252::CairoMutator::new(
+                seed,
+                self.target_function.inputs.len(),
+            ));
+            let coverage_set = self.coverage_set.clone();
+            let _ = std::thread::Builder::new()
+                .name(format!("Worker {}", i).to_string())
+                .spawn(move || {
+                    // Creates generic worker and starts it
+                    let mut w = Worker::new(
+                        worker,
+                        stats,
+                        coverage_set,
+                        runner,
+                        mutator,
+                        seed,
+                        execs_before_cov_update,
+                    );
+                    w.run();
+                });
         }
     }
 
@@ -191,6 +195,7 @@ impl Fuzzer {
 
             // Checks channels for new data
             for chan in &self.channels {
+                //eprintln!("Checking channel");
                 if let Ok(event) = chan.try_recv() {
                     // Creates duration used for the ui
                     let duration =
@@ -210,13 +215,13 @@ impl Fuzzer {
                             }
                             // Updates sets
                             if differences_with_main_thread.len() > 0 {
-                                eprintln!("update sets");
                                 chan.send(WorkerEvent::CoverageUpdateResponse(tmp)).unwrap();
                             }
                             // Adds all the coverage to the main coverage_set
                             for diff in &differences_with_worker {
+                                //eprintln!("New coverage 1: {:?}", diff);
                                 if !self.coverage_set.contains(diff) {
-                                    eprintln!("add new coverage");
+                                    //eprintln!("New coverage 2: {:?}", diff);
                                     write_corpusfile(&self.config.corpus_dir, &diff);
                                     self.coverage_set.insert(diff.to_owned().clone());
                                     self.global_stats.secs_since_last_cov = 0;
@@ -228,15 +233,24 @@ impl Fuzzer {
                                     }));
                                 }
                             }
+                            //eprintln!("add to coverage set {:?}", self.coverage_set);
                         }
                         WorkerEvent::NewCrash(inputs, error) => {
-                            let crash = Crash::new(&self.contract_content, &self.target_function.name, &inputs, &error);
-                            let mut message = format!("{} - already exists, skipping", Parameters(inputs.clone()));
+                            let crash = Crash::new(
+                                &self.contract_content,
+                                &self.target_function.name,
+                                &inputs,
+                                &error,
+                            );
+                            let mut message = format!(
+                                "already exists, skipping - {}",
+                                Parameters(inputs.clone())
+                            );
                             if !self.unique_crashes_set.contains(&crash) {
                                 write_crashfile(&self.config.crashes_dir, crash.clone());
                                 self.global_stats.unique_crashes += 1;
                                 self.unique_crashes_set.insert(crash.clone());
-                                message = format!("{} - NEW", Parameters(inputs));
+                                message = format!("NEW - {}", Parameters(inputs));
                                 new_crash = Some(crash);
                             }
                             events.push_front(UiEvent::NewCrash(UiEventData {
@@ -259,38 +273,39 @@ impl Fuzzer {
 
             // Run ui
             /* if self.config.use_ui { */
-                if self.ui.as_mut().unwrap().render(
-                    &self.global_stats,
-                    &events,
-                    &self.threads_stats,
-                ) {
-                    self.ui.as_mut().unwrap().restore_terminal();
-                    eprintln!("Quitting...");
-                    break;
-                }
-            /* } else {
-                for event in events.clone().into_iter() {
-                    match event {
-                        UiEvent::NewCoverage(data) => println!("New coverage: {}", data.message),
-                        UiEvent::NewCrash(data) => {
-                            println!("New crash: {} {}", data.error.unwrap(), data.message)
-                        }
-                        UiEvent::DetectorTriggered(data) => {
-                            println!("Detector triggered: {}", data.message)
-                        }
-                    }
-                } */
-/*                 if self.global_stats.execs % 100000 == 0 {
-                    println!("{}s running time | {} execs/s | total execs: {} | crashes: {} | unique crashes: {} | coverage: {}", 
-                    self.global_stats.time_running, 
-                    self.global_stats.execs_per_sec, 
-                    self.global_stats.execs, 
-                    self.global_stats.crashes, 
-                    self.global_stats.unique_crashes, 
-                    self.coverage_set.len());
-                } */
-                events.clear();
+            if self
+                .ui
+                .as_mut()
+                .unwrap()
+                .render(&self.global_stats, &events, &self.threads_stats)
+            {
+                self.ui.as_mut().unwrap().restore_terminal();
+                eprintln!("Quitting...");
+                break;
             }
+            /* } else {
+            for event in events.clone().into_iter() {
+                match event {
+                    UiEvent::NewCoverage(data) => println!("New coverage: {}", data.message),
+                    UiEvent::NewCrash(data) => {
+                        println!("New crash: {} {}", data.error.unwrap(), data.message)
+                    }
+                    UiEvent::DetectorTriggered(data) => {
+                        println!("Detector triggered: {}", data.message)
+                    }
+                }
+            } */
+            /*                 if self.global_stats.execs % 100000 == 0 {
+                println!("{}s running time | {} execs/s | total execs: {} | crashes: {} | unique crashes: {} | coverage: {}",
+                self.global_stats.time_running,
+                self.global_stats.execs_per_sec,
+                self.global_stats.execs,
+                self.global_stats.crashes,
+                self.global_stats.unique_crashes,
+                self.coverage_set.len());
+            } */
+            //events.clear();
         }
     }
+}
 /* } */

@@ -2,19 +2,19 @@ use std::{fs, process};
 
 use clap::Parser;
 
-use cli::config::Config;
-use fuzzer::fuzzer_utils::replay;
 use crate::fuzzer::fuzzer::Fuzzer;
 use cli::args::Opt;
+use cli::config::Config;
+use fuzzer::fuzzer_utils::replay;
 use log::error;
 
-mod json_helper;
+mod cli;
 mod fuzzer;
+mod json_helper;
 mod mutator;
 mod runner;
 mod ui;
 mod worker;
-mod cli;
 
 fn main() {
     let args = Opt::parse();
@@ -57,25 +57,15 @@ fn main() {
             }
         }
     };
-        if config.proptesting {
+    if config.proptesting {
         let contents = fs::read_to_string(&config.contract_file).unwrap();
-        println!("\t\t\t\t\t\t\tSearching for Fuzzing functions ...");
         let functions = json_helper::json_parser::get_proptesting_functions(&contents);
-        if functions.len() == 0 {
-            println!("\t\t\t\t\t\t\t!! No Fuzzing functions found !!");
-            return;
-        }
         todo!()
-/*         for func in functions {
-            println!("\n\t\t\t\t\t\t\tFunction found => {}", &func);
-            config.target_function = func;
-            let mut fuzzer = Fuzzer::new(config);
-            println!(
-                "\t\t\t\t\t\t\t=== {} === is now running for {} iterations",
-                config.target_function, config.iter
-            );
-            fuzzer.run();
-        } */
+    /*         for func in functions {
+        config.target_function = func;
+        let mut fuzzer = Fuzzer::new(config);
+        fuzzer.run();
+    } */
     } else {
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(config);
@@ -87,6 +77,6 @@ fn main() {
         // launch fuzzing
         } else {
             fuzzer.run();
-         }
+        }
     }
 }

@@ -1,3 +1,5 @@
+use starknet_rs::CasmContractClass;
+
 use crate::fuzzer::coverage::Coverage;
 use crate::fuzzer::error::Error;
 use crate::mutator::types::Type;
@@ -13,4 +15,6 @@ pub trait Runner {
     fn get_target_function(&self) -> String;
     /// Returns the max coverage
     fn get_max_coverage(&self) -> usize;
+    fn get_contract_class(&self) -> CasmContractClass;
+    fn get_func_entrypoint_idx(&self) -> usize;
 }
