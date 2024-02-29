@@ -6,10 +6,12 @@ use std::{
 };
 
 use chrono::{DateTime, Utc};
+use starknet_rs::CasmContractClass;
 
 use super::{coverage::Coverage, crash::Crash};
-use crate::cli::config::Config;
-use crate::runner::runner::Runner;
+use crate::{
+    cli::config::Config, json_helper::json_parser::get_function_from_json, runner::runner::Runner,
+};
 
 pub fn write_crashfile(path: &str, crash: Crash) {
     if let Err(err) = fs::create_dir_all(path) {
@@ -44,20 +46,29 @@ pub fn write_corpusfile(path: &str, cov: &Coverage) {
 }
 
 pub fn replay(config: &Config, crashfile_path: &str) {
-    todo!()
-    /*     let data = fs::read_to_string(crashfile_path).expect("Could not read crash file !");
+    let data = fs::read_to_string(crashfile_path).expect("Could not read crash file !");
     let crash: Crash = serde_json::from_str(&data).expect("Could not load crash file !");
-
-    if let Some(contract_file) = &config.contract_file {
-        let mut runner = crate::runner::starknet_runner::RunnerStarknet::new(
-            contract_file.clone(),
-            config.casm.clone(),
-        );
-        match runner.execute(crash.inputs) {
-            Ok(_) => unreachable!(),
-            Err(e) => println!("{:?}", e.1),
+    let contents =
+        fs::read_to_string(&config.contract_file).expect("Should have been able to read the file");
+    let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
+    let contract_class: CasmContractClass =
+        serde_json::from_str(&casm_content).expect("could not get contractclass");
+    let target_function = match get_function_from_json(&contents, &config.target_function) {
+        Some(func) => func,
+        None => {
+            eprintln!("Error: Could not parse json file");
+            return;
         }
-    } */
+    };
+    let mut runner = crate::runner::starknet_runner::RunnerStarknet::new(
+        &contract_class,
+        target_function.selector_idx,
+        target_function.clone(),
+    );
+    match runner.execute(crash.inputs) {
+        Ok(_) => unreachable!(),
+        Err(e) => println!("{:?}", e.1),
+    }
 }
 
 pub fn load_corpus(path: &str) -> Result<HashSet<Coverage>, String> {

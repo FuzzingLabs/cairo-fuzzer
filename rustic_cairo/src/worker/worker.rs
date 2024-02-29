@@ -12,7 +12,6 @@ use crate::mutator::mutator::Mutator;
 use crate::mutator::rng::Rng;
 use crate::mutator::types::Type;
 use crate::runner::runner::Runner;
-use crate::runner::starknet_runner::RunnerStarknet;
 
 #[derive(Clone)]
 pub enum WorkerEvent {

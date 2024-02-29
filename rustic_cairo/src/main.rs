@@ -23,7 +23,7 @@ fn main() {
         json_helper::json_parser::analyze_json(&contents);
         return;
     }
-    let mut config = match args.config {
+    let config = match args.config {
         // config file provided
         Some(config_file) => Config::load_config(&config_file),
         None => {
@@ -60,23 +60,17 @@ fn main() {
     if config.proptesting {
         let contents = fs::read_to_string(&config.contract_file).unwrap();
         let functions = json_helper::json_parser::get_proptesting_functions(&contents);
-        todo!()
-    /*         for func in functions {
-        config.target_function = func;
-        let mut fuzzer = Fuzzer::new(config);
-        fuzzer.run();
-    } */
+        for func in functions {
+            let mut func_config = config.clone();
+            func_config.target_function = func;
+            let mut fuzzer = Fuzzer::new(func_config);
+            fuzzer.run();
+        }
+    } else if config.replay {
+        replay(&config, config.crashes_dir.as_str());
     } else {
         // create the fuzzer
         let mut fuzzer = Fuzzer::new(config);
-
-        // replay, minimizer mode
-        if args.replay || args.minimizer {
-            //replay(&config, args.crashes_dir.as_str());
-            todo!()
-        // launch fuzzing
-        } else {
-            fuzzer.run();
-        }
+        fuzzer.run();
     }
 }

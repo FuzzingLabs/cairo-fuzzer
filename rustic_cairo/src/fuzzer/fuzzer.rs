@@ -58,12 +58,7 @@ pub struct Fuzzer {
 impl Fuzzer {
     pub fn new(config: Config) -> Self {
         let nb_threads = config.cores as u8;
-        let ui = /* if config.use_ui { */
-            Some(Ui::new(nb_threads, config.seed.unwrap()));
-        /*         } else {
-            None
-        }; */
-        // Read contract JSON artifact and get its content
+        let ui = Some(Ui::new(nb_threads, config.seed.unwrap()));
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
         let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
@@ -95,7 +90,6 @@ impl Fuzzer {
     }
 
     fn start_threads(&mut self) {
-        let test_seed: u64 = 1709166479660;
         for i in 0..self.config.cores {
             // Creates the communication channel for the fuzzer and worker sides
             let (fuzzer, worker) = bichannel::channel::<WorkerEvent, WorkerEvent>();
@@ -111,7 +105,7 @@ impl Fuzzer {
             self.target_parameters = runner.get_target_parameters();
             self.max_coverage = runner.get_max_coverage();
             // Increment seed so that each worker doesn't do the same thing
-            let seed = test_seed + (i as u64);
+            let seed = self.config.seed.expect("could not get seed") + (i as u64);
             let execs_before_cov_update = 10000; //xxx todo //self.config.execs_before_cov_update;
             let mutator = Box::new(mutator::mutator_felt252::CairoMutator::new(
                 seed,

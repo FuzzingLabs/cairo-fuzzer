@@ -150,6 +150,7 @@ pub fn analyze_json(data: &String) {
                 inputs: function_abi.inputs,
                 outputs: function_abi.outputs,
             };
+            println!("Function {:#?}", func);
             idx += 1;
         }
     }

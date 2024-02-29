@@ -1,11 +1,13 @@
+use super::runner::Runner;
+use crate::fuzzer::coverage::Coverage;
 use crate::fuzzer::error::Error;
 use crate::json_helper::json_parser::Function;
+use crate::mutator::types::Type;
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use felt::Felt252;
 use num_bigint::BigUint;
 use num_traits::Zero;
 use starknet_rs::definitions::block_context::BlockContext;
-use starknet_rs::execution::CallInfo;
 use starknet_rs::state::cached_state::CachedState;
 use starknet_rs::state::state_cache::StateCache;
 use starknet_rs::EntryPointType;
@@ -17,14 +19,7 @@ use starknet_rs::{
     state::{in_memory_state_reader::InMemoryStateReader, ExecutionResourcesManager},
     utils::{Address, ClassHash},
 };
-use std::thread::sleep;
 use std::{collections::HashMap, sync::Arc};
-
-use crate::fuzzer::coverage::{self, Coverage /*  CoverageData */};
-use crate::mutator::types::Type;
-
-use super::runner::Runner;
-use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub struct RunnerStarknet {
@@ -205,7 +200,6 @@ impl Runner for RunnerStarknet {
     }
 
     fn get_target_parameters(&self) -> Vec<crate::mutator::types::Type> {
-        //eprintln!("Target function inputs {:?}", self.target_function.inputs.clone());
         self.target_function.inputs.clone()
     }
 

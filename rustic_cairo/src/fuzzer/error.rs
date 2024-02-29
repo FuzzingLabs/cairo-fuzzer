@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use strum::{Display, EnumVariantNames};
+use strum::EnumVariantNames;
 
 #[derive(Debug, Clone, EnumVariantNames, Serialize, Deserialize, Hash, PartialEq, Eq)]
 #[allow(dead_code)]
