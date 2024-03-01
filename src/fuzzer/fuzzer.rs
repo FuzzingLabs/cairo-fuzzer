@@ -26,6 +26,8 @@ use std::sync::RwLock;
 use std::time::Instant;
 use time::Duration;
 
+const MAX_PROPTESTING_ITERATIONS: u64 = 500000;
+
 pub struct Fuzzer {
     // Fuzzer configuration
     config: Config,
@@ -154,7 +156,7 @@ impl Fuzzer {
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self, proptesting:bool) {
         // Init workers
         self.start_threads();
 
@@ -175,6 +177,9 @@ impl Fuzzer {
         let mut new_crash: Option<Crash> = None;
 
         loop {
+            if self.global_stats.execs >= MAX_PROPTESTING_ITERATIONS && proptesting {
+                break;
+            }
             // Sum execs
             self.global_stats.execs = self.get_global_execs();
             self.global_stats.crashes = self.get_global_crashes();

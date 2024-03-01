@@ -58,13 +58,13 @@ fn main() {
             let mut func_config = config.clone();
             func_config.target_function = func;
             let mut fuzzer = Fuzzer::new(func_config);
-            fuzzer.run();
+            fuzzer.run(config.proptesting);
         }
     } else if config.replay {
         replay(&config, config.crashes_dir.as_str());
     } else {
         // create the fuzzer
-        let mut fuzzer = Fuzzer::new(config);
-        fuzzer.run();
+        let mut fuzzer = Fuzzer::new(config.clone());
+        fuzzer.run(config.proptesting);
     }
 }
