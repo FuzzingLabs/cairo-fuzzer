@@ -99,11 +99,11 @@ impl Fuzzer {
             // Change here the runner you want to create
             let runner = Box::new(starknet_runner::RunnerStarknet::new(
                 &self.contract_class,
-                self.target_function.selector_idx,
                 self.target_function.clone(),
             ));
             self.target_parameters = runner.get_target_parameters();
             self.max_coverage = runner.get_max_coverage();
+            let statefull = self.config.statefull;
             // Increment seed so that each worker doesn't do the same thing
             let seed = self.config.seed.expect("could not get seed") + (i as u64);
             let execs_before_cov_update = 10000; //xxx todo //self.config.execs_before_cov_update;
@@ -123,6 +123,7 @@ impl Fuzzer {
                         runner,
                         mutator,
                         seed,
+                        statefull,
                         execs_before_cov_update,
                     );
                     w.run();

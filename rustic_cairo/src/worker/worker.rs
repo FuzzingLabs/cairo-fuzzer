@@ -1,5 +1,6 @@
 use bichannel::Channel;
-use felt::Felt252;
+use cairo_lang_starknet::contract_class;
+use cairo_vm::Felt252;
 use std::collections::HashSet;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
@@ -12,6 +13,7 @@ use crate::mutator::mutator::Mutator;
 use crate::mutator::rng::Rng;
 use crate::mutator::types::Type;
 use crate::runner::runner::Runner;
+use crate::runner::starknet_runner::{self, RunnerStarknet};
 
 #[derive(Clone)]
 pub enum WorkerEvent {
@@ -28,6 +30,7 @@ pub struct Worker {
     mutator: Box<dyn Mutator>,
     coverage_set: HashSet<Coverage>,
     unique_crashes_set: HashSet<Crash>,
+    statefull: bool,
     rng: Rng,
     execs_before_cov_update: u64,
 }
@@ -40,6 +43,7 @@ impl Worker {
         runner: Box<dyn Runner>,
         mutator: Box<dyn Mutator>,
         seed: u64,
+        statefull: bool,
         execs_before_cov_update: u64,
     ) -> Self {
         Worker {
@@ -49,6 +53,7 @@ impl Worker {
             mutator,
             coverage_set,
             unique_crashes_set: HashSet::new(),
+            statefull,
             rng: Rng {
                 seed,
                 exp_disabled: false,
@@ -91,9 +96,16 @@ impl Worker {
 
         // Input initialization
         let mut inputs = Self::init_inputs(self.runner.get_target_parameters());
+        let target_function = self.runner.get_function();
+        let contract_class = self.runner.get_contract_class();
         //eprintln!("debug type Inputs {:?}", inputs.clone());
         loop {
-            //inputs = vec![Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0)),Type::Felt252(Felt252::from(0))];//
+            if !self.statefull {
+                self.runner = Box::new(starknet_runner::RunnerStarknet::new(
+                    &contract_class,
+                    target_function.clone(),
+                ));
+            }
             let exec_result = self.runner.execute(inputs.clone()); //self.runner.execute(inputs.clone());
 
             self.stats.write().unwrap().execs += 1;

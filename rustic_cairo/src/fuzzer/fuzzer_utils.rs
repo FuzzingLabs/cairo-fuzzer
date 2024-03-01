@@ -62,7 +62,6 @@ pub fn replay(config: &Config, crashfile_path: &str) {
     };
     let mut runner = crate::runner::starknet_runner::RunnerStarknet::new(
         &contract_class,
-        target_function.selector_idx,
         target_function.clone(),
     );
     match runner.execute(crash.inputs) {

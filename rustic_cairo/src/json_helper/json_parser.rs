@@ -1,4 +1,4 @@
-use felt::Felt252;
+use cairo_vm::Felt252;
 use serde_json::Value;
 
 use crate::mutator::types::Type;

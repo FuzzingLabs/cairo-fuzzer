@@ -26,7 +26,7 @@ impl Mutator for CairoMutator {
                 Type::U8(_) => {
                     let bits_to_save = 8;
                     if bits_to_save != 256 && bits_to_save != 252 {
-                        let mut new_value = self.mutator.input[idx].to_be_bytes();
+                        let mut new_value = self.mutator.input[idx].to_bytes_be();
                         for i in 0..new_value.len() - (bits_to_save / 8) {
                             new_value[i] = 0;
                         }
@@ -38,7 +38,7 @@ impl Mutator for CairoMutator {
                 Type::U16(_) => {
                     let bits_to_save = 16;
                     if bits_to_save != 256 && bits_to_save != 252 {
-                        let mut new_value = self.mutator.input[idx].to_be_bytes();
+                        let mut new_value = self.mutator.input[idx].to_bytes_be();
                         for i in 0..new_value.len() - (bits_to_save / 8) {
                             new_value[i] = 0;
                         }
@@ -51,7 +51,7 @@ impl Mutator for CairoMutator {
                 Type::U32(_) => {
                     let bits_to_save = 32;
                     if bits_to_save != 256 && bits_to_save != 252 {
-                        let mut new_value = self.mutator.input[idx].to_be_bytes();
+                        let mut new_value = self.mutator.input[idx].to_bytes_be();
                         for i in 0..new_value.len() - (bits_to_save / 8) {
                             new_value[i] = 0;
                         }
@@ -64,7 +64,7 @@ impl Mutator for CairoMutator {
                 Type::U64(_) => {
                     let bits_to_save = 64;
                     if bits_to_save != 256 && bits_to_save != 252 {
-                        let mut new_value = self.mutator.input[idx].to_be_bytes();
+                        let mut new_value = self.mutator.input[idx].to_bytes_be();
                         for i in 0..new_value.len() - (bits_to_save / 8) {
                             new_value[i] = 0;
                         }
@@ -77,7 +77,7 @@ impl Mutator for CairoMutator {
                 Type::U128(_) => {
                     let bits_to_save = 128;
                     if bits_to_save != 256 && bits_to_save != 252 {
-                        let mut new_value = self.mutator.input[idx].to_be_bytes();
+                        let mut new_value = self.mutator.input[idx].to_bytes_be();
                         for i in 0..new_value.len() - (bits_to_save / 8) {
                             new_value[i] = 0;
                         }

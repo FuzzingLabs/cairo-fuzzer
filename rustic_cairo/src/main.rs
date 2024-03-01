@@ -37,6 +37,7 @@ fn main() {
             }
 
             Config {
+                statefull: args.statefull,
                 workspace: args.workspace,
                 contract_file: args.contract,
                 casm_file: args.casm,

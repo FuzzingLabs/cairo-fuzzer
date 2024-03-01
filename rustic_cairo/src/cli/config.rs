@@ -9,6 +9,7 @@ pub struct Config {
     pub contract_file: String,
     pub casm_file: String,
     pub target_function: String,
+    pub statefull: bool,
     pub input_file: String,
     pub crash_file: String,
     pub corpus_dir: String,

@@ -33,7 +33,13 @@ pub struct Opt {
         default_value = ""
     )]
     pub target_function: String,
-
+    #[arg(
+        long,
+        help = "Keep the state of the fuzzer between runs",
+        name = "STATEFULL",
+        default_value = "false"
+    )]
+    pub statefull: bool,
     #[arg(
         long,
         help = "Workspace of the fuzzer",

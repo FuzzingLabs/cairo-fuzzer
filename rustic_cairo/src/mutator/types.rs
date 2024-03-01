@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use felt::Felt252;
+use cairo_vm::Felt252;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
@@ -57,7 +57,13 @@ impl Display for Parameters {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[ ").unwrap();
         for v in self.0.clone() {
-            write!(f, "{}", v).unwrap();
+            match v {
+                Type::Felt252(value) => {
+                    let felt_value = value.to_string();
+                    write!(f, "Felt252({})", felt_value).unwrap()
+                }
+                _ => write!(f, "{}", v).unwrap(),
+            }
             if v != *self.0.last().unwrap() {
                 write!(f, ", ").unwrap();
             }

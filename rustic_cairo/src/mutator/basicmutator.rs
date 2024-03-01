@@ -26,7 +26,7 @@ extern crate alloc;
 
 use super::magic_values;
 use alloc::vec::Vec;
-use felt::Felt252;
+use cairo_vm::Felt252;
 use magic_values::MAGIC_VALUES;
 /// An empty database that never returns an input, useful for fuzzers without
 /// corpuses or input databases.
@@ -231,7 +231,7 @@ impl Mutator {
                 }
             }
             if bits_to_save != 256 && bits_to_save != 252 {
-                let mut new_value = self.input[idx].to_be_bytes();
+                let mut new_value = self.input[idx].to_bytes_be();
                 for i in 0..new_value.len() - (bits_to_save / 8) {
                     new_value[i] = 0;
                 }
@@ -352,15 +352,15 @@ impl Mutator {
                         let offset = self.rand_offset();
                         let length = core::cmp::min(donor_length, self.input.len() - offset);
 
-                        println!("inputs to bytes => {:?}", &inp.to_be_bytes());
+                        println!("inputs to bytes => {:?}", &inp.to_bytes_be());
                         println!(
                             "inputs slices => {:?}",
-                            &inp.to_be_bytes()[donor_offset..donor_offset + length]
+                            &inp.to_bytes_be()[donor_offset..donor_offset + length]
                         );
                         // Overwrite it!
                         self.overwrite(
                             offset,
-                            &inp.to_be_bytes()[donor_offset..donor_offset + length],
+                            &inp.to_bytes_be()[donor_offset..donor_offset + length],
                         );
                     } else {
                         // Find an offset to insert at in our input
@@ -815,13 +815,13 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
-                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 94) + 32).to_bytes_be(),
+                Felt252::from(self.rng.rand(0, 94) + 32).to_bytes_be(),
             ]
         } else {
             [
-                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
-                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
+                Felt252::from(self.rng.rand(0, 255)).to_bytes_be(),
+                Felt252::from(self.rng.rand(0, 255)).to_bytes_be(),
             ]
         };
 

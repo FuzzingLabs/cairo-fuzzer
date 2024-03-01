@@ -30,7 +30,6 @@ pub struct UiEventData {
 pub enum UiEvent {
     NewCoverage(UiEventData),
     NewCrash(UiEventData),
-    DetectorTriggered(UiEventData),
 }
 
 // Data to be displayed on the tui
@@ -372,13 +371,6 @@ impl Ui {
                         event_type,
                         format!(" with input: {}", data.message),
                     )
-                }
-                UiEvent::DetectorTriggered(data) => {
-                    let style = Style::default()
-                        .fg(Color::Yellow)
-                        .add_modifier(Modifier::BOLD);
-                    let event_type = format!("Detector triggered: ").to_string();
-                    create_event_item(data.time, style, event_type, data.message.clone())
                 }
             })
             .collect();

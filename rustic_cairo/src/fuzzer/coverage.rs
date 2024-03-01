@@ -3,6 +3,7 @@ use std::{
     hash::{Hash, Hasher},
 };
 
+use cairo_vm::types::relocatable::Relocatable;
 use serde::{Deserialize, Serialize};
 
 use crate::mutator::types::Type;
@@ -11,7 +12,7 @@ use crate::mutator::types::Type;
 pub struct Coverage {
     pub failure: bool,
     pub inputs: Vec<Type>,
-    pub data: Vec<(u32, u32)>,
+    pub data: Vec<(Relocatable, usize)>,
 }
 
 /* #[derive(Hash, Eq, PartialEq, Debug, Clone, Serialize, Deserialize)]

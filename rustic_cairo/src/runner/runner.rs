@@ -1,8 +1,8 @@
-use starknet_rs::CasmContractClass;
-
 use crate::fuzzer::coverage::Coverage;
 use crate::fuzzer::error::Error;
+use crate::json_helper::json_parser;
 use crate::mutator::types::Type;
+use starknet_rs::CasmContractClass;
 
 pub trait Runner {
     /// Runs the selected target
@@ -16,5 +16,5 @@ pub trait Runner {
     /// Returns the max coverage
     fn get_max_coverage(&self) -> usize;
     fn get_contract_class(&self) -> CasmContractClass;
-    fn get_func_entrypoint_idx(&self) -> usize;
+    fn get_function(&self) -> json_parser::Function;
 }
