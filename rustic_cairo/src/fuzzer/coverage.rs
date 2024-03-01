@@ -1,12 +1,10 @@
+use crate::mutator::types::Type;
+use cairo_vm::types::relocatable::Relocatable;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::hash_map::DefaultHasher,
     hash::{Hash, Hasher},
 };
-
-use cairo_vm::types::relocatable::Relocatable;
-use serde::{Deserialize, Serialize};
-
-use crate::mutator::types::Type;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Coverage {

@@ -23,6 +23,7 @@ use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct RunnerStarknet {
+    diff_fuzz: bool,
     target_function: Function,
     contract_class: CasmContractClass,
     entrypoint_selector: BigUint,
@@ -37,7 +38,11 @@ pub struct RunnerStarknet {
 }
 
 impl RunnerStarknet {
-    pub fn new(contract_class: &CasmContractClass, target_function: Function) -> Self {
+    pub fn new(
+        contract_class: &CasmContractClass,
+        target_function: Function,
+        diff_fuzz: bool,
+    ) -> Self {
         let entrypoints = contract_class.clone().entry_points_by_type;
         let entrypoint_selector = &entrypoints
             .external
@@ -82,6 +87,7 @@ impl RunnerStarknet {
         let resources_manager = ExecutionResourcesManager::default();
 
         let runner = RunnerStarknet {
+            diff_fuzz: diff_fuzz,
             target_function: target_function,
             contract_class: contract_class.clone(),
             entrypoint_selector: entrypoint_selector.clone(),
@@ -115,6 +121,30 @@ pub fn convert_calldata(inputs: Vec<Type>) -> Vec<Felt252> {
     res
 }
 
+pub fn diff_fuzz(
+    exec_one: &Result<
+        starknet_rs::execution::execution_entry_point::ExecutionResult,
+        starknet_rs::transaction::error::TransactionError,
+    >,
+    exec_two: &Result<
+        starknet_rs::execution::execution_entry_point::ExecutionResult,
+        starknet_rs::transaction::error::TransactionError,
+    >,
+) -> bool {
+    match (exec_one, exec_two) {
+        (Ok(result_one), Ok(result_two)) => match (&result_one.call_info, &result_two.call_info) {
+            (Some(call_info_one), Some(call_info_two)) => {
+                call_info_one.failure_flag == call_info_two.failure_flag
+                    && call_info_one.trace == call_info_two.trace
+            }
+            (None, None) => true,
+            _ => false,
+        },
+        (Err(_), Err(_)) => true,
+        _ => false,
+    }
+}
+
 impl Runner for RunnerStarknet {
     fn get_contract_class(&self) -> CasmContractClass {
         self.contract_class.clone()
@@ -138,17 +168,30 @@ impl Runner for RunnerStarknet {
             Some(self.class_hash),
             1000000,
         );
-        // Execute the entrypoint
-        match exec_entry_point.execute(
-            &mut self.state,
-            &self.block_context,
-            &mut self.resources_manager,
-            &mut self.tx_execution_context,
-            false,
-            self.block_context.invoke_tx_max_n_steps(),
-        ) {
-            Ok(exec_info) => {
-                let call_info = exec_info
+        if self.diff_fuzz {
+            // Execute the entrypoint
+            let exec_one: Result<
+                starknet_rs::execution::execution_entry_point::ExecutionResult,
+                starknet_rs::transaction::error::TransactionError,
+            > = exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            );
+            let exec_two = exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            );
+            if diff_fuzz(&exec_one, &exec_two) {
+                let call_info = exec_one
+                    .unwrap()
                     .call_info
                     .clone()
                     .expect("Could not get call info");
@@ -158,13 +201,10 @@ impl Runner for RunnerStarknet {
                     data: call_info.clone().trace,
                 };
                 return Ok(Some(coverage));
-            }
-            Err(e) => {
-                eprintln!("ERROR {:?}", e.to_string());
+            } else {
                 let fuzz_error = Error::Unknown {
-                    message: e.to_string(),
+                    message: "Diff Fuzzing failed".to_string(),
                 };
-
                 let coverage = Coverage {
                     failure: false,
                     inputs: inputs,
@@ -172,7 +212,42 @@ impl Runner for RunnerStarknet {
                 };
                 return Err((coverage, fuzz_error));
             }
-        };
+        } else {
+            // Execute the entrypoint
+            match exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            ) {
+                Ok(exec_info) => {
+                    let call_info = exec_info
+                        .call_info
+                        .clone()
+                        .expect("Could not get call info");
+                    let coverage = Coverage {
+                        failure: call_info.clone().failure_flag,
+                        inputs: inputs,
+                        data: call_info.clone().trace,
+                    };
+                    return Ok(Some(coverage));
+                }
+                Err(e) => {
+                    let fuzz_error = Error::Unknown {
+                        message: e.to_string(),
+                    };
+
+                    let coverage = Coverage {
+                        failure: false,
+                        inputs: inputs,
+                        data: vec![],
+                    };
+                    return Err((coverage, fuzz_error));
+                }
+            };
+        }
     }
 
     fn get_target_parameters(&self) -> Vec<crate::mutator::types::Type> {

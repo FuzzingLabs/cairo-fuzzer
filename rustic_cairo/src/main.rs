@@ -37,24 +37,17 @@ fn main() {
             }
 
             Config {
+                diff_fuzz: args.diff_fuzz,
                 statefull: args.statefull,
-                workspace: args.workspace,
                 contract_file: args.contract,
                 casm_file: args.casm,
                 target_function: args.target_function,
-                input_file: args.inputfile,
-                crash_file: args.crashfile,
                 corpus_dir: args.corpus_dir,
                 crashes_dir: args.crashes_dir,
-                dict: args.dict,
                 cores: args.cores,
-                logs: args.logs,
                 seed: args.seed,
-                run_time: args.run_time,
                 replay: args.replay,
-                minimizer: args.minimizer,
                 proptesting: args.proptesting,
-                iter: args.iter,
             }
         }
     };

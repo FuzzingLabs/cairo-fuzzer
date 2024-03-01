@@ -1,10 +1,7 @@
-use std::hash::{Hash, Hasher};
-
-use serde::{Deserialize, Serialize};
-
-use crate::mutator::types::Type;
-
 use super::error::Error;
+use crate::mutator::types::Type;
+use serde::{Deserialize, Serialize};
+use std::hash::{Hash, Hasher};
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq)]
 pub struct Crash {

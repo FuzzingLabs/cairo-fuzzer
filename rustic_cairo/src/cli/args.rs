@@ -33,6 +33,7 @@ pub struct Opt {
         default_value = ""
     )]
     pub target_function: String,
+
     #[arg(
         long,
         help = "Keep the state of the fuzzer between runs",
@@ -40,13 +41,14 @@ pub struct Opt {
         default_value = "false"
     )]
     pub statefull: bool,
+
     #[arg(
         long,
-        help = "Workspace of the fuzzer",
-        name = "WORKSPACE",
-        default_value = "fuzzer_workspace"
+        help = "diff fuzz between runs",
+        name = "DIFFFUZZ",
+        default_value = "false"
     )]
-    pub workspace: String,
+    pub diff_fuzz: bool,
 
     #[arg(
         long,
@@ -66,50 +68,11 @@ pub struct Opt {
 
     #[arg(
         long,
-        help = "Path to the inputs file to load",
-        name = "INPUTFILE",
-        default_value = ""
-    )]
-    pub inputfile: String,
-
-    #[arg(
-        long,
-        help = "Path to the crashes file to load",
-        name = "CRASHFILE",
-        default_value = ""
-    )]
-    pub crashfile: String,
-
-    #[arg(
-        long,
-        help = "Path to the dictionnary file to load",
-        name = "DICT",
-        default_value = ""
-    )]
-    pub dict: String,
-
-    #[arg(
-        long,
-        help = "Enable fuzzer logs in file",
-        name = "LOGS",
-        default_value = "false"
-    )]
-    pub logs: bool,
-
-    #[arg(
-        long,
         help = "Set a custom seed (only applicable for 1 core run)",
         name = "SEED",
         default_value = "0"
     )]
     pub seed: Option<u64>,
-
-    #[arg(
-        long,
-        help = "Number of seconds this fuzzing session will last",
-        name = "RUN_TIME"
-    )]
-    pub run_time: Option<u64>,
 
     #[arg(long, help = "Load config file", name = "CONFIG")]
     pub config: Option<String>,
@@ -121,13 +84,7 @@ pub struct Opt {
         default_value = "false"
     )]
     pub replay: bool,
-    #[arg(
-        long,
-        help = "Minimize Corpora",
-        name = "MINIMIZER",
-        default_value = "false"
-    )]
-    pub minimizer: bool,
+
     #[arg(
         long,
         help = "Property Testing",
@@ -143,6 +100,4 @@ pub struct Opt {
         default_value = "false"
     )]
     pub analyze: bool,
-    #[arg(long, help = "Iteration Number", name = "ITER", default_value = "-1")]
-    pub iter: i64,
 }

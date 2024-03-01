@@ -115,7 +115,7 @@ impl Ui {
 
                 // Draws main block
                 let main_block = Block::default().borders(Borders::ALL).title(format!(
-                    "Sui Fuzzer, {} threads (q to quit)",
+                    "Cairo Fuzzer, {} threads (q to quit)",
                     self.nb_threads
                 ));
                 frame.render_widget(main_block, frame.size());

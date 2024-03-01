@@ -1,5 +1,20 @@
+use super::crash::Crash;
+use super::fuzzer_utils::load_corpus;
+use super::fuzzer_utils::load_crashes;
+use super::fuzzer_utils::write_corpusfile;
+use super::fuzzer_utils::write_crashfile;
+use crate::cli::config::Config;
+use crate::fuzzer::coverage::Coverage;
+use crate::fuzzer::stats::Stats;
 use crate::json_helper::json_parser::get_function_from_json;
 use crate::json_helper::json_parser::Function;
+use crate::mutator;
+use crate::mutator::types::Parameters;
+use crate::mutator::types::Type;
+use crate::runner::runner::Runner;
+use crate::runner::starknet_runner;
+use crate::ui::ui::{Ui, UiEvent, UiEventData};
+use crate::worker::worker::{Worker, WorkerEvent};
 use bichannel::Channel;
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
 use std::collections::HashSet;
@@ -10,23 +25,6 @@ use std::sync::Arc;
 use std::sync::RwLock;
 use std::time::Instant;
 use time::Duration;
-
-use crate::cli::config::Config;
-use crate::fuzzer::coverage::Coverage;
-use crate::fuzzer::stats::Stats;
-use crate::mutator;
-use crate::mutator::types::Parameters;
-use crate::mutator::types::Type;
-use crate::runner::runner::Runner;
-use crate::runner::starknet_runner;
-use crate::ui::ui::{Ui, UiEvent, UiEventData};
-use crate::worker::worker::{Worker, WorkerEvent};
-
-use super::crash::Crash;
-use super::fuzzer_utils::load_corpus;
-use super::fuzzer_utils::load_crashes;
-use super::fuzzer_utils::write_corpusfile;
-use super::fuzzer_utils::write_crashfile;
 
 pub struct Fuzzer {
     // Fuzzer configuration
@@ -100,10 +98,12 @@ impl Fuzzer {
             let runner = Box::new(starknet_runner::RunnerStarknet::new(
                 &self.contract_class,
                 self.target_function.clone(),
+                self.config.diff_fuzz,
             ));
             self.target_parameters = runner.get_target_parameters();
             self.max_coverage = runner.get_max_coverage();
             let statefull = self.config.statefull;
+            let diff_fuzz = self.config.diff_fuzz;
             // Increment seed so that each worker doesn't do the same thing
             let seed = self.config.seed.expect("could not get seed") + (i as u64);
             let execs_before_cov_update = 10000; //xxx todo //self.config.execs_before_cov_update;
@@ -124,6 +124,7 @@ impl Fuzzer {
                         mutator,
                         seed,
                         statefull,
+                        diff_fuzz,
                         execs_before_cov_update,
                     );
                     w.run();
@@ -190,14 +191,12 @@ impl Fuzzer {
 
             // Checks channels for new data
             for chan in &self.channels {
-                //eprintln!("Checking channel");
                 if let Ok(event) = chan.try_recv() {
                     // Creates duration used for the ui
                     let duration =
                         Duration::seconds(self.global_stats.time_running.try_into().unwrap());
                     match event {
                         WorkerEvent::CoverageUpdateRequest(coverage_set) => {
-                            //eprintln!("Coverage update request {:?}\n\n", coverage_set);
                             // Gets diffrences between the two coverage sets
                             let binding = self.coverage_set.clone();
                             let differences_with_main_thread: HashSet<_> =
@@ -214,9 +213,7 @@ impl Fuzzer {
                             }
                             // Adds all the coverage to the main coverage_set
                             for diff in &differences_with_worker {
-                                //eprintln!("New coverage 1: {:?}", diff);
                                 if !self.coverage_set.contains(diff) {
-                                    //eprintln!("New coverage 2: {:?}", diff);
                                     write_corpusfile(&self.config.corpus_dir, &diff);
                                     self.coverage_set.insert(diff.to_owned().clone());
                                     self.global_stats.secs_since_last_cov = 0;
@@ -228,7 +225,6 @@ impl Fuzzer {
                                     }));
                                 }
                             }
-                            //eprintln!("add to coverage set {:?}", self.coverage_set);
                         }
                         WorkerEvent::NewCrash(inputs, error) => {
                             let crash = Crash::new(
@@ -267,7 +263,6 @@ impl Fuzzer {
             }
 
             // Run ui
-            /* if self.config.use_ui { */
             if self
                 .ui
                 .as_mut()
@@ -278,28 +273,6 @@ impl Fuzzer {
                 eprintln!("Quitting...");
                 break;
             }
-            /* } else {
-            for event in events.clone().into_iter() {
-                match event {
-                    UiEvent::NewCoverage(data) => println!("New coverage: {}", data.message),
-                    UiEvent::NewCrash(data) => {
-                        println!("New crash: {} {}", data.error.unwrap(), data.message)
-                    }
-                    UiEvent::DetectorTriggered(data) => {
-                        println!("Detector triggered: {}", data.message)
-                    }
-                }
-            } */
-            /*                 if self.global_stats.execs % 100000 == 0 {
-                println!("{}s running time | {} execs/s | total execs: {} | crashes: {} | unique crashes: {} | coverage: {}",
-                self.global_stats.time_running,
-                self.global_stats.execs_per_sec,
-                self.global_stats.execs,
-                self.global_stats.crashes,
-                self.global_stats.unique_crashes,
-                self.coverage_set.len());
-            } */
-            //events.clear();
         }
     }
 }

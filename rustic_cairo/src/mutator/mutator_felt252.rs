@@ -1,8 +1,7 @@
+use super::types::Type;
 use crate::mutator::basicmutator::{self, EmptyDatabase};
 use crate::mutator::mutator::Mutator;
 use crate::runner::starknet_runner::convert_calldata;
-
-use super::types::Type;
 
 pub struct CairoMutator {
     mutator: basicmutator::Mutator,

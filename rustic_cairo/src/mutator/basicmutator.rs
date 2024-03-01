@@ -23,7 +23,6 @@
  */
 #![allow(dead_code)]
 extern crate alloc;
-
 use super::magic_values;
 use alloc::vec::Vec;
 use cairo_vm::Felt252;

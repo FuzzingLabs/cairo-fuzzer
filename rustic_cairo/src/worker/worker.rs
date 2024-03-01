@@ -1,10 +1,3 @@
-use bichannel::Channel;
-use cairo_lang_starknet::contract_class;
-use cairo_vm::Felt252;
-use std::collections::HashSet;
-use std::sync::{Arc, RwLock};
-use std::time::Instant;
-
 use crate::fuzzer::coverage::Coverage;
 use crate::fuzzer::crash::Crash;
 use crate::fuzzer::error::Error;
@@ -13,7 +6,12 @@ use crate::mutator::mutator::Mutator;
 use crate::mutator::rng::Rng;
 use crate::mutator::types::Type;
 use crate::runner::runner::Runner;
-use crate::runner::starknet_runner::{self, RunnerStarknet};
+use crate::runner::starknet_runner;
+use bichannel::Channel;
+use cairo_vm::Felt252;
+use std::collections::HashSet;
+use std::sync::{Arc, RwLock};
+use std::time::Instant;
 
 #[derive(Clone)]
 pub enum WorkerEvent {
@@ -32,6 +30,7 @@ pub struct Worker {
     unique_crashes_set: HashSet<Crash>,
     statefull: bool,
     rng: Rng,
+    diff_fuzz: bool,
     execs_before_cov_update: u64,
 }
 
@@ -44,6 +43,7 @@ impl Worker {
         mutator: Box<dyn Mutator>,
         seed: u64,
         statefull: bool,
+        diff_fuzz: bool,
         execs_before_cov_update: u64,
     ) -> Self {
         Worker {
@@ -58,6 +58,7 @@ impl Worker {
                 seed,
                 exp_disabled: false,
             },
+            diff_fuzz: diff_fuzz,
             execs_before_cov_update,
         }
     }
@@ -74,7 +75,6 @@ impl Worker {
     fn init_inputs(inputs: Vec<Type>) -> Vec<Type> {
         let mut res = vec![];
         for param in inputs {
-            //eprintln!("init param {:?}", param);
             res.push(match param {
                 Type::Felt252(_) => Type::Felt252(Felt252::from(b'\x00')),
                 Type::U8(_) => Type::U8(0x00),
@@ -98,12 +98,12 @@ impl Worker {
         let mut inputs = Self::init_inputs(self.runner.get_target_parameters());
         let target_function = self.runner.get_function();
         let contract_class = self.runner.get_contract_class();
-        //eprintln!("debug type Inputs {:?}", inputs.clone());
         loop {
             if !self.statefull {
                 self.runner = Box::new(starknet_runner::RunnerStarknet::new(
                     &contract_class,
                     target_function.clone(),
+                    self.diff_fuzz,
                 ));
             }
             let exec_result = self.runner.execute(inputs.clone()); //self.runner.execute(inputs.clone());
@@ -122,7 +122,6 @@ impl Worker {
                 Ok(cov) => {
                     if let Some(coverage) = cov {
                         // Execute all activated detectors
-                        //eprintln!("Coverage len : {:?}", self.coverage_set.len());
                         if !self.coverage_set.contains(&coverage) {
                             self.coverage_set.insert(coverage.clone());
                             self.stats.write().unwrap().secs_since_last_cov = 0;
@@ -133,7 +132,7 @@ impl Worker {
                                 &self.runner.get_target_function(),
                                 &inputs,
                                 &Error::Abort {
-                                    message: ("Failure flag1").to_string(),
+                                    message: ("Failure flag").to_string(),
                                 },
                             );
                             if !self.unique_crashes_set.contains(&crash) {
@@ -141,7 +140,7 @@ impl Worker {
                                     .send(WorkerEvent::NewCrash(
                                         inputs.clone(),
                                         Error::Abort {
-                                            message: ("Failure flag2").to_string(),
+                                            message: ("Failure flag").to_string(),
                                         },
                                     ))
                                     .unwrap();
@@ -152,7 +151,6 @@ impl Worker {
                     }
                 }
                 Err((coverage, error)) => {
-                    //eprintln!("Error: {:?}", error);
                     // Execute all activated detectors
                     if !self.coverage_set.contains(&coverage) {
                         self.coverage_set.insert(coverage);
@@ -178,7 +176,6 @@ impl Worker {
             // Handle coverage updates every execs_before_cov_update execs (configurable in
             // configfile)
             if self.stats.read().unwrap().execs % self.execs_before_cov_update == 0 {
-                //eprintln!("Sending coverage update request");
                 self.channel
                     .send(WorkerEvent::CoverageUpdateRequest(
                         self.coverage_set.clone(),
@@ -201,7 +198,6 @@ impl Worker {
 
             // Updates input
             if self.coverage_set.len() > 0 {
-                //eprintln!("Picking and mutating inputs");
                 inputs = self.pick_and_mutate_inputs();
             }
         }

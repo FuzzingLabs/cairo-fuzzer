@@ -1,7 +1,6 @@
+use crate::mutator::types::Type;
 use cairo_vm::Felt252;
 use serde_json::Value;
-
-use crate::mutator::types::Type;
 
 #[derive(Debug, Clone)]
 pub struct Function {

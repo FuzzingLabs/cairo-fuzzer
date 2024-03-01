@@ -1,16 +1,14 @@
+use super::{coverage::Coverage, crash::Crash};
+use crate::{
+    cli::config::Config, json_helper::json_parser::get_function_from_json, runner::runner::Runner,
+};
+use chrono::{DateTime, Utc};
+use starknet_rs::CasmContractClass;
 use std::{
     collections::HashSet,
     fs::{self, File},
     io::Write,
     time::SystemTime,
-};
-
-use chrono::{DateTime, Utc};
-use starknet_rs::CasmContractClass;
-
-use super::{coverage::Coverage, crash::Crash};
-use crate::{
-    cli::config::Config, json_helper::json_parser::get_function_from_json, runner::runner::Runner,
 };
 
 pub fn write_crashfile(path: &str, crash: Crash) {
@@ -63,6 +61,7 @@ pub fn replay(config: &Config, crashfile_path: &str) {
     let mut runner = crate::runner::starknet_runner::RunnerStarknet::new(
         &contract_class,
         target_function.clone(),
+        config.diff_fuzz,
     );
     match runner.execute(crash.inputs) {
         Ok(_) => unreachable!(),
