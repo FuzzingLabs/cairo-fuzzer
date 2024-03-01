@@ -1,51 +1,23 @@
-use felt::Felt252;
-use std::collections::{HashMap, HashSet};
-pub type FuzzInput = Vec<Felt252>;
-
-/// Fuzz case statistics
-#[derive(Default, Debug)]
-pub struct Statistics {
-    /// Number of fuzz cases
-    pub fuzz_cases: u64,
-
-    /// Coverage database. Maps (module, offset) to `FuzzInput`s
-    pub coverage_db: HashMap<u64, FuzzInput>,
-
-    /// Counter of inputs
-    pub input_len: usize,
-
-    /// Set of all unique inputs
-    pub input_db: HashSet<FuzzInput>,
-
-    /// List of inputs
-    /* pub input_list: Vec<FuzzInput>, */
-
-    /// List of all unique fuzzer actions
-
-    /// Counter of crashes
+pub struct Stats {
     pub crashes: u64,
-
-    /// Set of all unique crashes
-    pub crash_db: HashSet<FuzzInput>,
-
-    /// Contains the hash of the trace vector to verify if the crash is unique or not
-    pub crash_coverage: u64,
-
-    /// Counter of crashes
-    pub tx_crashes: u64,
-
-    /// Set of all unique crashes
-    pub tx_crash_db: HashSet<FuzzInput>,
-
-    // Number of threads that finished to run
-    pub threads_finished: u64,
+    pub unique_crashes: u64,
+    pub execs: u64,
+    pub time_running: u64,
+    pub execs_per_sec: u64,
+    pub coverage_size: u64,
+    pub secs_since_last_cov: u64,
 }
 
-impl Statistics {
-    pub fn get_input_by_index(&self, index: usize) -> &FuzzInput {
-        let mut iterator = self.input_db.iter();
-        iterator
-            .nth(index)
-            .expect("Could not get element from input_db")
+impl Stats {
+    pub fn new() -> Self {
+        Stats {
+            crashes: 0,
+            unique_crashes: 0,
+            time_running: 0,
+            execs: 0,
+            coverage_size: 0,
+            execs_per_sec: 0,
+            secs_since_last_cov: 0,
+        }
     }
 }

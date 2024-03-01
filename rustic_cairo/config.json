@@ -1,7 +1,0 @@
-{
-  "seed": 4242,
-  "contract": "./tests1.0/fuzzinglabs_fuzz.json",
-  "casm": "./tests1.0/fuzzinglabs_fuzz.casm",
-  "corpus_dir": "./corpus",
-  "crashes_dir": "./crashes"
-}

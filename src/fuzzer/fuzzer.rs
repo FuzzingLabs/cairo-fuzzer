@@ -1,680 +1,279 @@
-use std::{
-    fs::{self, File},
-    process,
-    sync::{Arc, Mutex},
-    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
-};
-
-use crate::{
-    cli::config::Config,
-    fuzzer::dict::Dict,
-    fuzzer::starknet_worker::StarknetWorker,
-    json::json_parser::{get_function_from_json, Function},
-};
-
-use super::{corpus_crash::CrashFile, corpus_input::InputFile, stats::Statistics};
+use super::crash::Crash;
+use super::fuzzer_utils::load_corpus;
+use super::fuzzer_utils::load_crashes;
+use super::fuzzer_utils::write_corpusfile;
+use super::fuzzer_utils::write_crashfile;
+use crate::cli::config::Config;
+use crate::fuzzer::coverage::Coverage;
+use crate::fuzzer::stats::Stats;
+use crate::json_helper::json_parser::get_function_from_json;
+use crate::json_helper::json_parser::Function;
+use crate::mutator;
+use crate::mutator::types::Parameters;
+use crate::mutator::types::Type;
+use crate::runner::runner::Runner;
+use crate::runner::starknet_runner;
+use crate::ui::ui::{Ui, UiEvent, UiEventData};
+use crate::worker::worker::{Worker, WorkerEvent};
+use bichannel::Channel;
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
-use felt::Felt252;
-use rand::Rng;
-use std::io::Write;
+use std::collections::HashSet;
+use std::collections::VecDeque;
+use std::fs;
+use std::process;
+use std::sync::Arc;
+use std::sync::RwLock;
+use std::time::Instant;
+use time::Duration;
 
-#[derive(Clone)]
 pub struct Fuzzer {
-    /// Shared fuzzing statistics between threads
-    pub stats: Arc<Mutex<Statistics>>,
-    /// Number of cores/threads
-    pub cores: i32,
-    /// Contract JSON path
-    pub contract_file: String,
-    /// Contract JSON content
-    pub contract_content: String,
-    /// Contract_class for starknet-rs
-    pub contract_class: CasmContractClass,
-    /// Contract function to fuzz
-    pub function: Function,
-    /// Store local/on-disk logs
-    pub logs: bool,
-    /// Replay mode
-    pub replay: bool,
-    /// Corpus minimization
-    pub minimizer: bool,
-    /// Seed number
-    pub seed: u64,
-    /// Workspace to use
-    pub workspace: String,
-    /// Inputs file path
-    pub input_file: Arc<Mutex<InputFile>>,
-    /// Crashes file path
-    pub crash_file: Arc<Mutex<CrashFile>>,
-    /// Number of second the fuzzing session will last
-    pub run_time: Option<u64>,
-    /// Starting time of the fuzzer
-    pub start_time: Instant,
-    /// Running workers
-    pub running_workers: u64,
-    /// Number of iterations to run
-    pub iter: i64,
-    /// Usage of property testing
-    pub proptesting: bool,
-    /// Dictionnary struct
-    pub dict: Dict,
+    // Fuzzer configuration
+    config: Config,
+    // Thread specific stats
+    threads_stats: Vec<Arc<RwLock<Stats>>>,
+    // Channel to communicate with each threads
+    channels: Vec<Channel<WorkerEvent, WorkerEvent>>,
+    // Global stats mostly for ui
+    global_stats: Stats,
+    // Global coverage
+    coverage_set: HashSet<Coverage>,
+    // Unique crashes set
+    unique_crashes_set: HashSet<Crash>,
+    // The user interface
+    ui: Option<Ui>,
+    // The contract Class
+    contract_class: CasmContractClass,
+    // The contract content
+    contract_content: String,
+    // The function to target in the contract
+    target_function: Function,
+    // Parameters of the target function
+    target_parameters: Vec<Type>,
+    // Max coverage
+    max_coverage: usize,
 }
 
 impl Fuzzer {
-    /// Create the fuzzer using the given Config struct
-    pub fn new(config: &Config) -> Self {
-        let stats = Arc::new(Mutex::new(Statistics::default()));
-        // Set seed if provided or generate a new seed using `SystemTime`
-        let seed = match config.seed {
-            Some(val) => val,
-            None => SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .expect("Failed to get actual time")
-                .as_millis() as u64,
-        };
-
-        // Read contract JSON artifact and get its content
+    pub fn new(config: Config) -> Self {
+        let nb_threads = config.cores as u8;
+        let ui = Some(Ui::new(nb_threads, config.seed.unwrap()));
         let contents = fs::read_to_string(&config.contract_file)
             .expect("Should have been able to read the file");
         let casm_content = fs::read_to_string(&config.casm_file).expect("Could not read casm file");
-        let function = match get_function_from_json(&contents, &config.function_name) {
+        let contract_class =
+            serde_json::from_str(&casm_content).expect("could not get contractclass");
+        let function = match get_function_from_json(&contents, &config.target_function) {
             Some(func) => func,
             None => {
                 eprintln!("Error: Could not parse json file");
                 process::exit(1)
             }
         };
-        // Load inputs from the input file if provided
-        let mut inputs: InputFile =
-            match config.input_file.is_empty() && config.input_folder.is_empty() {
-                true => InputFile::new_from_function(&function, &config.workspace),
-                false => match config.input_folder.is_empty() {
-                    true => InputFile::load_from_file(&config.input_file, &config.workspace),
-                    false => InputFile::load_from_folder(&config.input_folder, &config.workspace),
-                },
-            };
-
-        let dict = match &config.dict.is_empty() {
-            true => Dict { inputs: Vec::new() },
-            false => Dict::read_dict(&config.dict),
-        };
-
-        let nbr_args = function.inputs.len();
-        for val in &dict.inputs {
-            let mut value_vec: Vec<Felt252> = Vec::new();
-            value_vec.push(val.clone()); // to ensure that all values of the dict will be in the inputs vector
-            for _ in 0..nbr_args - 1 {
-                value_vec
-                    .push(dict.inputs[rand::thread_rng().gen_range(0..dict.inputs.len())].clone());
-            }
-            inputs.inputs.push(value_vec);
-        }
-
-        // Load existing inputs in shared database
-        if inputs.inputs.len() > 0 {
-            let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
-            for input in &inputs.inputs {
-                if stats_db.input_db.insert(input.clone()) {
-                    stats_db.input_db.insert(input.clone());
-                    stats_db.input_len += 1;
-                }
-            }
-        }
-
-        // Load crashes from the crash file if provided
-        let crashes: CrashFile =
-            match config.crash_file.is_empty() && config.crash_folder.is_empty() {
-                true => CrashFile::new_from_function(&function, &config.workspace),
-                false => match config.input_folder.is_empty() {
-                    true => CrashFile::load_from_file(&config.input_file, &config.workspace),
-                    false => CrashFile::load_from_folder(&config.input_folder, &config.workspace),
-                },
-            };
-
-        // Load existing crashes in shared database
-        if crashes.crashes.len() > 0 {
-            let mut stats_db = stats.lock().expect("Failed to lock stats mutex");
-            for input in &crashes.crashes {
-                stats_db.crash_db.insert(input.clone());
-                stats_db.crashes += 1;
-            }
-        }
-
-        let contract_class =
-            serde_json::from_str(&casm_content).expect("could not get contractclass");
-        println!(
-            "
-        =============================================================================================================================================================
-        ╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
-        ║   ├─┤ │ ├┬┘ │1.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | Inputs loaded -- {}
-        ╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      | Threads to run -- {}",
-            seed,
-            inputs.inputs.len(),
-            config.cores,
-        );
-        // Setup the mutex for the inputs corpus and crash corpus
-        let inputs = Arc::new(Mutex::new(inputs));
-        let crashes = Arc::new(Mutex::new(crashes));
-        // Setup the fuzzer
+        let coverage_set = load_corpus(&config.corpus_dir).unwrap_or_default();
+        let unique_crashes_set = load_crashes(&config.crashes_dir).unwrap_or_default();
         Fuzzer {
-            stats: stats,
-            cores: config.cores,
-            logs: config.logs,
-            run_time: config.run_time,
-            replay: config.replay,
-            minimizer: config.minimizer,
-            contract_file: config.contract_file.clone(),
-            contract_content: contents,
-            dict: dict,
+            config,
+            threads_stats: vec![],
+            channels: vec![],
+            global_stats: Stats::new(),
+            coverage_set,
+            unique_crashes_set,
+            ui,
             contract_class: contract_class,
-            function: function.clone(),
-            start_time: Instant::now(),
-            seed: seed,
-            input_file: inputs,
-            crash_file: crashes,
-            workspace: config.workspace.clone(),
-            running_workers: 0,
-            iter: config.iter,
-            proptesting: config.proptesting,
+            contract_content: contents,
+            target_function: function,
+            target_parameters: vec![],
+            max_coverage: 0,
         }
     }
 
-    /// Fuzz
-    pub fn fuzz(&mut self) {
-        // Running all the threads
-        for i in 0..self.cores {
-            // create dedicated statistics per thread
-            let stats = self.stats.clone();
-            let function = self.function.clone();
-            let input_file = self.input_file.clone();
-            let crash_file = self.crash_file.clone();
-            let contract_class = self.contract_class.clone();
-            let seed = self.seed + (i as u64);
-            let iter = self.iter;
-            //let dict = self.dict.clone();
-            // Spawn threads
-            std::thread::spawn(move || {
-                let starknet_worker = StarknetWorker::new(
-                    stats,
-                    i,
-                    contract_class,
-                    function,
-                    seed,
-                    input_file,
-                    crash_file,
-                    iter,
-                );
-                starknet_worker.fuzz();
-            });
-            self.running_workers += 1;
-        }
-        println!("\t=============================================================================================================================================================");
-        // Call the stats monitoring/printer
-        self.monitor();
-    }
-
-    /// Replay a given corpus.
-    /// If `minimizer` is set to "true" it will dump the new corpus
-    pub fn replay(&mut self) {
-        // Replay all inputs
-        let stats_db = self.stats.lock().expect("Failed to lock stats mutex");
-        // Load inputs
-        let mut corpus_hashset = stats_db.input_db.clone();
-        println!(
-            "\t\t\t\t\t\t\t   | Total inputs to replay -- {}",
-            corpus_hashset.len()
-        );
-        println!("\t=============================================================================================================================================================");
-
-        // Load crashes
-        let crashes_hashset = stats_db.crash_db.clone();
-        corpus_hashset = corpus_hashset.union(&crashes_hashset).cloned().collect();
-        let corpus: Vec<Vec<Felt252>> = corpus_hashset.into_iter().collect();
-        drop(stats_db);
-        // Split the inputs into chunks
-        let chunk_size = match corpus.len() > (self.cores as usize) {
-            true => corpus.len() / (self.cores as usize),
-            false => 1,
-        };
-        let mut chunks = Vec::new();
-        for chunk in corpus.chunks(chunk_size) {
-            chunks.push(chunk.to_vec());
-        }
-
-        let mut threads = Vec::new();
-
-        for i in 0..chunks.len() {
-            // Spawn threads
-            let stats_thread = self.stats.clone();
-            let function = self.function.clone();
-            let seed = self.seed;
-            let input_file = self.input_file.clone();
-            let crash_file = self.crash_file.clone();
-            let contract_class = self.contract_class.clone();
-            let iter = if self.proptesting { self.iter } else { 0 };
-            //let dict = self.dict.clone();
-            let chunk = chunks[i].clone();
-            threads.push(std::thread::spawn(move || {
-                let mut starknet_worker = StarknetWorker::new(
-                    stats_thread,
-                    i as i32,
-                    contract_class,
-                    function,
-                    seed,
-                    input_file,
-                    crash_file,
-                    iter,
-                );
-                starknet_worker.replay(chunk);
-            }));
-            println!("Thread {} Spawned", i);
-            self.running_workers += 1;
-        }
-
-        // Wait for all threads to complete
-        for thread in threads {
-            let _ = thread.join();
-        }
-        // Print stats of the current fuzzer
-        self.monitor();
-
-        // If minimizer is set, dump the new corpus
-        if self.minimizer {
-            let stats = self.stats.lock().expect("Failed to lock stats mutex");
-            // Init the struct
-            let mut dump_inputs = InputFile {
-                workspace: self.workspace.clone(),
-                path: format!("{}_min.json", self.function.name),
-                name: self.function.name.clone(),
-                args: self.function.inputs.clone(),
-                inputs: Vec::<Vec<Felt252>>::new(),
-            };
-            // Push every input to the struct
-            for input in &stats.input_db {
-                dump_inputs.inputs.push(input.clone().to_vec());
-            }
-            println!("Size after minimization : {}", dump_inputs.inputs.len());
-            // Dump the struct
-            dump_inputs.dump_json();
+    fn start_threads(&mut self) {
+        for i in 0..self.config.cores {
+            // Creates the communication channel for the fuzzer and worker sides
+            let (fuzzer, worker) = bichannel::channel::<WorkerEvent, WorkerEvent>();
+            self.channels.push(fuzzer);
+            let stats = Arc::new(RwLock::new(Stats::new()));
+            self.threads_stats.push(stats.clone());
+            // Change here the runner you want to create
+            let runner = Box::new(starknet_runner::RunnerStarknet::new(
+                &self.contract_class,
+                self.target_function.clone(),
+                self.config.diff_fuzz,
+            ));
+            self.target_parameters = runner.get_target_parameters();
+            self.max_coverage = runner.get_max_coverage();
+            let statefull = self.config.statefull;
+            let diff_fuzz = self.config.diff_fuzz;
+            // Increment seed so that each worker doesn't do the same thing
+            let seed = self.config.seed.expect("could not get seed") + (i as u64);
+            let execs_before_cov_update = 10000; //xxx todo //self.config.execs_before_cov_update;
+            let mutator = Box::new(mutator::mutator_felt252::CairoMutator::new(
+                seed,
+                self.target_function.inputs.len(),
+            ));
+            let coverage_set = self.coverage_set.clone();
+            let _ = std::thread::Builder::new()
+                .name(format!("Worker {}", i).to_string())
+                .spawn(move || {
+                    // Creates generic worker and starts it
+                    let mut w = Worker::new(
+                        worker,
+                        stats,
+                        coverage_set,
+                        runner,
+                        mutator,
+                        seed,
+                        statefull,
+                        diff_fuzz,
+                        execs_before_cov_update,
+                    );
+                    w.run();
+                });
         }
     }
 
-    /// Function to print stats of the running fuzzer
-    fn monitor(&self) {
-        let mut log = None;
-        if self.logs {
-            log = Some(File::create("fuzz_stats.txt").expect("Failed to lock stats mutex"));
+    fn get_global_execs(&self) -> u64 {
+        let mut sum: u64 = 0;
+        for i in 0..self.config.cores {
+            sum += self.threads_stats[i as usize].read().unwrap().execs;
+        }
+        sum
+    }
+
+    fn get_global_crashes(&self) -> u64 {
+        let mut sum: u64 = 0;
+        for i in 0..self.config.cores {
+            sum += self.threads_stats[i as usize].read().unwrap().crashes;
+        }
+        sum
+    }
+
+    fn broadcast(&self, event: &WorkerEvent) {
+        for chan in &self.channels {
+            chan.send(event.to_owned()).unwrap();
+        }
+    }
+
+    pub fn run(&mut self) {
+        // Init workers
+        self.start_threads();
+
+        // Utils for execs per sec
+        let mut execs_per_sec_timer = Instant::now();
+
+        let mut events = VecDeque::new();
+
+        if let Some(ui) = &mut self.ui {
+            ui.set_target_infos(
+                "Starknet",
+                &self.target_function.name,
+                &self.target_parameters,
+                self.max_coverage,
+            );
         }
 
-        // Monitoring loop
+        let mut new_crash: Option<Crash> = None;
+
         loop {
-            // wait 1 second
-            std::thread::sleep(Duration::from_millis(1000));
+            // Sum execs
+            self.global_stats.execs = self.get_global_execs();
+            self.global_stats.crashes = self.get_global_crashes();
 
-            // Get uptime
-            let uptime = (Instant::now() - self.start_time).as_secs_f64();
+            // Calculate execs_per_sec
+            if execs_per_sec_timer.elapsed().as_secs() >= 1 {
+                execs_per_sec_timer = Instant::now();
+                self.global_stats.execs_per_sec = self.global_stats.execs;
+                self.global_stats.time_running += 1;
+                self.global_stats.secs_since_last_cov += 1;
+                self.global_stats.execs_per_sec =
+                    self.global_stats.execs_per_sec / self.global_stats.time_running;
+            }
 
-            // Get access to the global stats
+            // Checks channels for new data
+            for chan in &self.channels {
+                if let Ok(event) = chan.try_recv() {
+                    // Creates duration used for the ui
+                    let duration =
+                        Duration::seconds(self.global_stats.time_running.try_into().unwrap());
+                    match event {
+                        WorkerEvent::CoverageUpdateRequest(coverage_set) => {
+                            // Gets diffrences between the two coverage sets
+                            let binding = self.coverage_set.clone();
+                            let differences_with_main_thread: HashSet<_> =
+                                self.coverage_set.difference(&coverage_set).collect();
+                            let differences_with_worker: HashSet<_> =
+                                coverage_set.difference(&binding).collect();
+                            let mut tmp = HashSet::new();
+                            for diff in &differences_with_main_thread.clone() {
+                                tmp.insert(diff.to_owned().clone());
+                            }
+                            // Updates sets
+                            if differences_with_main_thread.len() > 0 {
+                                chan.send(WorkerEvent::CoverageUpdateResponse(tmp)).unwrap();
+                            }
+                            // Adds all the coverage to the main coverage_set
+                            for diff in &differences_with_worker {
+                                if !self.coverage_set.contains(diff) {
+                                    write_corpusfile(&self.config.corpus_dir, &diff);
+                                    self.coverage_set.insert(diff.to_owned().clone());
+                                    self.global_stats.secs_since_last_cov = 0;
+                                    self.global_stats.coverage_size += 1;
+                                    events.push_front(UiEvent::NewCoverage(UiEventData {
+                                        time: duration,
+                                        message: format!("{}", Parameters(diff.inputs.clone())),
+                                        error: None,
+                                    }));
+                                }
+                            }
+                        }
+                        WorkerEvent::NewCrash(inputs, error) => {
+                            let crash = Crash::new(
+                                &self.contract_content,
+                                &self.target_function.name,
+                                &inputs,
+                                &error,
+                            );
+                            let mut message = format!(
+                                "already exists, skipping - {}",
+                                Parameters(inputs.clone())
+                            );
+                            if !self.unique_crashes_set.contains(&crash) {
+                                write_crashfile(&self.config.crashes_dir, crash.clone());
+                                self.global_stats.unique_crashes += 1;
+                                self.unique_crashes_set.insert(crash.clone());
+                                message = format!("NEW - {}", Parameters(inputs));
+                                new_crash = Some(crash);
+                            }
+                            events.push_front(UiEvent::NewCrash(UiEventData {
+                                time: duration,
+                                message,
+                                error: Some(error),
+                            }));
+                        }
+
+                        _ => unimplemented!(),
+                    }
+                }
+            }
+
+            // Broadcasting unique crash to all threads
+            if let Some(crash) = &new_crash {
+                self.broadcast(&WorkerEvent::NewUniqueCrash(crash.clone()));
+                new_crash = None;
+            }
+
+            // Run ui
+            if self
+                .ui
+                .as_mut()
+                .unwrap()
+                .render(&self.global_stats, &events, &self.threads_stats)
             {
-                let stats = self.stats.lock().expect("Failed to lock stats mutex");
-
-                // number of executions
-                let fuzz_case = stats.fuzz_cases;
-                print!(
-                    "{:12.2} uptime | {:9} fuzz cases | {:12.2} fcps | \
-                            {:6} coverage | {:6} inputs | {:6} crashes [{:6} unique] | {:6} TX_crashes [{:6} unique]\n",
-                    uptime,
-                    fuzz_case,
-                    fuzz_case as f64 / uptime,
-                    stats.coverage_db.len(),
-                    stats.input_len,
-                    stats.crashes,
-                    stats.crash_db.len(),
-                    stats.tx_crashes,
-                    stats.tx_crash_db.len()
-                );
-                // Writing inside logging file
-                if let Some(ref mut file) = log {
-                    write!(
-                        file,
-                        "{:12.0} {:7} {:8} {:5} {:6} {:6} {:6} {:6}\n",
-                        uptime,
-                        fuzz_case,
-                        stats.coverage_db.len(),
-                        stats.input_len,
-                        stats.crashes,
-                        stats.crash_db.len(),
-                        stats.tx_crashes,
-                        stats.tx_crash_db.len()
-                    )
-                    .expect("Failed to write logs in log file");
-                    file.flush().expect("Failed to flush the file");
-                }
-
-                // Only for replay: all thread are finished
-                if (self.replay && stats.threads_finished == self.running_workers)
-                    || (self.iter < fuzz_case as i64 && self.iter != -1)
-                {
-                    break;
-                }
-            }
-
-            // time over, fuzzing session is finished
-            if let Some(run_time) = self.run_time {
-                if uptime > run_time as f64 {
-                    process::exit(0);
-                }
+                self.ui.as_mut().unwrap().restore_terminal();
+                eprintln!("Quitting...");
+                break;
             }
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use core::panic;
-    use std::{thread, time::Duration};
-
-    use crate::cli::config::Config;
-
-    use super::Fuzzer;
-    #[test]
-    fn test_loading_config_file() {
-        let config_file = "tests1.0/config.json".to_string();
-        let config = Config::load_config(&config_file);
-        let fuzzer = Fuzzer::new(&config);
-        assert_eq!(fuzzer.cores, 1);
-        assert_eq!(fuzzer.logs, false);
-        assert_eq!(fuzzer.function.name, "Fuzz_symbolic_execution");
-    }
-
-    #[test]
-    fn test_run_fuzzer_from_config_file() {
-        let config_file = "tests1.0/config.json".to_string();
-        let config = Config::load_config(&config_file);
-        let mut fuzzer = Fuzzer::new(&config);
-        // Create a new thread
-        let handle = thread::spawn(move || {
-            fuzzer.run_time = Some(10);
-            fuzzer.fuzz();
-        });
-
-        thread::sleep(Duration::from_secs(5));
-        if handle.is_finished() {
-            panic!("Process should be running");
-        }
-
-        thread::sleep(Duration::from_secs(6));
-        if !handle.is_finished() {
-            panic!("Process should not be running");
-        }
-    }
-    #[test]
-    fn test_init_config() {
-        let cores: i32 = 1;
-        let logs: bool = false;
-        let seed: Option<u64> = Some(1000);
-        let run_time: Option<u64> = Some(10);
-        let replay: bool = false;
-        let minimizer: bool = false;
-        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
-        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
-        let function_name: String = "Fuzz_symbolic_execution".to_string();
-        let input_file: String = "".to_string();
-        let crash_file: String = "".to_string();
-        let workspace: String = "fuzzer_workspace".to_string();
-        let input_folder: String = "".to_string();
-        let crash_folder: String = "".to_string();
-        let proptesting: bool = false;
-        let iter: i64 = 0;
-        let dict: String = "".to_string();
-        let config = Config {
-            input_folder: input_folder,
-            crash_folder: crash_folder,
-            workspace,
-            contract_file,
-            casm_file,
-            function_name,
-            input_file,
-            crash_file,
-            cores,
-            logs,
-            seed,
-            run_time,
-            replay,
-            minimizer,
-            iter,
-            proptesting,
-            dict,
-        };
-        let fuzzer = Fuzzer::new(&config);
-        assert_eq!(fuzzer.cores, 1);
-        assert_eq!(fuzzer.logs, false);
-        assert_eq!(fuzzer.function.name, "Fuzz_symbolic_execution");
-    }
-
-    #[test]
-    fn test_run_fuzzer_two() {
-        let cores: i32 = 1;
-        let logs: bool = false;
-        let seed: Option<u64> = Some(1000);
-        let run_time: Option<u64> = Some(10);
-        let replay: bool = false;
-        let minimizer: bool = false;
-        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
-        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
-        let function_name: String = "Fuzz_symbolic_execution".to_string();
-        let input_file: String = "".to_string();
-        let crash_file: String = "".to_string();
-        let workspace: String = "fuzzer_workspace".to_string();
-        let input_folder: String = "".to_string();
-        let crash_folder: String = "".to_string();
-        let proptesting: bool = false;
-        let iter: i64 = -1;
-        let dict: String = "".to_string();
-        let config = Config {
-            input_folder: input_folder,
-            crash_folder: crash_folder,
-            workspace,
-            contract_file,
-            casm_file,
-            function_name,
-            input_file,
-            crash_file,
-            cores,
-            logs,
-            seed,
-            run_time,
-            replay,
-            minimizer,
-            iter,
-            proptesting,
-            dict,
-        };
-        // create the fuzzer
-        let mut fuzzer = Fuzzer::new(&config);
-
-        // Create a new thread
-        let handle = thread::spawn(move || {
-            fuzzer.fuzz();
-        });
-
-        thread::sleep(Duration::from_secs(5));
-        if handle.is_finished() {
-            panic!("Process should be running");
-        }
-
-        thread::sleep(Duration::from_secs(6));
-        if !handle.is_finished() {
-            panic!("Process should not be running");
-        }
-    }
-
-    #[test]
-    fn test_run_fuzzer_one() {
-        let cores: i32 = 1;
-        let logs: bool = false;
-        let seed: Option<u64> = Some(1000);
-        let run_time: Option<u64> = Some(10);
-        let replay: bool = false;
-        let minimizer: bool = false;
-        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
-        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
-        let function_name: String = "Fuzz_symbolic_execution".to_string();
-        let input_file: String = "".to_string();
-        let crash_file: String = "".to_string();
-        let workspace: String = "fuzzer_workspace".to_string();
-        let input_folder: String = "".to_string();
-        let crash_folder: String = "".to_string();
-        let proptesting: bool = false;
-        let iter: i64 = -1;
-        let dict: String = "".to_string();
-        let config = Config {
-            input_folder: input_folder,
-            crash_folder: crash_folder,
-            workspace,
-            contract_file,
-            casm_file,
-            function_name,
-            input_file,
-            crash_file,
-            cores,
-            logs,
-            seed,
-            run_time,
-            replay,
-            minimizer,
-            iter,
-            proptesting,
-            dict,
-        };
-        // create the fuzzer
-        let mut fuzzer = Fuzzer::new(&config);
-
-        // Create a new thread
-        let handle = thread::spawn(move || {
-            fuzzer.fuzz();
-        });
-
-        thread::sleep(Duration::from_secs(5));
-        if handle.is_finished() {
-            panic!("Process should be running");
-        }
-
-        thread::sleep(Duration::from_secs(6));
-        if !handle.is_finished() {
-            panic!("Process should not be running");
-        }
-    }
-
-    #[test]
-    fn test_replay_one() {
-        let cores: i32 = 3;
-        let logs: bool = false;
-        let seed: Option<u64> = Some(1000);
-        let run_time: Option<u64> = Some(10);
-        let replay: bool = true;
-        let minimizer: bool = false;
-        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
-        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
-        let function_name: String = "Fuzz_symbolic_execution".to_string();
-        let input_file: String =
-            "tests1.0/test_symbolic_execution_2022-12-22--10:18:57.json".to_string();
-        let crash_file: String = "".to_string();
-        let workspace: String = "fuzzer_workspace".to_string();
-        let input_folder: String = "".to_string();
-        let crash_folder: String = "".to_string();
-        let proptesting: bool = false;
-        let iter: i64 = 0;
-        let dict: String = "".to_string();
-        let config = Config {
-            input_folder: input_folder,
-            crash_folder: crash_folder,
-            workspace,
-            contract_file,
-            casm_file,
-            function_name,
-            input_file,
-            crash_file,
-            cores,
-            logs,
-            seed,
-            run_time,
-            replay,
-            minimizer,
-            iter,
-            proptesting,
-            dict,
-        };
-        // create the fuzzer
-        let mut fuzzer = Fuzzer::new(&config);
-
-        fuzzer.replay();
-
-        let stats = fuzzer.stats.lock().expect("Failed to lock stats mutex");
-        assert_ne!(stats.coverage_db.len(), 0);
-    }
-
-    #[test]
-    fn test_replay_two() {
-        let cores: i32 = 3;
-        let logs: bool = false;
-        let seed: Option<u64> = Some(1000);
-        let run_time: Option<u64> = Some(10);
-        let replay: bool = true;
-        let minimizer: bool = false;
-        let contract_file: String = "tests1.0/fuzzinglabs.json".to_string();
-        let casm_file: String = "tests1.0/fuzzinglabs.casm".to_string();
-        let function_name: String = "Fuzz_symbolic_execution".to_string();
-        let input_file: String =
-            "tests1.0/fuzzinglabs_starknet_2023-04-04--12:38:47.json".to_string();
-        let crash_file: String = "".to_string();
-        let workspace: String = "fuzzer_workspace".to_string();
-        let input_folder: String = "".to_string();
-        let crash_folder: String = "".to_string();
-        let proptesting: bool = false;
-        let iter: i64 = 0;
-        let dict: String = "".to_string();
-        let config = Config {
-            input_folder: input_folder,
-            crash_folder: crash_folder,
-            workspace,
-            contract_file,
-            casm_file,
-            function_name,
-            input_file,
-            crash_file,
-            cores,
-            logs,
-            seed,
-            run_time,
-            replay,
-            minimizer,
-            iter,
-            proptesting,
-            dict,
-        };
-        // create the fuzzer
-        let mut fuzzer = Fuzzer::new(&config);
-
-        fuzzer.replay();
-
-        let stats = fuzzer.stats.lock().expect("Failed to lock stats mutex");
-        assert_ne!(stats.coverage_db.len(), 0);
-    }
-
-    #[test]
-    fn test_dict() {
-        let config_file = "tests1.0/config.json".to_string();
-        let config = Config::load_config(&config_file);
-        let fuzzer = Fuzzer::new(&config);
-        assert_ne!(
-            fuzzer
-                .stats
-                .lock()
-                .expect("Failed to lock stats mutex")
-                .input_db
-                .len(),
-            0
-        );
-    }
-}
+/* } */

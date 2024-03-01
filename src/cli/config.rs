@@ -5,23 +5,17 @@ use std::fs;
 /// Config struct to use instead of command line
 #[derive(Deserialize, Serialize, Clone, Default)]
 pub struct Config {
-    pub workspace: String,
     pub contract_file: String,
     pub casm_file: String,
-    pub function_name: String,
-    pub input_file: String,
-    pub crash_file: String,
-    pub input_folder: String,
-    pub crash_folder: String,
-    pub dict: String,
+    pub target_function: String,
+    pub statefull: bool,
+    pub corpus_dir: String,
+    pub crashes_dir: String,
     pub cores: i32,
-    pub logs: bool,
     pub seed: Option<u64>,
-    pub run_time: Option<u64>,
     pub replay: bool,
-    pub minimizer: bool,
     pub proptesting: bool,
-    pub iter: i64,
+    pub diff_fuzz: bool,
 }
 
 impl Config {

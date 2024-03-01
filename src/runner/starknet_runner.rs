@@ -1,11 +1,15 @@
+use super::runner::Runner;
+use crate::fuzzer::coverage::Coverage;
+use crate::fuzzer::error::Error;
+use crate::json_helper::json_parser::{self, Function};
+use crate::mutator::types::Type;
 use cairo_lang_starknet::casm_contract_class::CasmContractClass;
-use felt::Felt252;
+use cairo_vm::Felt252;
 use num_bigint::BigUint;
-use num_traits::Zero;
 use starknet_rs::definitions::block_context::BlockContext;
-use starknet_rs::execution::CallInfo;
+use starknet_rs::services::api::contract_classes::compiled_class::CompiledClass;
 use starknet_rs::state::cached_state::CachedState;
-use starknet_rs::state::state_cache::StateCache;
+use starknet_rs::state::contract_class_cache::{ContractClassCache, PermanentContractClassCache};
 use starknet_rs::EntryPointType;
 use starknet_rs::{
     definitions::constants::TRANSACTION_VERSION,
@@ -13,19 +17,19 @@ use starknet_rs::{
         execution_entry_point::ExecutionEntryPoint, CallType, TransactionExecutionContext,
     },
     state::{in_memory_state_reader::InMemoryStateReader, ExecutionResourcesManager},
-    utils::{Address, ClassHash},
+    transaction::{Address, ClassHash},
 };
-
-use std::{collections::HashMap, sync::Arc};
-
-use super::runner::Runner;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct RunnerStarknet {
+    diff_fuzz: bool,
+    target_function: Function,
+    contract_class: CasmContractClass,
     entrypoint_selector: BigUint,
     address: Address,
     class_hash: ClassHash,
-    state: CachedState<InMemoryStateReader>,
+    state: CachedState<InMemoryStateReader, PermanentContractClassCache>,
     caller_address: Address,
     entry_point_type: EntryPointType,
     tx_execution_context: TransactionExecutionContext,
@@ -34,41 +38,48 @@ pub struct RunnerStarknet {
 }
 
 impl RunnerStarknet {
-    pub fn new(contract_class: &CasmContractClass, func_entrypoint_idx: usize) -> Self {
+    pub fn new(
+        contract_class: &CasmContractClass,
+        target_function: Function,
+        diff_fuzz: bool,
+    ) -> Self {
         let entrypoints = contract_class.clone().entry_points_by_type;
         let entrypoint_selector = &entrypoints
             .external
-            .get(func_entrypoint_idx)
+            .get(target_function.selector_idx)
             .unwrap()
             .selector;
 
         // Create state reader with class hash data
-        let mut contract_class_cache: HashMap<[u8; 32], CasmContractClass> = HashMap::new();
+        let contract_class_cache = PermanentContractClassCache::default();
 
         let address = Address(1111.into()); //todo - make it configurable from the config
-        let class_hash: ClassHash = [1; 32];
-        let nonce = Felt252::zero(); //todo - make it configurable from the config
-
-        contract_class_cache.insert(class_hash, contract_class.clone());
+        let class_hash = ClassHash([1; 32]);
+        let nonce = Felt252::ZERO; //todo - make it configurable from the config
+        let compiled_class = CompiledClass::Casm {
+            casm: Arc::new(contract_class.clone()),
+            sierra: None,
+        };
+        contract_class_cache.set_contract_class(class_hash, compiled_class);
         let mut state_reader = InMemoryStateReader::default();
         state_reader
             .address_to_class_hash_mut()
-            .insert(address.clone(), class_hash);
+            .insert(address.clone(), ClassHash::from(class_hash));
         state_reader
             .address_to_nonce_mut()
             .insert(address.clone(), nonce);
 
         // Create state from the state_reader and contract cache.
-        let state = CachedState::new(Arc::new(state_reader), None, Some(contract_class_cache));
+        let state = CachedState::new(Arc::new(state_reader), Arc::new(contract_class_cache));
         let caller_address = Address(0000.into()); //todo - make it configurable from the config
         let entry_point_type = EntryPointType::External;
 
         let block_context = BlockContext::default();
         let tx_execution_context = TransactionExecutionContext::new(
             Address(0.into()),
-            Felt252::zero(),
+            Felt252::ZERO,
             Vec::new(),
-            0,
+            starknet_rs::transaction::VersionSpecificAccountTxFields::default(),
             10.into(),
             block_context.invoke_tx_max_n_steps(),
             TRANSACTION_VERSION.clone(),
@@ -76,9 +87,12 @@ impl RunnerStarknet {
         let resources_manager = ExecutionResourcesManager::default();
 
         let runner = RunnerStarknet {
+            diff_fuzz: diff_fuzz,
+            target_function: target_function,
+            contract_class: contract_class.clone(),
             entrypoint_selector: entrypoint_selector.clone(),
             address: address,
-            class_hash: class_hash,
+            class_hash: ClassHash::from(class_hash),
             state: state,
             caller_address: caller_address,
             entry_point_type: entry_point_type,
@@ -88,49 +102,167 @@ impl RunnerStarknet {
         };
         runner
     }
-    #[allow(dead_code)]
-    pub fn get_state(self) -> CachedState<InMemoryStateReader> {
-        return self.state;
+}
+
+pub fn convert_calldata(inputs: Vec<Type>) -> Vec<Felt252> {
+    let mut res: Vec<Felt252> = vec![];
+    for i in inputs {
+        match i {
+            Type::Felt252(value) => res.push(value),
+            Type::U8(value) => res.push(Felt252::from(value)),
+            Type::U16(value) => res.push(Felt252::from(value)),
+            Type::U32(value) => res.push(Felt252::from(value)),
+            Type::U64(value) => res.push(Felt252::from(value)),
+            Type::U128(value) => res.push(Felt252::from(value)),
+            Type::Bool(value) => res.push(Felt252::from(value)),
+            Type::Vector(_, vec) => res.append(&mut convert_calldata(vec)),
+        }
     }
-    #[allow(dead_code)]
-    pub fn set_state(mut self, state: StateCache) -> Self {
-        self.state.cache = state;
-        self
+    res
+}
+
+pub fn diff_fuzz(
+    exec_one: &Result<
+        starknet_rs::execution::execution_entry_point::ExecutionResult,
+        starknet_rs::transaction::error::TransactionError,
+    >,
+    exec_two: &Result<
+        starknet_rs::execution::execution_entry_point::ExecutionResult,
+        starknet_rs::transaction::error::TransactionError,
+    >,
+) -> bool {
+    match (exec_one, exec_two) {
+        (Ok(result_one), Ok(result_two)) => match (&result_one.call_info, &result_two.call_info) {
+            (Some(call_info_one), Some(call_info_two)) => {
+                call_info_one.failure_flag == call_info_two.failure_flag
+                    && call_info_one.trace == call_info_two.trace
+            }
+            (None, None) => true,
+            _ => false,
+        },
+        (Err(_), Err(_)) => true,
+        _ => false,
     }
 }
 
 impl Runner for RunnerStarknet {
-    fn run(mut self, data: &Vec<Felt252>) -> Result<(Self, CallInfo), String> {
+    fn get_contract_class(&self) -> CasmContractClass {
+        self.contract_class.clone()
+    }
+    fn get_function(&self) -> json_parser::Function {
+        self.target_function.clone()
+    }
+    fn execute(
+        &mut self,
+        inputs: Vec<Type>,
+    ) -> Result<std::option::Option<Coverage>, (Coverage, Error)> {
         // Create an execution entry point
-        let calldata = data.to_vec();
+        let calldata: Vec<Felt252> = convert_calldata(inputs.clone());
         let exec_entry_point = ExecutionEntryPoint::new(
             self.address.clone(),
             calldata.clone(),
-            Felt252::new(self.entrypoint_selector.clone()),
+            Felt252::from_dec_str(&self.entrypoint_selector.to_str_radix(10)).unwrap(),
             self.caller_address.clone(),
             self.entry_point_type,
             Some(CallType::Delegate),
             Some(self.class_hash),
             1000000,
         );
-
-        // Execute the entrypoint
-        match exec_entry_point.execute(
-            &mut self.state,
-            &self.block_context,
-            &mut self.resources_manager,
-            &mut self.tx_execution_context,
-            false,
-            self.block_context.invoke_tx_max_n_steps(),
-        ) {
-            Ok(exec_info) => {
-                let call_info = exec_info
+        if self.diff_fuzz {
+            // Execute the entrypoint
+            let exec_one: Result<
+                starknet_rs::execution::execution_entry_point::ExecutionResult,
+                starknet_rs::transaction::error::TransactionError,
+            > = exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            );
+            let exec_two = exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            );
+            if diff_fuzz(&exec_one, &exec_two) {
+                let call_info = exec_one
+                    .unwrap()
                     .call_info
                     .clone()
                     .expect("Could not get call info");
-                return Ok((self, call_info));
+                let coverage = Coverage {
+                    failure: call_info.clone().failure_flag,
+                    inputs: inputs,
+                    data: call_info.clone().trace,
+                };
+                return Ok(Some(coverage));
+            } else {
+                let fuzz_error = Error::Unknown {
+                    message: "Diff Fuzzing failed".to_string(),
+                };
+                let coverage = Coverage {
+                    failure: false,
+                    inputs: inputs,
+                    data: vec![],
+                };
+                return Err((coverage, fuzz_error));
             }
-            Err(e) => return Err(e.to_string()),
-        };
+        } else {
+            // Execute the entrypoint
+            match exec_entry_point.execute(
+                &mut self.state,
+                &self.block_context,
+                &mut self.resources_manager,
+                &mut self.tx_execution_context,
+                false,
+                self.block_context.invoke_tx_max_n_steps(),
+            ) {
+                Ok(exec_info) => {
+                    let call_info = exec_info
+                        .call_info
+                        .clone()
+                        .expect("Could not get call info");
+                    let coverage = Coverage {
+                        failure: call_info.clone().failure_flag,
+                        inputs: inputs,
+                        data: call_info.clone().trace,
+                    };
+                    return Ok(Some(coverage));
+                }
+                Err(e) => {
+                    let fuzz_error = Error::Unknown {
+                        message: e.to_string(),
+                    };
+
+                    let coverage = Coverage {
+                        failure: false,
+                        inputs: inputs,
+                        data: vec![],
+                    };
+                    return Err((coverage, fuzz_error));
+                }
+            };
+        }
+    }
+
+    fn get_target_parameters(&self) -> Vec<crate::mutator::types::Type> {
+        self.target_function.inputs.clone()
+    }
+
+    fn get_target_module(&self) -> String {
+        return "fuzzinglabs".to_string();
+    }
+
+    fn get_target_function(&self) -> String {
+        return "fuzzinglabs".to_string();
+    }
+
+    fn get_max_coverage(&self) -> usize {
+        return 10000;
     }
 }

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./imgs/cairo_fuzzer.png" />
+</p>
+
 # How to fuzz a Cairo/Starknet Smart Contract
 
 We will take this Smart Contract as an example:
@@ -73,18 +77,10 @@ Looking at the code, we deduce that the function we want to fuzz is `Fuzz_symbol
 The simple command line to fuzz the function `Fuzz_symbolic_execution` of the `fuzzinglabs.cairo` contract is:
 
 ```sh
-	cargo run --release -- --cores 10 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "Fuzz_symbolic_execution"
+cargo run --release -- --cores 11 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --target-function "Fuzz_symbolic_execution" 
 ```
 
 ![fuzzer_running](fuzzer_running.png)
-
-Understanding the output ` 1.00 uptime |     93000 fuzz cases |     92979.48 fcps |      5 coverage |      5 inputs |      0 crashes [     0 unique]`:
-- 1.00 uptime: Number of seconds the fuzzer is running
-- 93000 fuzz cases: Number of executions done
-- 92979.48 fcps: Number of Fuzz Case Per Second
-- 5 coverage: Number of instruction reached by the fuzzer
-- 5 inputs: Number of interesting inputs that generate a new coverage
-- 0 crashes [     0 unique]: Number of crashes and unique crashes
 
 ## Detecting the crash:
 Once the fuzzer will find a unique crash you will have something like this:

@@ -1,1 +1,0 @@
-mv .pre-commit-hook .git/hooks/pre-commit

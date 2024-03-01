@@ -2,90 +2,69 @@ use std::{fs, process};
 
 use clap::Parser;
 
-mod cli;
-mod custom_rand;
-mod fuzzer;
-mod json;
-mod mutator;
-mod runner;
-
+use crate::fuzzer::fuzzer::Fuzzer;
 use cli::args::Opt;
 use cli::config::Config;
-use fuzzer::fuzzer::Fuzzer;
-
+use fuzzer::fuzzer_utils::replay;
 use log::error;
 
+mod cli;
+mod fuzzer;
+mod json_helper;
+mod mutator;
+mod runner;
+mod ui;
+mod worker;
+
 fn main() {
-    // get cli args
-    let opt = Opt::parse();
-    if opt.analyze {
-        let contents = fs::read_to_string(&opt.contract).unwrap();
-        json::json_parser::analyze_json(&contents);
+    let args = Opt::parse();
+    if args.analyze {
+        let contents = fs::read_to_string(&args.contract).unwrap();
+        json_helper::json_parser::analyze_json(&contents);
         return;
     }
-    // create config file
-    let mut config = match opt.config {
+    let config = match args.config {
         // config file provided
         Some(config_file) => Config::load_config(&config_file),
         None => {
-            if opt.contract.len() == 0 && opt.proptesting == false {
+            if args.contract.len() == 0 && args.proptesting == false {
                 error!("Fuzzer needs a contract path using --contract");
                 process::exit(1);
             }
-            if opt.function.len() == 0 && opt.proptesting == false {
+            if args.target_function.len() == 0 && args.proptesting == false {
                 error!("Fuzzer needs a function name to fuzz using --function");
                 process::exit(1);
             }
 
             Config {
-                workspace: opt.workspace,
-                contract_file: opt.contract,
-                casm_file: opt.casm,
-                function_name: opt.function,
-                input_file: opt.inputfile,
-                crash_file: opt.crashfile,
-                input_folder: opt.inputfolder,
-                crash_folder: opt.crashfolder,
-                dict: opt.dict,
-                cores: opt.cores,
-                logs: opt.logs,
-                seed: opt.seed,
-                run_time: opt.run_time,
-                replay: opt.replay,
-                minimizer: opt.minimizer,
-                proptesting: opt.proptesting,
-                iter: opt.iter,
+                diff_fuzz: args.diff_fuzz,
+                statefull: args.statefull,
+                contract_file: args.contract,
+                casm_file: args.casm,
+                target_function: args.target_function,
+                corpus_dir: args.corpus_dir,
+                crashes_dir: args.crashes_dir,
+                cores: args.cores,
+                seed: args.seed,
+                replay: args.replay,
+                proptesting: args.proptesting,
             }
         }
     };
     if config.proptesting {
         let contents = fs::read_to_string(&config.contract_file).unwrap();
-        println!("\t\t\t\t\t\t\tSearching for Fuzzing functions ...");
-        let functions = json::json_parser::get_proptesting_functions(&contents);
-        if functions.len() == 0 {
-            println!("\t\t\t\t\t\t\t!! No Fuzzing functions found !!");
-            return;
-        }
+        let functions = json_helper::json_parser::get_proptesting_functions(&contents);
         for func in functions {
-            println!("\n\t\t\t\t\t\t\tFunction found => {}", &func);
-            config.function_name = func;
-            let mut fuzzer = Fuzzer::new(&config);
-            println!(
-                "\t\t\t\t\t\t\t=== {} === is now running for {} iterations",
-                config.function_name, config.iter
-            );
-            fuzzer.fuzz();
+            let mut func_config = config.clone();
+            func_config.target_function = func;
+            let mut fuzzer = Fuzzer::new(func_config);
+            fuzzer.run();
         }
+    } else if config.replay {
+        replay(&config, config.crashes_dir.as_str());
     } else {
         // create the fuzzer
-        let mut fuzzer = Fuzzer::new(&config);
-
-        // replay, minimizer mode
-        if opt.replay || opt.minimizer {
-            fuzzer.replay();
-        // launch fuzzing
-        } else {
-            fuzzer.fuzz();
-        }
+        let mut fuzzer = Fuzzer::new(config);
+        fuzzer.run();
     }
 }

@@ -1,4 +1,6 @@
-mod magic_values;
+pub mod basicmutator;
+pub mod magic_values;
+pub mod mutator;
 pub mod mutator_felt252;
-//pub mod mutator_u8;
-//mod mutator;
+pub mod rng;
+pub mod types;

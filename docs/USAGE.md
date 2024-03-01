@@ -1,15 +1,6 @@
-	    =========================================================================================================================
-
-                 _______  _______ _________ _______  _______         _______           _______  _______  _______  _______ 
-                (  ____ \(  ___  )\__   __/(  ____ )(  ___  )       (  ____ \|\     /|/ ___   )/ ___   )(  ____ \(  ____ )
-                | (    \/| (   ) |   ) (   | (    )|| (   ) |       | (    \/| )   ( |\/   )  |\/   )  || (    \/| (    )|
-                | |      | (___) |   | |   | (____)|| |   | | _____ | (__    | |   | |    /   )    /   )| (__    | (____)|
-                | |      |  ___  |   | |   |     __)| |   | |(_____)|  __)   | |   | |   /   /    /   / |  __)   |     __)
-                | |      | (   ) |   | |   | (\ (   | |   | |       | (      | |   | |  /   /    /   /  | (      | (\ (   
-                | (____/\| )   ( |___) (___| ) \ \__| (___) |       | )      | (___) | /   (_/\ /   (_/\| (____/\| ) \ \__
-                (_______/|/     \|\_______/|/   \__/(_______)       |/       (_______)(_______/(_______/(_______/|/   \__/
-
-	    =========================================================================================================================
+<p align="center">
+  <img src="./imgs/cairo_fuzzer.png" />
+</p>
 
 # Options:
 
@@ -17,62 +8,60 @@
 Usage: cairo-fuzzer [OPTIONS]
 
 Options:
-      --cores <CORES>              Set the number of threads to run [default: 1]
-      --contract <CONTRACT>        Set the path of the JSON artifact to load [default: ]
-      --casm <CASM>                Set the path of the JSON CASM artifact to load [default: ]
-      --function <FUNCTION>        Set the function to fuzz [default: ]
-      --workspace <WORKSPACE>      Workspace of the fuzzer [default: fuzzer_workspace]
-      --inputfolder <INPUTFOLDER>  Path to the inputs folder to load [default: ]
-      --crashfolder <CRASHFOLDER>  Path to the crashes folder to load [default: ]
-      --inputfile <INPUTFILE>      Path to the inputs file to load [default: ]
-      --crashfile <CRASHFILE>      Path to the crashes file to load [default: ]
-      --dict <DICT>                Path to the dictionnary file to load [default: ]
-      --logs                       Enable fuzzer logs in file
-      --seed <SEED>                Set a custom seed (only applicable for 1 core run)
-      --run-time <RUN_TIME>        Number of seconds this fuzzing session will last
-      --config <CONFIG>            Load config file
-      --replay                     Replay the corpus folder
-      --minimizer                  Minimize Corpora
-      --proptesting                Property Testing
-      --analyze                    Dump functions prototypes
-      --iter <ITER>                Iteration Number [default: -1]
-  -h, --help                       Print help
+      --cores <CORES>
+          Set the number of threads to run [default: 1]
+      --contract <CONTRACT>
+          Set the path of the JSON artifact to load [default: ]
+      --casm <CASM>
+          Set the path of the JSON CASM artifact to load [default: ]
+      --target-function <target_function>
+          Set the function to fuzz [default: ]
+      --statefull
+          Keep the state of the fuzzer between runs
+      --diff-fuzz
+          diff fuzz between runs
+      --corpus-dir <corpus_dir>
+          Path to the inputs folder to load [default: ./corpus_dir]
+      --crashes-dir <crashes_dir>
+          Path to the crashes folder to load [default: ./crash_dir]
+      --seed <SEED>
+          Set a custom seed (only applicable for 1 core run) [default: 0]
+      --config <CONFIG>
+          Load config file
+      --replay
+          Replay the corpus folder
+      --proptesting
+          Property Testing
+      --analyze
+          Dump functions prototypes
+  -h, --help
+          Print help
 ```
-
 ## Fuzzing function of a contract:
 ```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "fuzzinglabs_starknet"
+cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --target-function "fuzzinglabs_starknet"
 ```
 
-## Fuzzing function of a contract with a number of iteration max:
+## Fuzzing function of a contract with statefull fuzzing:
 ```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "fuzzinglabs_starknet" --iter 100000
+cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --target-function "fuzzinglabs_starknet" --statefull
 ```
 
 ## Load old corpus:
 ```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --function "fuzzinglabs_starknet" --inputfile "tests1.0/fuzzinglabs_starknet_2023-04-04--12:38:47.json"
+cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm --target-function "fuzzinglabs_starknet" --corpus_dir "./corpus_dir"
 ```
 
 ## Fuzzing using a config file:
 Example of config file:
 ```json
 {
-    "cores": 1,
-    "logs": false,
-    "replay": false,
-    "minimizer": false,
-    "contract_file": "tests1.0/fuzzinglabs.json",
-    "casm_file": "tests1.0/fuzzinglabs.casm",
-    "function_name": "Fuzz_symbolic_execution",
-    "input_file": "",
-    "crash_file": "",
-    "input_folder": "",
-    "crash_folder": "",
-    "workspace": "fuzzer_workspace",
-    "proptesting": false,
-    "iter": -1,
-    "dict": "tests1.0/dict"
+    "cores":11,
+    "seed": 4242,
+    "contract": "./tests1.0/fuzzinglabs_fuzz.json",
+    "casm": "./tests1.0/fuzzinglabs_fuzz.casm",
+    "corpus_dir": "./corpus",
+    "crashes_dir": "./crashes"
 }
 ```
 
@@ -82,30 +71,15 @@ cargo run --release -- --config tests/config.json
 
 ## Replay corpus folder:
 ```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm  --function "fuzzinglabs_starknet" --replay --inputfolder fuzzer_workspace/fuzzinglabs_starknet/inputs
+cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm  --function "fuzzinglabs_starknet" --replay --crashes_dir "./crash_dir" 
 ```
 
 ## Fuzzing property testing:
 Function should start with `Fuzz_`
 ```rust
-func Fuzz_symbolic_execution()
+    func Fuzz_symbolic_execution()
 ```
 
 ```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm  --proptesting --iter 500000
-```
-
-## Fuzzing with a dictionnary:
-
-Dictionnary format is the same as other fuzzers such as Honggfuzz or libafl
-```python
-key1=999999999999
-key2=888888888888
-key3=777777777777
-...
-key9=111111111111
-```
-
-```sh
-cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm  --function "Fuzz_symbolic_execution" --dict tests/dict
+    cargo run --release -- --cores 13 --contract ./tests1.0/fuzzinglabs.json --casm ./tests1.0/fuzzinglabs.casm  --proptesting --iter 500000
 ```
