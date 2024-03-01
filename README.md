@@ -11,10 +11,6 @@ Cairo-fuzzer is a tool designed for smart contract developers to test the securi
 
 ## Features:
 
-<p align="center">
-	<img src="cairo-fuzzer.png"/>
-</p>
-
 - Run Starknet contract
 - Statefull and Stateless fuzzing
 - Diffirential fuzzing (execute a call twice and verify that it generates the same trace) 
