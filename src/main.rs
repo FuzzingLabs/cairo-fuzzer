@@ -1,12 +1,10 @@
-use std::{fs, process};
-
-use clap::Parser;
-
 use crate::fuzzer::fuzzer::Fuzzer;
+use clap::Parser;
 use cli::args::Opt;
 use cli::config::Config;
 use fuzzer::fuzzer_utils::replay;
 use log::error;
+use std::{fs, process};
 
 mod cli;
 mod fuzzer;

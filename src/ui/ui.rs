@@ -1,3 +1,6 @@
+use crate::ui::utils::create_event_item;
+use crate::{fuzzer::error::Error, mutator::types::Type};
+use crate::{fuzzer::stats::Stats, mutator::types::Parameters};
 use crossterm::{
     event::{self, Event, KeyCode},
     execute,
@@ -5,7 +8,6 @@ use crossterm::{
 };
 #[cfg(target_os = "linux")]
 use memory_stats::memory_stats;
-
 use ratatui::prelude::CrosstermBackend;
 use ratatui::Terminal;
 use ratatui::{prelude::*, widgets::*};
@@ -14,10 +16,6 @@ use std::io;
 use std::io::Stdout;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
-
-use crate::ui::utils::create_event_item;
-use crate::{fuzzer::error::Error, mutator::types::Type};
-use crate::{fuzzer::stats::Stats, mutator::types::Parameters};
 
 #[derive(Debug, Clone)]
 pub struct UiEventData {
