@@ -156,7 +156,7 @@ impl Fuzzer {
         }
     }
 
-    pub fn run(&mut self, proptesting:bool) {
+    pub fn run(&mut self, proptesting: bool) {
         // Init workers
         self.start_threads();
 
