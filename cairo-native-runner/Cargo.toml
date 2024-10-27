@@ -1,0 +1,8 @@
+[package]
+name = "cairo-native-runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cairo-native = "0.2.0-alpha.4"
+starknet-types-core = "0.1.7"
