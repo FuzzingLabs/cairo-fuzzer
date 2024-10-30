@@ -8,10 +8,26 @@ use cairo_native::{
 use std::path::Path;
 use std::sync::Arc;
 
+/// Cairo Runner that uses Cairo Native  
 pub struct CairoNativeRunner {
     native_context: NativeContext,
     sierra_program: Option<Arc<Program>>,
     entry_point_id: Option<FunctionId>,
+}
+
+/// Compile the sierra program into a MLIR module
+fn compile_sierra_program<'a>(
+    native_context: &'a NativeContext,
+    sierra_program: &'a Program,
+) -> Result<NativeModule<'a>, String> {
+    native_context
+        .compile(sierra_program, false)
+        .map_err(|e| e.to_string())
+}
+
+// Function with memoization
+fn create_executor<'a>(native_program: NativeModule<'a>) -> JitNativeExecutor<'a> {
+    JitNativeExecutor::from_native_module(native_program, Default::default())
 }
 
 impl CairoNativeRunner {
@@ -24,8 +40,11 @@ impl CairoNativeRunner {
         }
     }
 
+    /// Initialize the runner
+    /// 1 - Start by compiling the Cairo program to Sierra
+    /// 2 - Store the entry point id in an instance variable
     pub fn init(&mut self, program_path: &Path, entry_point: &str) -> Result<(), String> {
-        // Convert and store the Sierra program
+        // Convert and store the Sierra programs
         self.convert_and_store_cairo_to_sierra(program_path)?;
 
         // Find and store the entry point ID
@@ -34,6 +53,7 @@ impl CairoNativeRunner {
         Ok(())
     }
 
+    /// Compile a Cairo program to Sierra
     fn convert_and_store_cairo_to_sierra(&mut self, program_path: &Path) -> Result<(), String> {
         if self.sierra_program.is_none() {
             self.sierra_program = Some(cairo_to_sierra(program_path));
@@ -41,6 +61,7 @@ impl CairoNativeRunner {
         Ok(())
     }
 
+    /// Find the entry point id given it's name
     fn find_entry_point_id(&self, entry_point: &str) -> Result<FunctionId, String> {
         let sierra_program = self
             .sierra_program
@@ -51,28 +72,19 @@ impl CairoNativeRunner {
             .cloned()
     }
 
-    fn compile_sierra_program(&self) -> Result<NativeModule, String> {
-        let sierra_program = self
-            .sierra_program
-            .as_ref()
-            .ok_or("Sierra program not available")?;
-        self.native_context
-            .compile(sierra_program, false)
-            .map_err(|e| e.to_string())
-    }
-
-    fn create_executor<'a>(&self, native_program: NativeModule<'a>) -> JitNativeExecutor<'a> {
-        JitNativeExecutor::from_native_module(native_program, Default::default())
-    }
-
     // Run the program
-    // TODO : Only keep the execution part in this method
+    #[inline]
     pub fn run_program(&mut self, params: &[Value]) -> Result<ExecutionResult, String> {
         // Compile the Sierra program into a MLIR module
-        let native_program = self.compile_sierra_program()?;
+        let native_program = compile_sierra_program(
+            &self.native_context,
+            self.sierra_program
+                .as_ref()
+                .ok_or("Sierra program not available")?,
+        )?;
 
         // Instantiate the executor
-        let native_executor = self.create_executor(native_program);
+        let native_executor = create_executor(native_program);
 
         // Execute the program
         native_executor
