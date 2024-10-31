@@ -1,9 +1,10 @@
+use std::sync::Arc;
+
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_native::execution_result::ExecutionResult;
 use cairo_native::module::NativeModule;
 use cairo_native::{context::NativeContext, executor::JitNativeExecutor, Value};
-use std::sync::Arc;
 
 /// Cairo Runner that uses Cairo Native  
 pub struct CairoNativeRunner {
@@ -39,32 +40,19 @@ impl CairoNativeRunner {
 
     /// Initialize the runner
     /// 1 - Load the sierra_program instance variable
-    /// 2 - Store the entry point id in an instance variable
+    /// 2 - Load the entry point id in an instance variable
     pub fn init(
         &mut self,
-        entry_point: &str,
+        entry_point_id: &Option<FunctionId>,
         sierra_program: &Option<Arc<Program>>,
     ) -> Result<(), String> {
         self.sierra_program = sierra_program.clone();
-
-        // Find and store the entry point ID
-        self.entry_point_id = Some(self.find_entry_point_id(entry_point)?);
+        self.entry_point_id = entry_point_id.clone();
 
         Ok(())
     }
 
-    /// Find the entry point id given it's name
-    fn find_entry_point_id(&self, entry_point: &str) -> Result<FunctionId, String> {
-        let sierra_program = self
-            .sierra_program
-            .as_ref()
-            .ok_or("Sierra program not available")?;
-        cairo_native::utils::find_function_id(sierra_program, entry_point)
-            .ok_or_else(|| format!("Entry point '{}' not found", entry_point))
-            .cloned()
-    }
-
-    // Run the program
+    // Run the program using Cairo Native
     #[inline]
     pub fn run_program(&mut self, params: &[Value]) -> Result<ExecutionResult, String> {
         // Compile the Sierra program into a MLIR module
