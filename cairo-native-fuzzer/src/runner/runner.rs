@@ -2,10 +2,7 @@ use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_native::execution_result::ExecutionResult;
 use cairo_native::module::NativeModule;
-use cairo_native::{
-    context::NativeContext, executor::JitNativeExecutor, utils::cairo_to_sierra, Value,
-};
-use std::path::Path;
+use cairo_native::{context::NativeContext, executor::JitNativeExecutor, Value};
 use std::sync::Arc;
 
 /// Cairo Runner that uses Cairo Native  
@@ -25,7 +22,7 @@ fn compile_sierra_program<'a>(
         .map_err(|e| e.to_string())
 }
 
-// Function with memoization
+// Create the Native Executor (with JIT)
 fn create_executor<'a>(native_program: NativeModule<'a>) -> JitNativeExecutor<'a> {
     JitNativeExecutor::from_native_module(native_program, Default::default())
 }
@@ -41,23 +38,18 @@ impl CairoNativeRunner {
     }
 
     /// Initialize the runner
-    /// 1 - Start by compiling the Cairo program to Sierra
+    /// 1 - Load the sierra_program instance variable
     /// 2 - Store the entry point id in an instance variable
-    pub fn init(&mut self, program_path: &Path, entry_point: &str) -> Result<(), String> {
-        // Convert and store the Sierra programs
-        self.convert_and_store_cairo_to_sierra(program_path)?;
+    pub fn init(
+        &mut self,
+        entry_point: &str,
+        sierra_program: &Option<Arc<Program>>,
+    ) -> Result<(), String> {
+        self.sierra_program = sierra_program.clone();
 
         // Find and store the entry point ID
         self.entry_point_id = Some(self.find_entry_point_id(entry_point)?);
 
-        Ok(())
-    }
-
-    /// Compile a Cairo program to Sierra
-    fn convert_and_store_cairo_to_sierra(&mut self, program_path: &Path) -> Result<(), String> {
-        if self.sierra_program.is_none() {
-            self.sierra_program = Some(cairo_to_sierra(program_path));
-        }
         Ok(())
     }
 

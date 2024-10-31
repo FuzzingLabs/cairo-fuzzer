@@ -1,5 +1,5 @@
-mod runner;
 mod fuzzer;
+mod runner;
 
 use crate::fuzzer::fuzzer::Fuzzer;
 
@@ -15,12 +15,10 @@ fn main() {
     let mut fuzzer = Fuzzer::new(program_path, entry_point, params);
 
     match fuzzer.init() {
-        Ok(()) => {
-            match fuzzer.fuzz() {
-                Ok(()) => println!("Fuzzing completed successfully."),
-                Err(e) => eprintln!("Error during fuzzing: {}", e),
-            }
-        }
+        Ok(()) => match fuzzer.fuzz() {
+            Ok(()) => println!("Fuzzing completed successfully."),
+            Err(e) => eprintln!("Error during fuzzing: {}", e),
+        },
         Err(e) => eprintln!("Error during initialization: {}", e),
     }
 }

@@ -1,11 +1,15 @@
+use crate::runner::runner::CairoNativeRunner;
+use cairo_lang_sierra::program::Program;
+use cairo_native::utils::cairo_to_sierra;
 use cairo_native::Value;
 use std::path::PathBuf;
-use crate::runner::runner::CairoNativeRunner;
+use std::sync::Arc;
 
 pub struct Fuzzer {
     program_path: PathBuf,
     entry_point: String,
     runner: CairoNativeRunner,
+    sierra_program: Option<Arc<Program>>,
     params: Vec<Value>,
 }
 
@@ -15,13 +19,23 @@ impl Fuzzer {
             program_path,
             entry_point,
             runner: CairoNativeRunner::new(),
+            sierra_program: None,
             params,
         }
     }
 
-    /// init the fuzzer
+    /// Init the fuzzer
     pub fn init(&mut self) -> Result<(), String> {
-        self.runner.init(&self.program_path, &self.entry_point)
+        self.convert_and_store_cairo_to_sierra()?;
+        self.runner.init(&self.entry_point, &self.sierra_program)
+    }
+
+    /// Compile the Cairo program to Sierra
+    fn convert_and_store_cairo_to_sierra(&mut self) -> Result<(), String> {
+        if self.sierra_program.is_none() {
+            self.sierra_program = Some(cairo_to_sierra(&self.program_path));
+        }
+        Ok(())
     }
 
     /// Run the fuzzer
