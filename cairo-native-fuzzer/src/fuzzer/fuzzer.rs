@@ -6,7 +6,10 @@ use cairo_lang_sierra::program::Program;
 use cairo_native::utils::cairo_to_sierra;
 use cairo_native::Value;
 
+use crate::mutator::argument_type::map_argument_type;
+use crate::mutator::argument_type::ArgumentType;
 use crate::runner::runner::CairoNativeRunner;
+use crate::utils::get_function_by_id;
 
 pub struct Fuzzer {
     program_path: PathBuf,
@@ -56,6 +59,42 @@ impl Fuzzer {
         cairo_native::utils::find_function_id(sierra_program, &self.entry_point)
             .expect(&format!("Entry point '{}' not found", self.entry_point))
             .clone()
+    }
+
+    /// Returns a vector of the function parameter types
+    ///
+    /// For example, given a function with the prototype:
+    /// ```
+    /// myfunction(a: felt252, b: felt252) -> felt252
+    /// ```
+    /// This function will return:
+    /// ```
+    /// [Felt, Felt]
+    /// ```
+    pub fn get_function_arguments_types(&self) -> Vec<ArgumentType> {
+        let func = match (&self.sierra_program, &self.entry_point_id) {
+            (Some(program), Some(entry_point_id)) => get_function_by_id(program, entry_point_id),
+            _ => None,
+        };
+
+        if let Some(func) = func {
+            let argument_types: Vec<ArgumentType> = func
+                .signature
+                .param_types
+                .iter()
+                .filter_map(|param_type| {
+                    if let Some(debug_name) = &param_type.debug_name {
+                        /// Map param_type to an `ArgumentType`
+                        /// For now we only handle felt252
+                        return map_argument_type(debug_name);
+                    }
+                    None
+                })
+                .collect();
+            argument_types
+        } else {
+            Vec::new()
+        }
     }
 
     /// Run the fuzzer

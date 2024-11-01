@@ -1,11 +1,13 @@
 mod fuzzer;
+mod mutator;
 mod runner;
-
-use crate::fuzzer::fuzzer::Fuzzer;
+mod utils;
 
 use cairo_native::Value;
 use starknet_types_core::felt::Felt;
 use std::path::Path;
+
+use crate::fuzzer::fuzzer::Fuzzer;
 
 fn main() {
     let program_path = Path::new("examples/hello.cairo").to_path_buf();
