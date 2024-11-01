@@ -3,17 +3,28 @@ mod mutator;
 mod runner;
 mod utils;
 
-use cairo_native::Value;
-use starknet_types_core::felt::Felt;
-use std::path::Path;
+use clap::Parser;
+use std::path::PathBuf;
 
 use crate::fuzzer::fuzzer::Fuzzer;
 
-fn main() {
-    let program_path = Path::new("examples/hello.cairo").to_path_buf();
-    let entry_point = "hello::hello::greet".to_string();
+/// Command-line arguments for the fuzzer
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Path to the Cairo program
+    #[arg(short, long)]
+    program_path: PathBuf,
 
-    let mut fuzzer = Fuzzer::new(program_path, entry_point);
+    /// Entry point of the Sierra program
+    #[arg(short, long)]
+    entry_point: String,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
 
     match fuzzer.init() {
         Ok(()) => match fuzzer.fuzz() {

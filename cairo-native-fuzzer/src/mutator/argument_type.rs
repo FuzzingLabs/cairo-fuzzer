@@ -1,5 +1,3 @@
-use starknet_types_core::felt::Felt;
-
 /// Enum representing the types of arguments that can be passed to a function
 #[derive(Debug)]
 pub enum ArgumentType {

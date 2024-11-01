@@ -88,8 +88,8 @@ impl Fuzzer {
                 .iter()
                 .filter_map(|param_type| {
                     if let Some(debug_name) = &param_type.debug_name {
-                        /// Map param_type to an `ArgumentType`
-                        /// For now we only handle felt252
+                        // Map param_type to an `ArgumentType`
+                        // For now we only handle felt252
                         return map_argument_type(debug_name);
                     }
                     None
@@ -107,7 +107,7 @@ impl Fuzzer {
         self.params = argument_types
             .into_iter()
             .map(|arg_type| match arg_type {
-                ArgumentType::Felt => Value::Felt252(Felt::from_bytes_be_slice(b"\x00")),
+                ArgumentType::Felt => Value::Felt252(Felt::from(0)),
                 // TODO: Add support for other types
             })
             .collect();

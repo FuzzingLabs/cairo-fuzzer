@@ -6,4 +6,5 @@ edition = "2021"
 [dependencies]
 cairo-lang-sierra = "2.8.4"
 cairo-native = "0.2.0-alpha.4"
+clap = "4.5.20"
 starknet-types-core = "0.1.7"
