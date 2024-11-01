@@ -5,6 +5,7 @@ use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_native::utils::cairo_to_sierra;
 use cairo_native::Value;
+use starknet_types_core::felt::Felt;
 
 use crate::mutator::argument_type::map_argument_type;
 use crate::mutator::argument_type::ArgumentType;
@@ -21,13 +22,13 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
-    pub fn new(program_path: PathBuf, entry_point: String, params: Vec<Value>) -> Self {
+    pub fn new(program_path: PathBuf, entry_point: String) -> Self {
         Self {
             program_path,
             entry_point,
             runner: CairoNativeRunner::new(),
             sierra_program: None,
-            params,
+            params: Vec::new(),
             entry_point_id: None,
         }
     }
@@ -39,7 +40,10 @@ impl Fuzzer {
     pub fn init(&mut self) -> Result<(), String> {
         self.convert_and_store_cairo_to_sierra()?;
         self.entry_point_id = Some(self.find_entry_point_id());
-        self.runner.init(&self.entry_point_id, &self.sierra_program)
+        self.runner
+            .init(&self.entry_point_id, &self.sierra_program)?;
+        self.generate_params();
+        Ok(())
     }
 
     /// Compile the Cairo program to Sierra
@@ -97,9 +101,22 @@ impl Fuzzer {
         }
     }
 
+    /// Generate params based on the function argument types
+    pub fn generate_params(&mut self) {
+        let argument_types = self.get_function_arguments_types();
+        self.params = argument_types
+            .into_iter()
+            .map(|arg_type| match arg_type {
+                ArgumentType::Felt => Value::Felt252(Felt::from_bytes_be_slice(b"\x00")),
+                // TODO: Add support for other types
+            })
+            .collect();
+    }
+
     /// Run the fuzzer
     /// We just use an infinite loop for now
     pub fn fuzz(&mut self) -> Result<(), String> {
+        self.generate_params();
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {

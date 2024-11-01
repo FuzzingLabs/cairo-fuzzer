@@ -12,9 +12,8 @@ use crate::fuzzer::fuzzer::Fuzzer;
 fn main() {
     let program_path = Path::new("examples/hello.cairo").to_path_buf();
     let entry_point = "hello::hello::greet".to_string();
-    let params = vec![Value::Felt252(Felt::from_bytes_be_slice(b"user"))];
 
-    let mut fuzzer = Fuzzer::new(program_path, entry_point, params);
+    let mut fuzzer = Fuzzer::new(program_path, entry_point);
 
     match fuzzer.init() {
         Ok(()) => match fuzzer.fuzz() {
