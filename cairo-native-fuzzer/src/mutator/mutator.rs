@@ -26,17 +26,33 @@ extern crate alloc;
 
 use super::magic_values;
 use alloc::vec::Vec;
-use felt::Felt252;
 use magic_values::MAGIC_VALUES;
 /// An empty database that never returns an input, useful for fuzzers without
 /// corpuses or input databases.
 pub struct EmptyDatabase;
 
+use starknet_types_core::felt::Felt;
+
+// Define a trait for converting to a byte array
+trait ToBeBytes {
+    fn to_be_bytes(&self) -> [u8; 32];
+}
+
+// Implement the ToBeBytes trait for the Felt type
+impl ToBeBytes for Felt {
+    fn to_be_bytes(&self) -> [u8; 32] {
+        let (_, bytes) = self.to_bigint().to_bytes_be();
+        let mut array = [0u8; 32];
+        array[32 - bytes.len()..].copy_from_slice(&bytes);
+        array
+    }
+}
+
 impl InputDatabase for EmptyDatabase {
     fn num_inputs(&self) -> usize {
         0
     }
-    fn input(&self, _idx: usize) -> Option<Felt252> {
+    fn input(&self, _idx: usize) -> Option<Felt> {
         None
     }
 }
@@ -57,7 +73,7 @@ pub trait InputDatabase {
 
     /// Get an input with a specific zero-index identifier
     /// If the `idx` is invalid or otherwise not available, this returns `None`
-    fn input(&self, idx: usize) -> Option<Felt252>;
+    fn input(&self, idx: usize) -> Option<Felt>;
 }
 
 /// A basic random number generator based on xorshift64 with 64-bits of state
@@ -130,7 +146,7 @@ pub struct Mutator {
     /// It is strongly recommended that you do `input.clear()` and
     /// `input.extend_from_slice()` to update this buffer, to prevent the
     /// backing from being deallocated and reallocated.
-    pub input: Vec<Felt252>,
+    pub input: Vec<Felt>,
     pub types: Vec<String>,
     /// If non-zero length, this contains a list of valid indicies into
     /// `input`, indicating which bytes of the input should mutated. This often
@@ -222,12 +238,12 @@ impl Mutator {
                 "core::integer::u256" => {
                     bits_to_save = 256; // still need to fix for this
                 }
-                "core::felt252" => {
+                "core::Felt" => {
                     bits_to_save = 252;
                 }
 
                 _ => {
-                    bits_to_save = 252; // Should be a Todo! but since the runner takes a felt252 vector, it's a good idea to send random data
+                    bits_to_save = 252; // Should be a Todo! but since the runner takes a Felt vector, it's a good idea to send random data
                 }
             }
             if bits_to_save != 256 && bits_to_save != 252 {
@@ -235,7 +251,7 @@ impl Mutator {
                 for i in 0..new_value.len() - (bits_to_save / 8) {
                     new_value[i] = 0;
                 }
-                self.input[idx] = Felt252::from_bytes_be(&new_value);
+                self.input[idx] = Felt::from_bytes_be(&new_value);
             }
             idx += 1;
         });
@@ -482,9 +498,9 @@ impl Mutator {
 
         // Create what to expand with
         let iter = if self.printable {
-            core::iter::repeat(Felt252::from(b' ')).take(self.rng.rand_exp(1, max_expand))
+            core::iter::repeat(Felt::from(b' ')).take(self.rng.rand_exp(1, max_expand))
         } else {
-            core::iter::repeat(Felt252::from(b'\0')).take(self.rng.rand_exp(1, max_expand))
+            core::iter::repeat(Felt::from(b'\0')).take(self.rng.rand_exp(1, max_expand))
         };
 
         // Expand at `offset` with `iter`
@@ -536,14 +552,14 @@ impl Mutator {
                 // Apply the delta, interpreting the bytes as a random
                 // endianness
                 let tmp = if self.rng.rand(0, 1) == 0 {
-                    (Felt252::from(delta) + Felt252::from(tmp))
+                    (Felt::from(delta) + Felt::from(tmp))
                 } else {
                     //tmp.swap_bytes().wrapping_add(delta as $ty).swap_bytes()
-                    Felt252::from(delta)
+                    Felt::from(delta)
                 };
 
                 // Write the new value out to the input
-                self.input[offset] += Felt252::from(tmp);
+                self.input[offset] += Felt::from(tmp);
             }};
         }
 
@@ -553,7 +569,7 @@ impl Mutator {
             2 => mutate!(u16),
             4 => mutate!(u32),
             8 => mutate!(u64),
-            16 => mutate!(Felt252),
+            16 => mutate!(Felt),
             _ => unreachable!(),
         };
     }
@@ -582,11 +598,11 @@ impl Mutator {
         // Replace the selected bytes at the offset with `chr`
         self.input[offset..offset + len]
             .iter_mut()
-            .for_each(|x| *x = Felt252::from(chr));
+            .for_each(|x| *x = Felt::from(chr));
     }
 
     /// Swap two ranges in an input buffer
-    fn swap_ranges(vec: &mut [Felt252], mut offset1: usize, mut offset2: usize, mut len: usize) {
+    fn swap_ranges(vec: &mut [Felt], mut offset1: usize, mut offset2: usize, mut len: usize) {
         if offset1 < offset2 && offset1 + len >= offset2 {
             // The ranges have the following layout here:
             // [o1--------]
@@ -656,7 +672,7 @@ impl Mutator {
 
     /// Insert `buf` at `offset` in the input. `buf` will be truncated to
     /// ensure the input stays within the maximum input size
-    fn insert(&mut self, offset: usize, buf: Felt252) {
+    fn insert(&mut self, offset: usize, buf: Felt) {
         self.input.insert(offset, buf.clone());
         // Make sure we don't expand past the maximum input size
         //let len = core::cmp::min(buf.len(), self.max_input_size - self.input.len());
@@ -676,7 +692,7 @@ impl Mutator {
         let len = core::cmp::min(buf.len(), target.len());
         let mut i = 0;
         while i < len {
-            target[i] = Felt252::from(buf[i]);
+            target[i] = Felt::from(buf[i]);
             i += 1;
         }
         // Overwrite the bytes
@@ -695,7 +711,7 @@ impl Mutator {
         let len = core::cmp::min(len, self.max_input_size - self.input.len());
 
         // Create an interator to splice into the input
-        let rep = core::iter::repeat(Felt252::from(b'\0')).take(len);
+        let rep = core::iter::repeat(Felt::from(b'\0')).take(len);
 
         // Expand at `dest` with `rep`, making room for the copy
         self.input.splice(dest..dest, rep);
@@ -786,13 +802,13 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                Felt252::from(self.rng.rand(0, 94) + 32),
-                Felt252::from(self.rng.rand(0, 94) + 32),
+                Felt::from(self.rng.rand(0, 94) + 32),
+                Felt::from(self.rng.rand(0, 94) + 32),
             ]
         } else {
             [
-                Felt252::from(self.rng.rand(0, 255)),
-                Felt252::from(self.rng.rand(0, 255)),
+                Felt::from(self.rng.rand(0, 255)),
+                Felt::from(self.rng.rand(0, 255)),
             ]
         };
 
@@ -815,13 +831,13 @@ impl Mutator {
         // Pick some random values
         let bytes = if self.printable {
             [
-                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
-                Felt252::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
+                Felt::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
+                Felt::from(self.rng.rand(0, 94) + 32).to_be_bytes(),
             ]
         } else {
             [
-                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
-                Felt252::from(self.rng.rand(0, 255)).to_be_bytes(),
+                Felt::from(self.rng.rand(0, 255)).to_be_bytes(),
+                Felt::from(self.rng.rand(0, 255)).to_be_bytes(),
             ]
         };
 
@@ -923,7 +939,7 @@ impl Mutator {
         // Pick a random magic value
         let magic_value = &MAGIC_VALUES[self.rng.rand(0, MAGIC_VALUES.len() - 1)];
         for i in magic_value.iter() {
-            self.insert(offset, Felt252::from(*i));
+            self.insert(offset, Felt::from(*i));
         }
         // Insert it
     }
@@ -947,12 +963,12 @@ impl Mutator {
             self.input[offset..offset + amount]
                 .iter_mut()
                 .for_each(|x| {
-                    *x = Felt252::from(rng.rand(0, 94) + 32);
+                    *x = Felt::from(rng.rand(0, 94) + 32);
                 });
         } else {
             self.input[offset..offset + amount]
                 .iter_mut()
-                .for_each(|x| *x = Felt252::from(rng.rand(0, 255)));
+                .for_each(|x| *x = Felt::from(rng.rand(0, 255)));
         }
     }
 
@@ -972,31 +988,31 @@ impl Mutator {
         if self.printable {
             self.input.splice(
                 offset..offset,
-                (0..amount).map(|_| Felt252::from(rng.rand(0, 94) + 32)),
+                (0..amount).map(|_| Felt::from(rng.rand(0, 94) + 32)),
             );
         } else {
             self.input.splice(
                 offset..offset,
-                (0..amount).map(|_| Felt252::from(rng.rand(0, 255))),
+                (0..amount).map(|_| Felt::from(rng.rand(0, 255))),
             );
         }
     }
 
     // Corrupt a random bit in the input
-    /*     byte_corruptor!(bit, |obj: &mut Self, x: Felt252| -> Felt252 {
-        x ^ Felt252::from(1u8 << obj.rng.rand(0, 7))
+    /*     byte_corruptor!(bit, |obj: &mut Self, x: Felt| -> Felt {
+        x ^ Felt::from(1u8 << obj.rng.rand(0, 7))
     }); */
 
     // Increment a byte in the input
-    byte_corruptor!(inc_byte, |_: &mut Self, x: Felt252| -> Felt252 {
-        x + Felt252::from(1)
+    byte_corruptor!(inc_byte, |_: &mut Self, x: Felt| -> Felt {
+        x + Felt::from(1)
     });
 
     // Decrement a byte in the input
-    byte_corruptor!(dec_byte, |_: &mut Self, x: Felt252| -> Felt252 {
-        x - Felt252::from(1)
+    byte_corruptor!(dec_byte, |_: &mut Self, x: Felt| -> Felt {
+        x - Felt::from(1)
     });
 
     // Negate a byte in the input
-    byte_corruptor!(neg_byte, |_: &mut Self, x: Felt252| -> Felt252 { -x });
+    byte_corruptor!(neg_byte, |_: &mut Self, x: Felt| -> Felt { -x });
 }
