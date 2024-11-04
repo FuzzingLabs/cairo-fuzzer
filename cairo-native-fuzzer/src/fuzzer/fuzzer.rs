@@ -9,9 +9,11 @@ use starknet_types_core::felt::Felt;
 
 use crate::mutator::argument_type::map_argument_type;
 use crate::mutator::argument_type::ArgumentType;
+use crate::mutator::mutator::Mutator;
 use crate::runner::runner::CairoNativeRunner;
 use crate::utils::get_function_by_id;
 
+#[allow(dead_code)]
 pub struct Fuzzer {
     program_path: PathBuf,
     entry_point: String,
@@ -19,6 +21,7 @@ pub struct Fuzzer {
     sierra_program: Option<Arc<Program>>,
     params: Vec<Value>,
     entry_point_id: Option<FunctionId>,
+    mutator: Mutator,
 }
 
 impl Fuzzer {
@@ -30,6 +33,7 @@ impl Fuzzer {
             sierra_program: None,
             params: Vec::new(),
             entry_point_id: None,
+            mutator: Mutator::new(),
         }
     }
 
@@ -113,10 +117,34 @@ impl Fuzzer {
             .collect();
     }
 
+    /// Mutate a single function parameter
+    pub fn mutate_param(&mut self, value: Value) -> Value {
+        match value {
+            Value::Felt252(felt) => {
+                // Perform some mutation on the felt value
+                // For now it's just a placeholder function
+                let mutated_felt = felt;
+                Value::Felt252(mutated_felt)
+            }
+            // TODO: Add support for other types
+            _ => value,
+        }
+    }
+
+    /// Mutate the parameters using the Mutator
+    fn mutate_params(&mut self) {
+        // Iterate through the current params and mutate each one
+        for i in 0..self.params.len() {
+            let mutated_value = self.mutate_param(self.params[i].clone());
+            self.params[i] = mutated_value;
+        }
+    }
+
     /// Run the fuzzer
     /// We just use an infinite loop for now
     pub fn fuzz(&mut self) -> Result<(), String> {
         self.generate_params();
+        self.mutate_params();
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {
