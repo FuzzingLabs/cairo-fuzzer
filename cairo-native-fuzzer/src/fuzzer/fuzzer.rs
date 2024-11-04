@@ -9,7 +9,7 @@ use starknet_types_core::felt::Felt;
 
 use crate::mutator::argument_type::map_argument_type;
 use crate::mutator::argument_type::ArgumentType;
-use crate::mutator::mutator::Mutator;
+use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::CairoNativeRunner;
 use crate::utils::get_function_by_id;
 
@@ -22,6 +22,7 @@ pub struct Fuzzer {
     params: Vec<Value>,
     entry_point_id: Option<FunctionId>,
     mutator: Mutator,
+    argument_types: Vec<ArgumentType>,
 }
 
 impl Fuzzer {
@@ -34,6 +35,7 @@ impl Fuzzer {
             params: Vec::new(),
             entry_point_id: None,
             mutator: Mutator::new(),
+            argument_types: Vec::new(),
         }
     }
 
@@ -46,6 +48,7 @@ impl Fuzzer {
         self.entry_point_id = Some(self.find_entry_point_id());
         self.runner
             .init(&self.entry_point_id, &self.sierra_program)?;
+        self.argument_types = self.get_function_arguments_types();
         self.generate_params();
         Ok(())
     }
@@ -107,9 +110,9 @@ impl Fuzzer {
 
     /// Generate params based on the function argument types
     pub fn generate_params(&mut self) {
-        let argument_types = self.get_function_arguments_types();
-        self.params = argument_types
-            .into_iter()
+        self.params = self
+            .argument_types
+            .iter()
             .map(|arg_type| match arg_type {
                 ArgumentType::Felt => Value::Felt252(Felt::from(0)),
                 // TODO: Add support for other types
@@ -121,9 +124,8 @@ impl Fuzzer {
     pub fn mutate_param(&mut self, value: Value) -> Value {
         match value {
             Value::Felt252(felt) => {
-                // Perform some mutation on the felt value
-                // For now it's just a placeholder function
-                let mutated_felt = felt;
+                // Use the Mutator to mutate the felt value
+                let mutated_felt = self.mutator.mutate(felt);
                 Value::Felt252(mutated_felt)
             }
             // TODO: Add support for other types
@@ -144,7 +146,6 @@ impl Fuzzer {
     /// We just use an infinite loop for now
     pub fn fuzz(&mut self) -> Result<(), String> {
         self.generate_params();
-        self.mutate_params();
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {
@@ -153,6 +154,7 @@ impl Fuzzer {
                 }
                 Err(e) => eprintln!("Error during execution: {}", e),
             }
+            self.mutate_params();
         }
     }
 }
