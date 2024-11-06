@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
+use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
-use cairo_native::utils::cairo_to_sierra;
-use cairo_native::Value;
+use cairo_lang_starknet::compile::compile_path;
 use starknet_types_core::felt::Felt;
 
 use crate::mutator::argument_type::map_argument_type;
@@ -19,7 +19,7 @@ pub struct Fuzzer {
     entry_point: String,
     runner: CairoNativeRunner,
     sierra_program: Option<Arc<Program>>,
-    params: Vec<Value>,
+    params: Vec<Felt>,
     entry_point_id: Option<FunctionId>,
     mutator: Mutator,
     argument_types: Vec<ArgumentType>,
@@ -55,9 +55,20 @@ impl Fuzzer {
 
     /// Compile the Cairo program to Sierra
     fn convert_and_store_cairo_to_sierra(&mut self) -> Result<(), String> {
-        if self.sierra_program.is_none() {
-            self.sierra_program = Some(cairo_to_sierra(&self.program_path));
-        }
+        let contract = compile_path(
+            &self.program_path,
+            None,
+            CompilerConfig {
+                replace_ids: true,
+                ..Default::default()
+            },
+        )
+        .map_err(|e| format!("Failed to compile Cairo program: {}", e))?;
+
+        let sierra_program = contract
+            .extract_sierra_program()
+            .map_err(|e| format!("Failed to extract Sierra program: {}", e))?;
+        self.sierra_program = Some(Arc::new(sierra_program));
         Ok(())
     }
 
@@ -114,30 +125,23 @@ impl Fuzzer {
             .argument_types
             .iter()
             .map(|arg_type| match arg_type {
-                ArgumentType::Felt => Value::Felt252(Felt::from(0)),
+                ArgumentType::Felt => Felt::from(0),
                 // TODO: Add support for other types
             })
             .collect();
     }
 
     /// Mutate a single function parameter
-    pub fn mutate_param(&mut self, value: Value) -> Value {
-        match value {
-            Value::Felt252(felt) => {
-                // Use the Mutator to mutate the felt value
-                let mutated_felt = self.mutator.mutate(felt);
-                Value::Felt252(mutated_felt)
-            }
-            // TODO: Add support for other types
-            _ => value,
-        }
+    pub fn mutate_param(&mut self, value: Felt) -> Felt {
+        // Use the Mutator to mutate the felt value
+        self.mutator.mutate(value)
     }
 
     /// Mutate the parameters using the Mutator
     fn mutate_params(&mut self) {
         // Iterate through the current params and mutate each one
         for i in 0..self.params.len() {
-            let mutated_value = self.mutate_param(self.params[i].clone());
+            let mutated_value = self.mutate_param(self.params[i]);
             self.params[i] = mutated_value;
         }
     }

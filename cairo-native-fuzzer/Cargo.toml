@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+cairo-lang-compiler = "2.8.4"
 cairo-lang-sierra = "2.8.4"
+cairo-lang-starknet = "2.8.4"
 cairo-native = "0.2.0-alpha.4"
 clap = "4.5.20"
 rand = "0.8.5"

@@ -2,16 +2,12 @@ use std::sync::Arc;
 
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
-use cairo_native::execution_result::ExecutionResult;
+use cairo_native::execution_result::ContractExecutionResult;
 use cairo_native::module::NativeModule;
-use cairo_native::{context::NativeContext, executor::JitNativeExecutor, Value};
+use cairo_native::{context::NativeContext, executor::JitNativeExecutor};
+use starknet_types_core::felt::Felt;
 
-/// Cairo Runner that uses Cairo Native  
-pub struct CairoNativeRunner {
-    native_context: NativeContext,
-    sierra_program: Option<Arc<Program>>,
-    entry_point_id: Option<FunctionId>,
-}
+use crate::runner::syscall_handler::SyscallHandler;
 
 /// Compile the sierra program into a MLIR module
 fn compile_sierra_program<'a>(
@@ -26,6 +22,13 @@ fn compile_sierra_program<'a>(
 // Create the Native Executor (with JIT)
 fn create_executor<'a>(native_program: NativeModule<'a>) -> JitNativeExecutor<'a> {
     JitNativeExecutor::from_native_module(native_program, Default::default())
+}
+
+/// Cairo Runner that uses Cairo Native  
+pub struct CairoNativeRunner {
+    native_context: NativeContext,
+    sierra_program: Option<Arc<Program>>,
+    entry_point_id: Option<FunctionId>,
 }
 
 impl CairoNativeRunner {
@@ -54,7 +57,7 @@ impl CairoNativeRunner {
 
     // Run the program using Cairo Native
     #[inline]
-    pub fn run_program(&mut self, params: &[Value]) -> Result<ExecutionResult, String> {
+    pub fn run_program(&mut self, params: &[Felt]) -> Result<ContractExecutionResult, String> {
         // Compile the Sierra program into a MLIR module
         let native_program = compile_sierra_program(
             &self.native_context,
@@ -68,7 +71,12 @@ impl CairoNativeRunner {
 
         // Execute the program
         native_executor
-            .invoke_dynamic(self.entry_point_id.as_ref().unwrap(), params, None)
+            .invoke_contract_dynamic(
+                self.entry_point_id.as_ref().unwrap(),
+                params,
+                Some(u128::MAX),
+                SyscallHandler,
+            )
             .map_err(|e| e.to_string())
     }
 }
