@@ -7,7 +7,8 @@ edition = "2021"
 cairo-lang-compiler = "2.8.4"
 cairo-lang-sierra = "2.8.4"
 cairo-lang-starknet = "2.8.4"
-cairo-native = "0.2.0-alpha.4"
+cairo-native = { version = "0.2.0-alpha.4", features = ["with-runtime"] }
+cairo-native-runtime = { version = "0.2.0-alpha.4", optional = true }
 clap = "4.5.20"
 rand = "0.8.5"
 starknet-types-core = "0.1.7"
@@ -16,3 +17,7 @@ starknet-types-core = "0.1.7"
 git = 'https://github.com/FuzzingLabs/cairo-rs'
 rev = '48af153240392992f18a09e969bae6518eec9639'
 package = 'cairo-felt'
+
+[features]
+default = ["with-runtime"]
+with-runtime = ["dep:cairo-native-runtime"]

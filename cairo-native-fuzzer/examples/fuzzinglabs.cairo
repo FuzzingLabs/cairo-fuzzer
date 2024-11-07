@@ -14,7 +14,7 @@ mod test_contract {
         bal:u8
     }
  #[external(v0)]
-    fn greet(
+    fn Fuzz_symbolic_execution(
 ref self: ContractState,
     f: felt252,
     u: felt252,
