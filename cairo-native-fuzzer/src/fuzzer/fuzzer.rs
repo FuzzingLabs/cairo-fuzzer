@@ -5,6 +5,7 @@ use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_lang_starknet::compile::compile_path;
+use colored::*;
 use starknet_types_core::felt::Felt;
 
 use crate::mutator::argument_type::map_argument_type;
@@ -16,7 +17,7 @@ use crate::utils::get_function_by_id;
 #[allow(dead_code)]
 pub struct Fuzzer {
     program_path: PathBuf,
-    entry_point: String,
+    entry_point: Option<String>,
     runner: CairoNativeRunner,
     sierra_program: Option<Arc<Program>>,
     params: Vec<Felt>,
@@ -26,7 +27,7 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
-    pub fn new(program_path: PathBuf, entry_point: String) -> Self {
+    pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
         Self {
             program_path,
             entry_point,
@@ -45,12 +46,62 @@ impl Fuzzer {
     /// - Init the runner
     pub fn init(&mut self) -> Result<(), String> {
         self.convert_and_store_cairo_to_sierra()?;
-        self.entry_point_id = Some(self.find_entry_point_id());
+        if let Some(ref entry_point) = self.entry_point {
+            self.entry_point_id = Some(self.find_entry_point_id(entry_point));
+        }
         self.runner
             .init(&self.entry_point_id, &self.sierra_program)?;
-        self.argument_types = self.get_function_arguments_types();
-        self.generate_params();
         Ok(())
+    }
+
+    /// Print the contract functions prototypes
+    pub fn print_functions_prototypes(&self) {
+        println!("Contract functions :\n");
+
+        for function in &self.sierra_program.clone().unwrap().funcs {
+            let function_name = function
+                .id
+                .debug_name
+                .as_ref()
+                .map_or_else(|| "unknown".to_string(), |name| name.to_string());
+
+            let signature = &function.signature;
+
+            // Collect parameter types
+            let param_types: Vec<String> = signature
+                .param_types
+                .iter()
+                .map(|param| {
+                    param
+                        .debug_name
+                        .as_ref()
+                        .map_or_else(|| "unknown".to_string(), |name| name.to_string())
+                })
+                .collect();
+
+            // Collect return types
+            let ret_types: Vec<String> = signature
+                .ret_types
+                .iter()
+                .map(|ret_type| {
+                    ret_type
+                        .debug_name
+                        .as_ref()
+                        .map_or_else(|| "unknown".to_string(), |name| name.to_string())
+                })
+                .collect();
+
+            // Format the prototype
+            let prototype = format!(
+                "{} ({}) -> ({})",
+                function_name.bold().white(),
+                param_types.join(", ").green(),
+                ret_types.join(", ").cyan()
+            );
+
+            // Print the contract functions
+            println!("- {}", prototype);
+        }
     }
 
     /// Compile the Cairo program to Sierra
@@ -73,13 +124,13 @@ impl Fuzzer {
     }
 
     /// Find the entry point id
-    fn find_entry_point_id(&self) -> FunctionId {
+    fn find_entry_point_id(&self, entry_point: &str) -> FunctionId {
         let sierra_program = self
             .sierra_program
             .as_ref()
             .expect("Sierra program not available");
-        cairo_native::utils::find_function_id(sierra_program, &self.entry_point)
-            .expect(&format!("Entry point '{}' not found", self.entry_point))
+        cairo_native::utils::find_function_id(sierra_program, entry_point)
+            .expect(&format!("Entry point '{}' not found", entry_point))
             .clone()
     }
 
@@ -149,7 +200,9 @@ impl Fuzzer {
     /// Run the fuzzer
     /// We just use an infinite loop for now
     pub fn fuzz(&mut self) -> Result<(), String> {
+        self.argument_types = self.get_function_arguments_types();
         self.generate_params();
+
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {

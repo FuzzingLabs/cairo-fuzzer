@@ -18,7 +18,11 @@ struct Args {
 
     /// Entry point of the Sierra program
     #[arg(short, long)]
-    entry_point: String,
+    entry_point: Option<String>,
+
+    /// Analyze the program and print function prototypes
+    #[arg(short, long, requires = "program_path")]
+    analyze: bool,
 }
 
 fn main() {
@@ -27,10 +31,19 @@ fn main() {
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
 
     match fuzzer.init() {
-        Ok(()) => match fuzzer.fuzz() {
-            Ok(()) => println!("Fuzzing completed successfully."),
-            Err(e) => eprintln!("Error during fuzzing: {}", e),
-        },
+        Ok(()) => {
+            // Print the contract functions
+            if args.analyze {
+                fuzzer.print_functions_prototypes();
+            }
+            // Run the fuzzer
+            else {
+                match fuzzer.fuzz() {
+                    Ok(()) => println!("Fuzzing completed successfully."),
+                    Err(e) => eprintln!("Error during fuzzing: {}", e),
+                }
+            }
+        }
         Err(e) => eprintln!("Error during initialization: {}", e),
     }
 }
