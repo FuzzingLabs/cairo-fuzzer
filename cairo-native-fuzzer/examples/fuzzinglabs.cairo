@@ -1,8 +1,3 @@
-use starknet::{
-    Store, SyscallResult, StorageBaseAddress, storage_read_syscall, storage_write_syscall,
-    storage_address_from_base_and_offset
-};
-
 #[starknet::contract]
 mod test_contract {
     #[storage]

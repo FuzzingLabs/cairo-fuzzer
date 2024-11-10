@@ -10,6 +10,8 @@ pub enum ArgumentType {
 pub fn map_argument_type(debug_name: &str) -> Option<ArgumentType> {
     match debug_name {
         "felt252" => Some(ArgumentType::Felt),
+        // We treat felt252 arrays as a single felt for now
+        "core::array::Span::<core::felt252>" => Some(ArgumentType::Felt),
         // TODO: Add support for other types
         _ => None,
     }

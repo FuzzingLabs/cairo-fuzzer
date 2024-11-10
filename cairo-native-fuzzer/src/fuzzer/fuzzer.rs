@@ -206,8 +206,7 @@ impl Fuzzer {
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {
-                    println!("Cairo program was compiled and executed successfully.");
-                    println!("{:?}", result);
+                    println!("Results : {:?}", result);
                 }
                 Err(e) => eprintln!("Error during execution: {}", e),
             }

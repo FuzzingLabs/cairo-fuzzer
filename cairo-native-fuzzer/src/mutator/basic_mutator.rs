@@ -52,14 +52,53 @@ impl Mutator {
     fn subtract_small_random_value(&mut self, felt: Felt) -> Felt {
         // Random value between 1 and 9
         let small_value = self.rng.gen_range(1..10);
-        felt - Felt::from(small_value)
+
+        // Check for underflow before performing the subtraction
+        if felt < Felt::from(small_value) {
+            Felt::from(0)
+        } else {
+            felt - Felt::from(small_value)
+        }
     }
 
     fn flip_random_bit(&mut self, felt: Felt) -> Felt {
-        // Random bit index between 0 and 251
-        let bit_index = self.rng.gen_range(0..252);
+        // Determine the actual bit length of the Felt value
+        let felt_bytes = felt.to_bytes_be();
+        let mut bit_length = 0;
+
+        for byte in felt_bytes.iter().rev() {
+            if *byte != 0 {
+                bit_length =
+                    (felt_bytes.len() - felt_bytes.iter().rev().position(|&b| b != 0).unwrap()) * 8;
+                for i in (0..8).rev() {
+                    if byte & (1 << i) != 0 {
+                        bit_length += i + 1;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if bit_length == 0 {
+            // If the Felt value is zero, return the original value
+            return felt;
+        }
+
+        // Random bit index within the actual bit length
+        let bit_index = self.rng.gen_range(0..bit_length);
+        let byte_index = bit_index / 8;
+        let bit_position = bit_index % 8;
+
+        // Ensure the byte index is within the valid range
+        if byte_index >= felt_bytes.len() {
+            return felt;
+        }
+
+        // Flip the bit at the calculated position
         let mut felt_bytes = felt.to_bytes_be();
-        felt_bytes[bit_index / 8] ^= 1 << (bit_index % 8);
+        felt_bytes[byte_index] ^= 1 << bit_position;
+
         Felt::from_bytes_be(&felt_bytes)
     }
 
@@ -68,17 +107,27 @@ impl Mutator {
     }
 
     fn dec_byte(&mut self, felt: Felt) -> Felt {
-        felt - Felt::from(1)
+        // Check for underflow before performing the subtraction
+        if felt <= Felt::from(0) {
+            Felt::from(0)
+        } else {
+            felt - Felt::from(1)
+        }
     }
-
-    // fn neg_byte(&mut self, felt: Felt) -> Felt {
-    //     -felt
-    // }
 
     fn add_sub(&mut self, felt: Felt) -> Felt {
         // Add or subtract a random amount with a random endianness from a random size `u8` through `u64`
         let delta = self.rng.gen_range(-100..100); // Example range
-        felt + Felt::from(delta)
+        let new_felt = felt + Felt::from(delta);
+
+        // Clamp the value to a reasonable range
+        if new_felt > Felt::from(u64::MAX) {
+            Felt::from(u64::MAX)
+        } else if new_felt < Felt::from(0) {
+            Felt::from(0)
+        } else {
+            new_felt
+        }
     }
 
     fn swap(&mut self, felt: Felt) -> Felt {
