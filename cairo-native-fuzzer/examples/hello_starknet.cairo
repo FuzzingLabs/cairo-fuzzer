@@ -13,6 +13,7 @@ mod Echo {
 
     #[external(v0)]
     fn echo(ref self: ContractState, value: felt252) -> felt252 {
+        assert(value != 2, 'fail');
         value
     }
 }

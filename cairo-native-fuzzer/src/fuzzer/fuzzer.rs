@@ -206,6 +206,12 @@ impl Fuzzer {
         loop {
             match self.runner.run_program(&self.params) {
                 Ok(result) => {
+                    if result.failure_flag {
+                        println!("Results : {:?}", result);
+                        println!("Crash detected! Exiting fuzzer.");
+                        break Ok(());
+                    }
+
                     println!("Results : {:?}", result);
                 }
                 Err(e) => eprintln!("Error during execution: {}", e),
