@@ -2,6 +2,18 @@
 
 Cairo Native Fuzzer is a rewrite of the Cairo Fuzzer based on [Cairo native from Lambdaclass](https://github.com/lambdaclass/cairo_native) developed to enhance fuzzer execution speed.
 
+#### Print the functions prototypes
+
+```
+cargo run -- --program-path examples/fuzzinglabs.cairo --analyze
+```
+
+#### Run the fuzzer
+
+```
+cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo
+```
+
 ### Roadmap 
 
 ### Step 1 : Create a basic fuzzer based on Cairo Native : 
