@@ -1,3 +1,4 @@
+mod custom_rand;
 mod fuzzer;
 mod mutator;
 mod runner;

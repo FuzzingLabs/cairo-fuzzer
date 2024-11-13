@@ -1,26 +1,26 @@
-use rand::Rng;
 use starknet_types_core::felt::Felt;
 
+use crate::custom_rand::rng::Rng;
 use crate::mutator::magic_values::MAGIC_VALUES;
 
-/// This mutator only handle felt252
-/// TODO : Handle more types
+/// This mutator only handles felt252
+/// TODO: Handle more types
 pub struct Mutator {
-    rng: rand::rngs::ThreadRng,
+    rng: Rng,
     max_input_size: usize,
 }
 
 impl Mutator {
     pub fn new() -> Self {
         Self {
-            rng: rand::thread_rng(),
+            rng: Rng::seeded(42),
             max_input_size: 252,
         }
     }
 
     pub fn mutate(&mut self, felt: Felt) -> Felt {
         // Perform a random mutation
-        let mutation_type = self.rng.gen_range(0..16); // Increase range to accommodate more strategies
+        let mutation_type = self.rng.gen_range(0..=15); // Increase range to accommodate more strategies
         match mutation_type {
             0 => self.add_small_random_value(felt),
             1 => self.subtract_small_random_value(felt),
@@ -45,13 +45,13 @@ impl Mutator {
 
     fn add_small_random_value(&mut self, felt: Felt) -> Felt {
         // Random value between 1 and 9
-        let small_value = self.rng.gen_range(1..10);
+        let small_value = self.rng.gen_range(1..=9);
         felt + Felt::from(small_value)
     }
 
     fn subtract_small_random_value(&mut self, felt: Felt) -> Felt {
         // Random value between 1 and 9
-        let small_value = self.rng.gen_range(1..10);
+        let small_value = self.rng.gen_range(1..=9);
 
         // Check for underflow before performing the subtraction
         if felt < Felt::from(small_value) {
@@ -86,7 +86,7 @@ impl Mutator {
         }
 
         // Random bit index within the actual bit length
-        let bit_index = self.rng.gen_range(0..bit_length);
+        let bit_index = self.rng.gen_range(0..=bit_length - 1);
         let byte_index = bit_index / 8;
         let bit_position = bit_index % 8;
 
@@ -117,7 +117,7 @@ impl Mutator {
 
     fn add_sub(&mut self, felt: Felt) -> Felt {
         // Add or subtract a random amount with a random endianness from a random size `u8` through `u64`
-        let delta = self.rng.gen_range(-100..100); // Example range
+        let delta = self.rng.gen_range(0..=200) as i64 - 100; // Example range
         let new_felt = felt + Felt::from(delta);
 
         // Clamp the value to a reasonable range
@@ -134,8 +134,8 @@ impl Mutator {
         // Swap two ranges in an input buffer
         let mut felt_bytes = felt.to_bytes_be();
         let len = felt_bytes.len();
-        let src = self.rng.gen_range(0..len);
-        let dst = self.rng.gen_range(0..len);
+        let src = self.rng.gen_range(0..=len - 1);
+        let dst = self.rng.gen_range(0..=len - 1);
         let swap_len = self.rng.gen_range(1..=len.min(len - src.max(dst)));
 
         for i in 0..swap_len {
@@ -149,8 +149,8 @@ impl Mutator {
         // Copy bytes from one location in the input and overwrite them at another
         let mut felt_bytes = felt.to_bytes_be();
         let len = felt_bytes.len();
-        let src = self.rng.gen_range(0..len);
-        let dst = self.rng.gen_range(0..len);
+        let src = self.rng.gen_range(0..=len - 1);
+        let dst = self.rng.gen_range(0..=len - 1);
         let copy_len = self.rng.gen_range(1..=len.min(len - src.max(dst)));
 
         for i in 0..copy_len {
@@ -164,8 +164,8 @@ impl Mutator {
         // Take one location of the input and splice it into another
         let felt_bytes = felt.to_bytes_be();
         let len = felt_bytes.len();
-        let src = self.rng.gen_range(0..len);
-        let dst = self.rng.gen_range(0..len);
+        let src = self.rng.gen_range(0..=len - 1);
+        let dst = self.rng.gen_range(0..=len - 1);
         let splice_len = self.rng.gen_range(1..=len.min(len - src.max(dst)));
 
         let mut new_bytes = Vec::new();
@@ -188,7 +188,7 @@ impl Mutator {
 
     fn magic_overwrite(&mut self, felt: Felt) -> Felt {
         // Pick a random magic value
-        let magic_value = &MAGIC_VALUES[self.rng.gen_range(0..MAGIC_VALUES.len())];
+        let magic_value = &MAGIC_VALUES[self.rng.gen_range(0..=MAGIC_VALUES.len() - 1)];
         let mut felt_bytes = felt.to_bytes_be();
 
         // Overwrite the bytes in the input with the magic value
@@ -200,7 +200,7 @@ impl Mutator {
 
     fn magic_insert(&mut self, felt: Felt) -> Felt {
         // Pick a random magic value
-        let magic_value = &MAGIC_VALUES[self.rng.gen_range(0..MAGIC_VALUES.len())];
+        let magic_value = &MAGIC_VALUES[self.rng.gen_range(0..=MAGIC_VALUES.len() - 1)];
         let felt_bytes = felt.to_bytes_be();
 
         // Insert the magic value at a random offset
@@ -226,11 +226,11 @@ impl Mutator {
     fn random_overwrite(&mut self, felt: Felt) -> Felt {
         // Overwrite a random offset of the input with random bytes
         let mut felt_bytes = felt.to_bytes_be();
-        let offset = self.rng.gen_range(0..felt_bytes.len());
+        let offset = self.rng.gen_range(0..=felt_bytes.len() - 1);
         let amount = self.rng.gen_range(1..=felt_bytes.len() - offset);
 
         for i in offset..offset + amount {
-            felt_bytes[i] = self.rng.gen();
+            felt_bytes[i] = self.rng.rand_usize() as u8;
         }
 
         Felt::from_bytes_be(&felt_bytes)
@@ -246,7 +246,7 @@ impl Mutator {
 
         let mut new_bytes = Vec::new();
         new_bytes.extend_from_slice(&felt_bytes[..offset]);
-        new_bytes.extend(std::iter::repeat(self.rng.gen::<u8>()).take(amount));
+        new_bytes.extend(std::iter::repeat(self.rng.rand_usize() as u8).take(amount));
         new_bytes.extend_from_slice(&felt_bytes[offset..]);
 
         // Ensure the length is exactly 32 bytes
@@ -265,7 +265,7 @@ impl Mutator {
     fn byte_repeat_overwrite(&mut self, felt: Felt) -> Felt {
         // Find a byte and repeat it multiple times by overwriting the data after it
         let mut felt_bytes = felt.to_bytes_be();
-        let offset = self.rng.gen_range(0..felt_bytes.len());
+        let offset = self.rng.gen_range(0..=felt_bytes.len() - 1);
         let amount = self.rng.gen_range(1..=felt_bytes.len() - offset);
 
         let val = felt_bytes[offset];
@@ -279,10 +279,10 @@ impl Mutator {
     fn byte_repeat_insert(&mut self, felt: Felt) -> Felt {
         // Find a byte and repeat it multiple times by splicing a random amount of the byte in
         let felt_bytes = felt.to_bytes_be();
-        let offset = self.rng.gen_range(0..felt_bytes.len());
+        let offset = self.rng.gen_range(0..=felt_bytes.len() - 1);
         let amount = self
             .rng
-            .gen_range(1..=self.max_input_size - felt_bytes.len());
+            .gen_range(0..=self.max_input_size - felt_bytes.len());
 
         let val = felt_bytes[offset];
         let mut new_bytes = Vec::new();
