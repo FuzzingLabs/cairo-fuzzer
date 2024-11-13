@@ -24,6 +24,10 @@ struct Args {
     /// Analyze the program and print function prototypes
     #[arg(short, long, requires = "program_path")]
     analyze: bool,
+
+    /// Seed for the random number generator
+    #[arg(short, long, default_value_t = 42)]
+    seed: u64,
 }
 
 fn main() {
@@ -31,7 +35,7 @@ fn main() {
 
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
 
-    match fuzzer.init() {
+    match fuzzer.init(args.seed) {
         Ok(()) => {
             // Print the contract functions
             if args.analyze {

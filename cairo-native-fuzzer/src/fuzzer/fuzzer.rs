@@ -14,7 +14,6 @@ use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::CairoNativeRunner;
 use crate::utils::get_function_by_id;
 
-#[allow(dead_code)]
 pub struct Fuzzer {
     program_path: PathBuf,
     entry_point: Option<String>,
@@ -27,6 +26,7 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
+    /// Creates a new `Fuzzer`.
     pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
         Self {
             program_path,
@@ -35,22 +35,30 @@ impl Fuzzer {
             sierra_program: None,
             params: Vec::new(),
             entry_point_id: None,
-            mutator: Mutator::new(),
+            mutator: Mutator::new(0), // Initialize with a default seed
             argument_types: Vec::new(),
         }
     }
 
-    /// Init the fuzzer
+    /// Init the fuzzer with a given seed
+    /// - Initialize the mutator with the given seed
     /// - Compile Cairo code to Sierra
     /// - Find the entry id
     /// - Init the runner
-    pub fn init(&mut self) -> Result<(), String> {
+    pub fn init(&mut self, seed: u64) -> Result<(), String> {
+        println!("[+] Initializing mutator with seed : {}", seed);
+        self.mutator = Mutator::new(seed);
+
+        println!("[+] Compiling Cairo contract to Sierra");
         self.convert_and_store_cairo_to_sierra()?;
         if let Some(ref entry_point) = self.entry_point {
             self.entry_point_id = Some(self.find_entry_point_id(entry_point));
         }
+
+        println!("[+] Initializing the runner");
         self.runner
             .init(&self.entry_point_id, &self.sierra_program)?;
+
         Ok(())
     }
 

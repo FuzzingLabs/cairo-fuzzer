@@ -11,9 +11,10 @@ pub struct Mutator {
 }
 
 impl Mutator {
-    pub fn new() -> Self {
+    /// Creates a new `Mutator` with the given seed
+    pub fn new(seed: u64) -> Self {
         Self {
-            rng: Rng::seeded(42),
+            rng: Rng::seeded(seed),
             max_input_size: 252,
         }
     }
