@@ -5,6 +5,7 @@ use crate::mutator::magic_values::MAGIC_VALUES;
 
 /// This mutator only handles felt252
 /// TODO: Handle more types
+#[derive(Clone)]
 pub struct Mutator {
     rng: Rng,
     max_input_size: usize,

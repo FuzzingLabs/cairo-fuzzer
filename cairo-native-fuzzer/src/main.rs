@@ -28,6 +28,10 @@ struct Args {
     /// Seed for the random number generator
     #[arg(short, long, default_value_t = 42)]
     seed: u64,
+
+    /// Number of cores to use for fuzzing
+    #[arg(short, long, default_value_t = 8)]
+    cores: usize,
 }
 
 fn main() {
@@ -43,7 +47,7 @@ fn main() {
             }
             // Run the fuzzer
             else {
-                match fuzzer.fuzz() {
+                match fuzzer.fuzz(args.cores) {
                     Ok(()) => println!("Fuzzing completed successfully."),
                     Err(e) => eprintln!("Error during fuzzing: {}", e),
                 }

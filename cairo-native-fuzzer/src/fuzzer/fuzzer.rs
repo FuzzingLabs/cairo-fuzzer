@@ -1,5 +1,6 @@
 use std::path::PathBuf;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
@@ -14,14 +15,15 @@ use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::CairoNativeRunner;
 use crate::utils::get_function_by_id;
 
+#[warn(dead_code)]
 pub struct Fuzzer {
     program_path: PathBuf,
     entry_point: Option<String>,
-    runner: CairoNativeRunner,
+    runner: Arc<Mutex<CairoNativeRunner>>,
     sierra_program: Option<Arc<Program>>,
-    params: Vec<Felt>,
+    params: Arc<Mutex<Vec<Felt>>>,
     entry_point_id: Option<FunctionId>,
-    mutator: Mutator,
+    mutator: Option<Mutex<Mutator>>,
     argument_types: Vec<ArgumentType>,
 }
 
@@ -31,11 +33,11 @@ impl Fuzzer {
         Self {
             program_path,
             entry_point,
-            runner: CairoNativeRunner::new(),
+            runner: Arc::new(Mutex::new(CairoNativeRunner::new())),
             sierra_program: None,
-            params: Vec::new(),
+            params: Arc::new(Mutex::new(Vec::new())),
             entry_point_id: None,
-            mutator: Mutator::new(0), // Initialize with a default seed
+            mutator: None,
             argument_types: Vec::new(),
         }
     }
@@ -46,8 +48,8 @@ impl Fuzzer {
     /// - Find the entry id
     /// - Init the runner
     pub fn init(&mut self, seed: u64) -> Result<(), String> {
-        println!("[+] Initializing mutator with seed : {}", seed);
-        self.mutator = Mutator::new(seed);
+        println!("[+] Initializing mutator with seed: {}", seed);
+        self.mutator = Some(Mutex::new(Mutator::new(seed)));
 
         println!("[+] Compiling Cairo contract to Sierra");
         self.convert_and_store_cairo_to_sierra()?;
@@ -57,6 +59,8 @@ impl Fuzzer {
 
         println!("[+] Initializing the runner");
         self.runner
+            .lock()
+            .unwrap()
             .init(&self.entry_point_id, &self.sierra_program)?;
 
         Ok(())
@@ -180,7 +184,8 @@ impl Fuzzer {
 
     /// Generate params based on the function argument types
     pub fn generate_params(&mut self) {
-        self.params = self
+        let mut params = self.params.lock().unwrap();
+        *params = self
             .argument_types
             .iter()
             .map(|arg_type| match arg_type {
@@ -190,41 +195,69 @@ impl Fuzzer {
             .collect();
     }
 
-    /// Mutate a single function parameter
-    pub fn mutate_param(&mut self, value: Felt) -> Felt {
-        // Use the Mutator to mutate the felt value
-        self.mutator.mutate(value)
-    }
-
-    /// Mutate the parameters using the Mutator
-    fn mutate_params(&mut self) {
-        // Iterate through the current params and mutate each one
-        for i in 0..self.params.len() {
-            let mutated_value = self.mutate_param(self.params[i]);
-            self.params[i] = mutated_value;
-        }
-    }
-
-    /// Run the fuzzer
-    /// We just use an infinite loop for now
-    pub fn fuzz(&mut self) -> Result<(), String> {
+    /// Run the fuzzer with multithreading
+    /// We use the specified number of threads
+    pub fn fuzz(&mut self, num_threads: usize) -> Result<(), String> {
         self.argument_types = self.get_function_arguments_types();
         self.generate_params();
 
-        loop {
-            match self.runner.run_program(&self.params) {
-                Ok(result) => {
-                    if result.failure_flag {
-                        println!("Results : {:?}", result);
-                        println!("Crash detected! Exiting fuzzer.");
-                        break Ok(());
+        let mut handles = Vec::new(); // Collect thread handles here
+
+        for _ in 0..num_threads {
+            // Clone the necessary data for each thread
+            let runner = Arc::clone(&self.runner);
+            let argument_types = self.argument_types.clone();
+            let mutator = Arc::new(Mutex::new(
+                self.mutator.as_ref().unwrap().lock().unwrap().clone(),
+            ));
+
+            // Generate initial params for each thread
+            let params = Arc::new(Mutex::new(
+                argument_types
+                    .iter()
+                    .map(|arg_type| match arg_type {
+                        ArgumentType::Felt => Felt::from(0),
+                        // TODO: Add support for other types
+                    })
+                    .collect::<Vec<Felt>>(),
+            ));
+
+            // Spawn the thread
+            let handle = thread::spawn(move || {
+                loop {
+                    let params_guard = params.lock().unwrap();
+                    match runner.lock().unwrap().run_program(&*params_guard) {
+                        Ok(result) => {
+                            if result.failure_flag {
+                                println!("Results : {:?}", result);
+                                println!("Crash detected! Exiting fuzzer.");
+                                break;
+                            }
+                            println!("Results : {:?}", result);
+                        }
+                        Err(e) => eprintln!("Error during execution: {}", e),
                     }
 
-                    println!("Results : {:?}", result);
+                    // Release the lock before mutating params
+                    drop(params_guard);
+
+                    // Mutate params using the cloned `mutator`
+                    let mut mutator_guard = mutator.lock().unwrap();
+                    for param in params.lock().unwrap().iter_mut() {
+                        *param = mutator_guard.mutate(*param);
+                    }
                 }
-                Err(e) => eprintln!("Error during execution: {}", e),
-            }
-            self.mutate_params();
+            });
+
+            // Push handle to a local Vec, not self.threads
+            handles.push(handle);
         }
+
+        // Wait for threads to finish
+        for handle in handles {
+            handle.join().unwrap();
+        }
+
+        Ok(())
     }
 }

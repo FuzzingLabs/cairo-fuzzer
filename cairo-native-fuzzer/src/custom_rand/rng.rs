@@ -2,6 +2,7 @@ use std::cell::Cell;
 use std::ops::RangeInclusive;
 
 /// Random number generator implementation using xorshift64
+#[derive(Clone)]
 pub struct Rng {
     /// Internal xorshift seed
     seed: Cell<u64>,

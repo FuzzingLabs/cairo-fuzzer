@@ -1,5 +1,5 @@
 /// Enum representing the types of arguments that can be passed to a function
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ArgumentType {
     Felt,
     // TODO: Add support for other types
