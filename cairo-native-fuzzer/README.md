@@ -4,14 +4,20 @@ Cairo Native Fuzzer is a rewrite of the Cairo Fuzzer based on [Cairo native from
 
 #### Print the functions prototypes
 
-```
+```sh
 cargo run -- --program-path examples/fuzzinglabs.cairo --analyze
 ```
 
 #### Run the fuzzer
 
-```
+```sh
 cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo
+
+## Use a seed
+cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo --seed 42
+
+## Select the number of cores
+cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo --cores 8
 ```
 
 ### Roadmap 
@@ -22,6 +28,6 @@ cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_st
 - [x] Import existing mutator from the cairo-fuzzer
 
 ### Step 2 : Integrate existing cairo-fuzzer features into Cairo Native fuzzer : 
-- [ ] Multithreading
+- [x] Multithreading
 - [ ] Support config files
 - [ ] Property testing
