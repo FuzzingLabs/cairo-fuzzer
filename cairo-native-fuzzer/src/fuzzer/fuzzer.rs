@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 
 use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
@@ -9,6 +10,7 @@ use cairo_lang_starknet::compile::compile_path;
 use colored::*;
 use starknet_types_core::felt::Felt;
 
+use crate::fuzzer::statistics::FuzzerStats;
 use crate::mutator::argument_type::map_argument_type;
 use crate::mutator::argument_type::ArgumentType;
 use crate::mutator::basic_mutator::Mutator;
@@ -25,6 +27,7 @@ pub struct Fuzzer {
     entry_point_id: Option<FunctionId>,
     mutator: Option<Mutex<Mutator>>,
     argument_types: Vec<ArgumentType>,
+    stats: Arc<Mutex<FuzzerStats>>,
 }
 
 impl Fuzzer {
@@ -39,6 +42,7 @@ impl Fuzzer {
             entry_point_id: None,
             mutator: None,
             argument_types: Vec::new(),
+            stats: Arc::new(Mutex::new(FuzzerStats::default())),
         }
     }
 
@@ -211,6 +215,9 @@ impl Fuzzer {
                 self.mutator.as_ref().unwrap().lock().unwrap().clone(),
             ));
 
+            // Clone stats
+            let stats = Arc::clone(&self.stats);
+
             // Generate initial params for each thread
             let params = Arc::new(Mutex::new(
                 argument_types
@@ -231,15 +238,27 @@ impl Fuzzer {
                             if result.failure_flag {
                                 println!("Results : {:?}", result);
                                 println!("Crash detected! Exiting fuzzer.");
+
+                                // Increment the crashes counter
+                                {
+                                    let mut stats_guard = stats.lock().unwrap();
+                                    stats_guard.crashes += 1;
+                                }
+
                                 break;
                             }
-                            println!("Results : {:?}", result);
                         }
                         Err(e) => eprintln!("Error during execution: {}", e),
                     }
 
                     // Release the lock before mutating params
                     drop(params_guard);
+
+                    // Increment the total_executions counter
+                    {
+                        let mut stats_guard = stats.lock().unwrap();
+                        stats_guard.total_executions += 1;
+                    }
 
                     // Mutate params using the cloned `mutator`
                     let mut mutator_guard = mutator.lock().unwrap();
@@ -253,10 +272,27 @@ impl Fuzzer {
             handles.push(handle);
         }
 
+        // Spawn a thread to print stats every second
+        let stats = Arc::clone(&self.stats);
+        let print_handle = thread::spawn(move || loop {
+            thread::sleep(Duration::from_secs(1));
+            let stats_guard = stats.lock().unwrap();
+            let uptime = stats_guard.start_time.elapsed();
+            println!(
+                "| {:<30} | {:<20} | {:<20} |",
+                format!("Total Executions = {}", stats_guard.total_executions),
+                format!("Uptime = {:?}", uptime),
+                format!("Crashes = {}", stats_guard.crashes)
+            );
+        });
+
         // Wait for threads to finish
         for handle in handles {
             handle.join().unwrap();
         }
+
+        // Stop the print thread
+        print_handle.join().unwrap();
 
         Ok(())
     }
