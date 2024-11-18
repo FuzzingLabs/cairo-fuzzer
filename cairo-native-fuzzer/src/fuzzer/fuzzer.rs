@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+use std::time::Instant;
 
 use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
@@ -52,6 +53,16 @@ impl Fuzzer {
     /// - Find the entry id
     /// - Init the runner
     pub fn init(&mut self, seed: u64) -> Result<(), String> {
+        println!(
+            "
+=============================================================================================================================================================
+╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
+║   ├─┤ │ ├┬┘ │2.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | 
+╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      |
+=============================================================================================================================================================\n",
+            seed,
+        );
+
         println!("[+] Initializing mutator with seed: {}", seed);
         self.mutator = Some(Mutex::new(Mutator::new(seed)));
 
@@ -205,7 +216,14 @@ impl Fuzzer {
         self.argument_types = self.get_function_arguments_types();
         self.generate_params();
 
-        let mut handles = Vec::new(); // Collect thread handles here
+        // Initialize the start time
+        {
+            let mut stats_guard = self.stats.lock().unwrap();
+            stats_guard.start_time = Instant::now();
+        }
+
+        // Collect thread handles here
+        let mut handles = Vec::new();
 
         for _ in 0..num_threads {
             // Clone the necessary data for each thread
@@ -278,10 +296,11 @@ impl Fuzzer {
             thread::sleep(Duration::from_secs(1));
             let stats_guard = stats.lock().unwrap();
             let uptime = stats_guard.start_time.elapsed();
+            let uptime_secs = (uptime.as_secs_f64() * 10.0).trunc() / 10.0;
             println!(
-                "| {:<30} | {:<20} | {:<20} |",
+                "| {:<30} | {:<25} | {:<25} |",
                 format!("Total Executions = {}", stats_guard.total_executions),
-                format!("Uptime = {:?}", uptime),
+                format!("Uptime = {:.1}s", uptime_secs),
                 format!("Crashes = {}", stats_guard.crashes)
             );
         });
