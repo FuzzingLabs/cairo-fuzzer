@@ -296,12 +296,21 @@ impl Fuzzer {
             thread::sleep(Duration::from_secs(1));
             let stats_guard = stats.lock().unwrap();
             let uptime = stats_guard.start_time.elapsed();
-            let uptime_secs = (uptime.as_secs_f64() * 10.0).trunc() / 10.0;
+            let uptime_secs = uptime.as_secs_f64();
+
+            // Calculate execs per second
+            let execs_per_second = if uptime_secs > 0.0 {
+                stats_guard.total_executions as f64 / uptime_secs
+            } else {
+                0.0
+            };
+
             println!(
-                "| {:<30} | {:<25} | {:<25} |",
+                "| {:<30} | {:<25} | {:<25} | {:<20} |",
                 format!("Total Executions = {}", stats_guard.total_executions),
                 format!("Uptime = {:.1}s", uptime_secs),
-                format!("Crashes = {}", stats_guard.crashes)
+                format!("Crashes = {}", stats_guard.crashes),
+                format!("Exec Speed = {:.2} execs/s", execs_per_second)
             );
         });
 
