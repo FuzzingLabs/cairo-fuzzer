@@ -2,6 +2,10 @@
 
 Cairo Native Fuzzer is a rewrite of the Cairo Fuzzer based on [Cairo native from Lambdaclass](https://github.com/lambdaclass/cairo_native) developed to enhance fuzzer execution speed.
 
+<p align="center">
+	<img src="./doc/cairo_fuzzer_demo.png"/>
+</p>
+
 ### Installation 
 
 - Install LLVM 19.
