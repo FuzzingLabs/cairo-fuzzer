@@ -1,8 +1,7 @@
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
@@ -12,8 +11,7 @@ use colored::*;
 use starknet_types_core::felt::Felt;
 
 use crate::fuzzer::statistics::FuzzerStats;
-use crate::mutator::argument_type::map_argument_type;
-use crate::mutator::argument_type::ArgumentType;
+use crate::mutator::argument_type::{map_argument_type, ArgumentType};
 use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::CairoNativeRunner;
 use crate::utils::get_function_by_id;
@@ -31,61 +29,25 @@ pub struct Fuzzer {
     stats: Arc<Mutex<FuzzerStats>>,
 }
 
-impl Fuzzer {
-    /// Creates a new `Fuzzer`.
-    pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
-        Self {
-            program_path,
-            entry_point,
-            runner: Arc::new(Mutex::new(CairoNativeRunner::new())),
-            sierra_program: None,
-            params: Arc::new(Mutex::new(Vec::new())),
-            entry_point_id: None,
-            mutator: None,
-            argument_types: Vec::new(),
-            stats: Arc::new(Mutex::new(FuzzerStats::default())),
-        }
-    }
-
-    /// Init the fuzzer with a given seed
-    /// - Initialize the mutator with the given seed
-    /// - Compile Cairo code to Sierra
-    /// - Find the entry id
-    /// - Init the runner
-    pub fn init(&mut self, seed: u64) -> Result<(), String> {
-        println!(
-            "
+/// Print the initial message with the seed
+fn print_init_message(seed: u64) {
+    println!(
+        "
 =============================================================================================================================================================
 ╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
-║   ├─┤ │ ├┬┘ │2.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | 
+║   ├─┤ │ ├┬┘ │2.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      |
 ╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      |
 =============================================================================================================================================================\n",
-            seed,
-        );
+        seed,
+    );
+}
 
-        println!("[+] Initializing mutator with seed: {}", seed);
-        self.mutator = Some(Mutex::new(Mutator::new(seed)));
+/// Print the contract functions prototypes
+fn print_contract_functions(sierra_program: &Option<Arc<Program>>) {
+    println!("Contract functions :\n");
 
-        println!("[+] Compiling Cairo contract to Sierra");
-        self.convert_and_store_cairo_to_sierra()?;
-        if let Some(ref entry_point) = self.entry_point {
-            self.entry_point_id = Some(self.find_entry_point_id(entry_point));
-        }
-
-        println!("[+] Initializing the runner");
-        self.runner
-            .lock()
-            .unwrap()
-            .init(&self.entry_point_id, &self.sierra_program)?;
-
-        Ok(())
-    }
-
-    /// Print the contract functions prototypes
-    pub fn print_functions_prototypes(&self) {
-        println!("Contract functions :\n");
-
-        for function in &self.sierra_program.clone().unwrap().funcs {
+    if let Some(program) = sierra_program {
+        for function in &program.funcs {
             let function_name = function
                 .id
                 .debug_name
@@ -130,6 +92,103 @@ impl Fuzzer {
             println!("- {}", prototype);
         }
     }
+}
+
+/// Find the entry point id
+fn find_entry_point_id(sierra_program: &Option<Arc<Program>>, entry_point: &str) -> FunctionId {
+    let sierra_program = sierra_program
+        .as_ref()
+        .expect("Sierra program not available");
+    cairo_native::utils::find_function_id(sierra_program, entry_point)
+        .expect(&format!("Entry point '{}' not found", entry_point))
+        .clone()
+}
+
+/// Returns a vector of the function parameter types
+///
+/// For example, given a function with the prototype:
+/// ```
+/// myfunction(a: felt252, b: felt252) -> felt252
+/// ```
+/// This function will return:
+/// ```
+/// [Felt, Felt]
+/// ```
+fn get_function_argument_types(
+    sierra_program: &Option<Arc<Program>>,
+    entry_point_id: &Option<FunctionId>,
+) -> Vec<ArgumentType> {
+    let func = match (sierra_program, entry_point_id) {
+        (Some(program), Some(entry_point_id)) => get_function_by_id(program, entry_point_id),
+        _ => None,
+    };
+
+    if let Some(func) = func {
+        let argument_types: Vec<ArgumentType> = func
+            .signature
+            .param_types
+            .iter()
+            .filter_map(|param_type| {
+                if let Some(debug_name) = &param_type.debug_name {
+                    // Map param_type to an `ArgumentType`
+                    // For now we only handle felt252
+                    return map_argument_type(debug_name);
+                }
+                None
+            })
+            .collect();
+        argument_types
+    } else {
+        Vec::new()
+    }
+}
+
+impl Fuzzer {
+    /// Creates a new `Fuzzer`.
+    pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
+        Self {
+            program_path,
+            entry_point,
+            runner: Arc::new(Mutex::new(CairoNativeRunner::new())),
+            sierra_program: None,
+            params: Arc::new(Mutex::new(Vec::new())),
+            entry_point_id: None,
+            mutator: None,
+            argument_types: Vec::new(),
+            stats: Arc::new(Mutex::new(FuzzerStats::default())),
+        }
+    }
+
+    /// Init the fuzzer with a given seed
+    /// - Initialize the mutator with the given seed
+    /// - Compile Cairo code to Sierra
+    /// - Find the entry id
+    /// - Init the runner
+    pub fn init(&mut self, seed: u64) -> Result<(), String> {
+        print_init_message(seed);
+
+        println!("[+] Initializing mutator with seed: {}", seed);
+        self.mutator = Some(Mutex::new(Mutator::new(seed)));
+
+        println!("[+] Compiling Cairo contract to Sierra");
+        self.convert_and_store_cairo_to_sierra()?;
+        if let Some(ref entry_point) = self.entry_point {
+            self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, entry_point));
+        }
+
+        println!("[+] Initializing the runner");
+        self.runner
+            .lock()
+            .unwrap()
+            .init(&self.entry_point_id, &self.sierra_program)?;
+
+        Ok(())
+    }
+
+    /// Print the contract functions prototypes
+    pub fn print_functions_prototypes(&self) {
+        print_contract_functions(&self.sierra_program);
+    }
 
     /// Compile the Cairo program to Sierra
     fn convert_and_store_cairo_to_sierra(&mut self) -> Result<(), String> {
@@ -150,53 +209,6 @@ impl Fuzzer {
         Ok(())
     }
 
-    /// Find the entry point id
-    fn find_entry_point_id(&self, entry_point: &str) -> FunctionId {
-        let sierra_program = self
-            .sierra_program
-            .as_ref()
-            .expect("Sierra program not available");
-        cairo_native::utils::find_function_id(sierra_program, entry_point)
-            .expect(&format!("Entry point '{}' not found", entry_point))
-            .clone()
-    }
-
-    /// Returns a vector of the function parameter types
-    ///
-    /// For example, given a function with the prototype:
-    /// ```
-    /// myfunction(a: felt252, b: felt252) -> felt252
-    /// ```
-    /// This function will return:
-    /// ```
-    /// [Felt, Felt]
-    /// ```
-    pub fn get_function_arguments_types(&self) -> Vec<ArgumentType> {
-        let func = match (&self.sierra_program, &self.entry_point_id) {
-            (Some(program), Some(entry_point_id)) => get_function_by_id(program, entry_point_id),
-            _ => None,
-        };
-
-        if let Some(func) = func {
-            let argument_types: Vec<ArgumentType> = func
-                .signature
-                .param_types
-                .iter()
-                .filter_map(|param_type| {
-                    if let Some(debug_name) = &param_type.debug_name {
-                        // Map param_type to an `ArgumentType`
-                        // For now we only handle felt252
-                        return map_argument_type(debug_name);
-                    }
-                    None
-                })
-                .collect();
-            argument_types
-        } else {
-            Vec::new()
-        }
-    }
-
     /// Generate params based on the function argument types
     pub fn generate_params(&mut self) {
         let mut params = self.params.lock().unwrap();
@@ -210,10 +222,10 @@ impl Fuzzer {
             .collect();
     }
 
-    /// Run the fuzzer with multithreading
-    /// We use the specified number of threads
-    pub fn fuzz(&mut self, num_threads: usize) -> Result<(), String> {
-        self.argument_types = self.get_function_arguments_types();
+    /// Run the fuzzer
+    pub fn fuzz(&mut self, iter: i32) -> Result<(), String> {
+        self.argument_types =
+            get_function_argument_types(&self.sierra_program, &self.entry_point_id);
         self.generate_params();
 
         // Initialize the start time
@@ -222,79 +234,52 @@ impl Fuzzer {
             stats_guard.start_time = Instant::now();
         }
 
-        // Collect thread handles here
-        let mut handles = Vec::new();
+        let mut current_iter = 0;
+        let max_iter = if iter == -1 { i32::MAX } else { iter };
 
-        for _ in 0..num_threads {
-            // Clone the necessary data for each thread
-            let runner = Arc::clone(&self.runner);
-            let argument_types = self.argument_types.clone();
-            let mutator = Arc::new(Mutex::new(
-                self.mutator.as_ref().unwrap().lock().unwrap().clone(),
-            ));
+        loop {
+            if current_iter >= max_iter {
+                println!("Maximum iterations reached. Exiting fuzzer.");
+                break;
+            }
 
-            // Clone stats
-            let stats = Arc::clone(&self.stats);
+            let params_guard = self.params.lock().unwrap();
+            match self.runner.lock().unwrap().run_program(&*params_guard) {
+                Ok(result) => {
+                    if result.failure_flag {
+                        println!("Results : {:?}", result);
+                        println!("Crash detected! Exiting fuzzer.");
 
-            // Generate initial params for each thread
-            let params = Arc::new(Mutex::new(
-                argument_types
-                    .iter()
-                    .map(|arg_type| match arg_type {
-                        ArgumentType::Felt => Felt::from(0),
-                        // TODO: Add support for other types
-                    })
-                    .collect::<Vec<Felt>>(),
-            ));
-
-            // Spawn the thread
-            let handle = thread::spawn(move || {
-                loop {
-                    let params_guard = params.lock().unwrap();
-                    match runner.lock().unwrap().run_program(&*params_guard) {
-                        Ok(result) => {
-                            if result.failure_flag {
-                                println!("Results : {:?}", result);
-                                println!("Crash detected! Exiting fuzzer.");
-
-                                // Increment the crashes counter
-                                {
-                                    let mut stats_guard = stats.lock().unwrap();
-                                    stats_guard.crashes += 1;
-                                }
-
-                                break;
-                            }
+                        // Increment the crashes counter
+                        {
+                            let mut stats_guard = self.stats.lock().unwrap();
+                            stats_guard.crashes += 1;
                         }
-                        Err(e) => eprintln!("Error during execution: {}", e),
-                    }
 
-                    // Release the lock before mutating params
-                    drop(params_guard);
-
-                    // Increment the total_executions counter
-                    {
-                        let mut stats_guard = stats.lock().unwrap();
-                        stats_guard.total_executions += 1;
-                    }
-
-                    // Mutate params using the cloned `mutator`
-                    let mut mutator_guard = mutator.lock().unwrap();
-                    for param in params.lock().unwrap().iter_mut() {
-                        *param = mutator_guard.mutate(*param);
+                        break;
                     }
                 }
-            });
+                Err(e) => eprintln!("Error during execution: {}", e),
+            }
 
-            // Push handle to a local Vec, not self.threads
-            handles.push(handle);
-        }
+            // Release the lock before mutating params
+            drop(params_guard);
 
-        // Spawn a thread to print stats every second
-        let stats = Arc::clone(&self.stats);
-        let print_handle = thread::spawn(move || loop {
+            // Increment the total_executions counter
+            {
+                let mut stats_guard = self.stats.lock().unwrap();
+                stats_guard.total_executions += 1;
+            }
+
+            // Mutate params using the mutator
+            let mut mutator_guard = self.mutator.as_ref().unwrap().lock().unwrap();
+            for param in self.params.lock().unwrap().iter_mut() {
+                *param = mutator_guard.mutate(*param);
+            }
+
+            // Print stats every second
             thread::sleep(Duration::from_secs(1));
-            let stats_guard = stats.lock().unwrap();
+            let stats_guard = self.stats.lock().unwrap();
             let uptime = stats_guard.start_time.elapsed();
             let uptime_secs = uptime.as_secs_f64();
 
@@ -312,15 +297,9 @@ impl Fuzzer {
                 format!("Crashes = {}", stats_guard.crashes),
                 format!("Exec Speed = {:.2} execs/s", execs_per_second)
             );
-        });
 
-        // Wait for threads to finish
-        for handle in handles {
-            handle.join().unwrap();
+            current_iter += 1;
         }
-
-        // Stop the print thread
-        print_handle.join().unwrap();
 
         Ok(())
     }

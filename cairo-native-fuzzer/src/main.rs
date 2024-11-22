@@ -29,9 +29,9 @@ struct Args {
     #[arg(short, long, default_value_t = 42)]
     seed: u64,
 
-    /// Number of cores to use for fuzzing
-    #[arg(short, long, default_value_t = 8)]
-    cores: usize,
+    /// Number of iterations to use for fuzzing
+    #[arg(short, long, default_value_t = -1)]
+    iter: i32,
 }
 
 fn main() {
@@ -47,7 +47,7 @@ fn main() {
             }
             // Run the fuzzer
             else {
-                match fuzzer.fuzz(args.cores) {
+                match fuzzer.fuzz(args.iter) {
                     Ok(()) => println!("Fuzzing completed successfully."),
                     Err(e) => eprintln!("Error during fuzzing: {}", e),
                 }
