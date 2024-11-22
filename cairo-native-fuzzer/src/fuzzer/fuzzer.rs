@@ -1,32 +1,34 @@
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
+use crate::runner::runner::compile_sierra_program;
+use crate::runner::runner::create_executor;
 use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_lang_starknet::compile::compile_path;
+use cairo_native::context::NativeContext;
 use colored::*;
 use starknet_types_core::felt::Felt;
 
 use crate::fuzzer::statistics::FuzzerStats;
 use crate::mutator::argument_type::{map_argument_type, ArgumentType};
 use crate::mutator::basic_mutator::Mutator;
-use crate::runner::runner::CairoNativeRunner;
+use crate::runner::runner::run_program;
 use crate::utils::get_function_by_id;
 
 #[warn(dead_code)]
 pub struct Fuzzer {
     program_path: PathBuf,
     entry_point: Option<String>,
-    runner: Arc<Mutex<CairoNativeRunner>>,
     sierra_program: Option<Arc<Program>>,
     params: Arc<Mutex<Vec<Felt>>>,
     entry_point_id: Option<FunctionId>,
     mutator: Option<Mutex<Mutator>>,
     argument_types: Vec<ArgumentType>,
     stats: Arc<Mutex<FuzzerStats>>,
+    native_context: NativeContext,
 }
 
 /// Print the initial message with the seed
@@ -146,16 +148,18 @@ fn get_function_argument_types(
 impl Fuzzer {
     /// Creates a new `Fuzzer`.
     pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
+        let native_context = NativeContext::new();
+
         Self {
             program_path,
             entry_point,
-            runner: Arc::new(Mutex::new(CairoNativeRunner::new())),
             sierra_program: None,
             params: Arc::new(Mutex::new(Vec::new())),
             entry_point_id: None,
             mutator: None,
             argument_types: Vec::new(),
             stats: Arc::new(Mutex::new(FuzzerStats::default())),
+            native_context,
         }
     }
 
@@ -163,7 +167,6 @@ impl Fuzzer {
     /// - Initialize the mutator with the given seed
     /// - Compile Cairo code to Sierra
     /// - Find the entry id
-    /// - Init the runner
     pub fn init(&mut self, seed: u64) -> Result<(), String> {
         print_init_message(seed);
 
@@ -175,12 +178,6 @@ impl Fuzzer {
         if let Some(ref entry_point) = self.entry_point {
             self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, entry_point));
         }
-
-        println!("[+] Initializing the runner");
-        self.runner
-            .lock()
-            .unwrap()
-            .init(&self.entry_point_id, &self.sierra_program)?;
 
         Ok(())
     }
@@ -237,6 +234,18 @@ impl Fuzzer {
         let mut current_iter = 0;
         let max_iter = if iter == -1 { i32::MAX } else { iter };
 
+        // Compile Sierra program into a MLIR module
+        let mlir_module = compile_sierra_program(
+            &self.native_context,
+            self.sierra_program
+                .as_ref()
+                .ok_or("Sierra program not available")?,
+        )?;
+
+        // Create a JIT executor
+        let executor = create_executor(mlir_module);
+
+        // Infinite loop of execution
         loop {
             if current_iter >= max_iter {
                 println!("Maximum iterations reached. Exiting fuzzer.");
@@ -244,7 +253,13 @@ impl Fuzzer {
             }
 
             let params_guard = self.params.lock().unwrap();
-            match self.runner.lock().unwrap().run_program(&*params_guard) {
+
+            // Execute the program
+            match run_program(
+                &executor,
+                self.entry_point_id.as_ref().unwrap(),
+                &params_guard,
+            ) {
                 Ok(result) => {
                     if result.failure_flag {
                         println!("Results : {:?}", result);
@@ -277,26 +292,27 @@ impl Fuzzer {
                 *param = mutator_guard.mutate(*param);
             }
 
-            // Print stats every second
-            thread::sleep(Duration::from_secs(1));
-            let stats_guard = self.stats.lock().unwrap();
-            let uptime = stats_guard.start_time.elapsed();
-            let uptime_secs = uptime.as_secs_f64();
+            // Print stats every 1000 executions
+            if current_iter % 1000 == 0 && current_iter != 0 {
+                let stats_guard = self.stats.lock().unwrap();
+                let uptime = stats_guard.start_time.elapsed();
+                let uptime_secs = uptime.as_secs_f64();
 
-            // Calculate execs per second
-            let execs_per_second = if uptime_secs > 0.0 {
-                stats_guard.total_executions as f64 / uptime_secs
-            } else {
-                0.0
-            };
+                // Calculate execs per second
+                let execs_per_second = if uptime_secs > 0.0 {
+                    stats_guard.total_executions as f64 / uptime_secs
+                } else {
+                    0.0
+                };
 
-            println!(
-                "| {:<30} | {:<25} | {:<25} | {:<20} |",
-                format!("Total Executions = {}", stats_guard.total_executions),
-                format!("Uptime = {:.1}s", uptime_secs),
-                format!("Crashes = {}", stats_guard.crashes),
-                format!("Exec Speed = {:.2} execs/s", execs_per_second)
-            );
+                println!(
+                    "| {:<30} | {:<25} | {:<25} | {:<20} |",
+                    format!("Total Executions = {}", stats_guard.total_executions),
+                    format!("Uptime = {:.1}s", uptime_secs),
+                    format!("Crashes = {}", stats_guard.crashes),
+                    format!("Exec Speed = {:.2} execs/s", execs_per_second)
+                );
+            }
 
             current_iter += 1;
         }
