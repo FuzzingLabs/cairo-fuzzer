@@ -6,6 +6,7 @@ mod utils;
 
 use clap::Parser;
 use std::path::PathBuf;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::fuzzer::fuzzer::Fuzzer;
 
@@ -25,10 +26,6 @@ struct Args {
     #[arg(short, long, requires = "program_path")]
     analyze: bool,
 
-    /// Seed for the random number generator
-    #[arg(short, long, default_value_t = 42)]
-    seed: u64,
-
     /// Number of iterations to use for fuzzing
     #[arg(short, long, default_value_t = -1)]
     iter: i32,
@@ -37,9 +34,16 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
+    // Get the current time as a Unix timestamp
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let seed = since_the_epoch.as_secs();
+
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
 
-    match fuzzer.init(args.seed) {
+    match fuzzer.init(seed) {
         Ok(()) => {
             // Print the contract functions
             if args.analyze {
