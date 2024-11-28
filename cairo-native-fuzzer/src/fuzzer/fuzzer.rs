@@ -18,7 +18,7 @@ use crate::mutator::argument_type::ArgumentType;
 use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::{compile_sierra_program, create_executor, run_program};
 
-use log::{info, error, warn};
+use log::{error, info, warn};
 
 /// Struct representing the fuzzer
 pub struct Fuzzer {
@@ -188,6 +188,21 @@ impl Fuzzer {
         }
     }
 
+    /// Returns a vector of strings with the entry points
+    fn get_entry_points(&self) -> Vec<String> {
+        let mut entry_points = Vec::new();
+
+        if let Some(program) = &self.sierra_program {
+            for function in &program.funcs {
+                if let Some(debug_name) = &function.id.debug_name {
+                    entry_points.push(debug_name.to_string());
+                }
+            }
+        }
+
+        entry_points
+    }
+
     /// Runs the fuzzer.
     pub fn fuzz(&mut self, iter: i32) -> Result<(), String> {
         self.initialize_parameters();
@@ -233,6 +248,29 @@ impl Fuzzer {
             self.print_statistics(current_iter);
 
             current_iter += 1;
+        }
+
+        Ok(())
+    }
+
+    /// Fuzzes all functions that start with "fuzz_"
+    pub fn fuzz_proptesting(&mut self, iter: i32) -> Result<(), String> {
+        let entry_points = self.get_entry_points();
+        let fuzz_functions: Vec<String> = entry_points
+            .into_iter()
+            .filter(|name| name.starts_with("fuzz_"))
+            .collect();
+
+        for fuzz_function in fuzz_functions {
+            info!("Fuzzing function: {}", fuzz_function);
+            self.entry_point = Some(fuzz_function.clone());
+            self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, &fuzz_function));
+            self.initialize_parameters();
+
+            // Run the fuzzer for the current function
+            if let Err(e) = self.fuzz(iter) {
+                error!("Error fuzzing function {}: {}", fuzz_function, e);
+            }
         }
 
         Ok(())

@@ -29,6 +29,10 @@ struct Args {
     /// Number of iterations to use for fuzzing
     #[arg(short, long, default_value_t = -1)]
     iter: i32,
+
+    /// Enable property-based testing
+    #[arg(long)]
+    proptesting: bool,
 }
 
 fn main() {
@@ -39,13 +43,15 @@ fn main() {
 
     // Get the current time as a Unix timestamp
     let start = SystemTime::now();
-    let since_the_epoch = start
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-    let seed = since_the_epoch.as_secs();
+    let seed = match start.duration_since(UNIX_EPOCH) {
+        Ok(since_the_epoch) => since_the_epoch.as_secs(),
+        Err(_) => {
+            return;
+        }
+    };
 
+    // Init the fuzzer
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
-
 
     match fuzzer.init(seed) {
         Ok(()) => {
@@ -55,9 +61,16 @@ fn main() {
             }
             // Run the fuzzer
             else {
-                match fuzzer.fuzz(args.iter) {
-                    Ok(()) => println!("Fuzzing completed successfully."),
-                    Err(e) => eprintln!("Error during fuzzing: {}", e),
+                if args.proptesting {
+                    match fuzzer.fuzz_proptesting(args.iter) {
+                        Ok(()) => println!("Property-based testing completed successfully."),
+                        Err(e) => eprintln!("Error during property-based testing: {}", e),
+                    }
+                } else {
+                    match fuzzer.fuzz(args.iter) {
+                        Ok(()) => println!("Fuzzing completed successfully."),
+                        Err(e) => eprintln!("Error during fuzzing: {}", e),
+                    }
                 }
             }
         }
