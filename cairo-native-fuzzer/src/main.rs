@@ -34,6 +34,9 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
+    // Initialize the logger
+    colog::init();
+
     // Get the current time as a Unix timestamp
     let start = SystemTime::now();
     let since_the_epoch = start
@@ -42,6 +45,7 @@ fn main() {
     let seed = since_the_epoch.as_secs();
 
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
+
 
     match fuzzer.init(seed) {
         Ok(()) => {

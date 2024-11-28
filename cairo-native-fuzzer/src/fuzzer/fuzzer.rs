@@ -18,6 +18,8 @@ use crate::mutator::argument_type::ArgumentType;
 use crate::mutator::basic_mutator::Mutator;
 use crate::runner::runner::{compile_sierra_program, create_executor, run_program};
 
+use log::{info, error, warn};
+
 /// Struct representing the fuzzer
 pub struct Fuzzer {
     // Path to the Cairo program
@@ -67,7 +69,7 @@ impl Fuzzer {
 
         self.mutator = Some(Mutex::new(Mutator::new(seed)));
 
-        println!("[+] Compiling Cairo contract to Sierra");
+        info!("Compiling Cairo contract to Sierra");
         self.convert_and_store_cairo_to_sierra()?;
         if let Some(ref entry_point) = self.entry_point {
             self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, entry_point));
@@ -142,12 +144,14 @@ impl Fuzzer {
         ) {
             Ok(result) => {
                 if result.failure_flag {
-                    println!("Results : {:?}", result);
-                    println!("Crash detected! Exiting fuzzer.");
+                    // Print the parameters
+                    println!("Parameters at crash: {:?}", *params_guard);
+                    // Print the result
+                    println!("Results : {:?}\n", result);
                     return Ok(true);
                 }
             }
-            Err(e) => eprintln!("Error during execution: {}", e),
+            Err(e) => error!("Error during execution: {}", e),
         }
         Ok(false)
     }
@@ -197,12 +201,16 @@ impl Fuzzer {
         let mut current_iter = 0;
         let max_iter = if iter == -1 { i32::MAX } else { iter };
 
+        info!("Compiling Sierra contract to MLIR module");
+        println!();
         let executor = self.setup_execution_environment()?;
 
+        let log_message = format!("Fuzzing function {}", self.entry_point.clone().unwrap());
+        info!("{}", log_message);
         // Main fuzz loop
         loop {
             if current_iter >= max_iter {
-                println!("Maximum iterations reached. Exiting fuzzer.");
+                warn!("Maximum iterations reached. Exiting fuzzer.");
                 break;
             }
 
