@@ -40,6 +40,9 @@ pub struct Fuzzer {
     stats: Arc<Mutex<FuzzerStats>>,
     // Native context
     native_context: NativeContext,
+    // true if Sierra has already been compiled to MLIR
+    // Used to avoid recompiling to MLIR each time a new function is fuzzed
+    is_mlir_compiled: bool
 }
 
 impl Fuzzer {
@@ -57,6 +60,7 @@ impl Fuzzer {
             argument_types: Vec::new(),
             stats: Arc::new(Mutex::new(FuzzerStats::default())),
             native_context,
+            is_mlir_compiled: false,
         }
     }
 
@@ -145,7 +149,7 @@ impl Fuzzer {
         ) {
             Ok(result) => {
                 // Crash detected
-                if result.failure_flag 
+                if result.failure_flag
                     // Ignore this error 
                     && result.error_msg != Some("Failed to deserialize param #1".to_string())
                 {
@@ -221,11 +225,17 @@ impl Fuzzer {
         let mut current_iter = 0;
         let max_iter = if iter == -1 { i32::MAX } else { iter };
 
-        info!("Compiling Sierra contract to MLIR module");
-        println!();
+        // Print it only one time
+        if !self.is_mlir_compiled {
+            info!("Compiling Sierra to MLIR module");
+            println!();
+
+            self.is_mlir_compiled = true;
+        }
+
         let executor = self.setup_execution_environment()?;
 
-        let log_message = format!("Fuzzing function {}", self.entry_point.clone().unwrap());
+        let log_message = format!("Fuzzing function: {}", self.entry_point.clone().unwrap());
         info!("{}", log_message);
         // Main fuzz loop
         loop {
@@ -267,7 +277,7 @@ impl Fuzzer {
         for entry_point in entry_points {
             let parts: Vec<&str> = entry_point.split("::").collect();
             if let Some(last_part) = parts.last() {
-                // Ignore __wrapper__ part 
+                // Ignore __wrapper__ part
                 let modified_last_part = last_part.trim_start_matches("__wrapper__");
 
                 if modified_last_part.starts_with("fuzz_") {
@@ -278,7 +288,9 @@ impl Fuzzer {
 
         // Fuzz all the filtered entrypoints
         for fuzz_function in fuzz_functions {
-            info!("Fuzzing function: {}", fuzz_function);
+            // Re-initialize statistics 
+            self.stats = Arc::new(Mutex::new(FuzzerStats::default()));
+
             self.entry_point = Some(fuzz_function.clone());
             self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, &fuzz_function));
             self.initialize_parameters();
