@@ -43,7 +43,7 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
-    /// Creates a new `Fuzzer`.
+    /// Creates a new Fuzzer.
     pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
         let native_context = NativeContext::new();
 
@@ -80,6 +80,7 @@ impl Fuzzer {
 
     /// Print the contract functions prototypes
     pub fn print_functions_prototypes(&self) {
+        println!();
         print_contract_functions(&self.sierra_program);
     }
 
@@ -143,7 +144,11 @@ impl Fuzzer {
             &params_guard,
         ) {
             Ok(result) => {
-                if result.failure_flag {
+                // Crash detected
+                if result.failure_flag 
+                    // Ignore this error 
+                    && result.error_msg != Some("Failed to deserialize param #1".to_string())
+                {
                     // Print the parameters
                     println!("Parameters at crash: {:?}", *params_guard);
                     // Print the result
@@ -253,14 +258,25 @@ impl Fuzzer {
         Ok(())
     }
 
-    /// Fuzzes all functions that start with "fuzz_"
+    /// Fuzzes all functions that finish with "fuzz_*".
     pub fn fuzz_proptesting(&mut self, iter: i32) -> Result<(), String> {
         let entry_points = self.get_entry_points();
-        let fuzz_functions: Vec<String> = entry_points
-            .into_iter()
-            .filter(|name| name.starts_with("fuzz_"))
-            .collect();
+        let mut fuzz_functions = Vec::new();
 
+        // Filters out entry points whose names start with fuzz_
+        for entry_point in entry_points {
+            let parts: Vec<&str> = entry_point.split("::").collect();
+            if let Some(last_part) = parts.last() {
+                // Ignore __wrapper__ part 
+                let modified_last_part = last_part.trim_start_matches("__wrapper__");
+
+                if modified_last_part.starts_with("fuzz_") {
+                    fuzz_functions.push(entry_point.to_string());
+                }
+            }
+        }
+
+        // Fuzz all the filtered entrypoints
         for fuzz_function in fuzz_functions {
             info!("Fuzzing function: {}", fuzz_function);
             self.entry_point = Some(fuzz_function.clone());
