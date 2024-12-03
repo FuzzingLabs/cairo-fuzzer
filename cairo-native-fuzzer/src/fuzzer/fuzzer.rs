@@ -42,7 +42,7 @@ pub struct Fuzzer {
     native_context: NativeContext,
     // true if Sierra has already been compiled to MLIR
     // Used to avoid recompiling to MLIR each time a new function is fuzzed
-    is_mlir_compiled: bool
+    is_mlir_compiled: bool,
 }
 
 impl Fuzzer {
@@ -288,7 +288,7 @@ impl Fuzzer {
 
         // Fuzz all the filtered entrypoints
         for fuzz_function in fuzz_functions {
-            // Re-initialize statistics 
+            // Re-initialize statistics
             self.stats = Arc::new(Mutex::new(FuzzerStats::default()));
 
             self.entry_point = Some(fuzz_function.clone());
