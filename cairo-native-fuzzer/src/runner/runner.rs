@@ -11,6 +11,7 @@ use crate::runner::syscall_handler::SyscallHandler;
 // Create a JIT Native Executor
 pub fn create_executor<'a>(native_program: NativeModule<'a>) -> JitNativeExecutor<'a> {
     JitNativeExecutor::from_native_module(native_program, Default::default())
+        .expect("Failed to create JIT native executor from the provided native module")
 }
 
 /// Compile a Sierra program into a MLIR module
@@ -19,7 +20,7 @@ pub fn compile_sierra_program<'a>(
     sierra_program: &'a Program,
 ) -> Result<NativeModule<'a>, String> {
     native_context
-        .compile(sierra_program, false)
+        .compile(sierra_program, false, Some(Default::default()))
         .map_err(|e| e.to_string())
 }
 
@@ -30,6 +31,6 @@ pub fn run_program(
     params: &Vec<Felt>,
 ) -> Result<ContractExecutionResult, String> {
     executor
-        .invoke_contract_dynamic(entry_point_id, params, Some(u128::MAX), SyscallHandler)
+        .invoke_contract_dynamic(entry_point_id, params, Some(u64::MAX), SyscallHandler)
         .map_err(|e| e.to_string())
 }

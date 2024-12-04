@@ -10,8 +10,8 @@
 set -e
 
 UNAME=$(uname)
-CAIRO_2_VERSION=2.8.4
-SCARB_VERSION=2.8.4
+CAIRO_2_VERSION=2.9.1
+SCARB_VERSION=2.9.1
 
 # Decompress the Cairo tarball
 function decompress_cairo {
