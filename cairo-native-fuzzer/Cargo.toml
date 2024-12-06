@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cairo-lang-compiler = "=2.9.1"
-cairo-lang-sierra = "=2.9.1"
-cairo-lang-starknet = "=2.9.1"
+cairo-lang-compiler = "=2.9.2"
+cairo-lang-sierra = "=2.9.2"
+cairo-lang-starknet = "=2.9.2"
 cairo-native = { version = "=0.2.4", features = ["with-runtime"] }
 cairo-native-runtime = { version = "=0.2.4", optional = true }
 clap = "4.5.20"
