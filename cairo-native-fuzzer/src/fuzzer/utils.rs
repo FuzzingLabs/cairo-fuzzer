@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::sync::Arc;
 
 use cairo_lang_sierra::ids::FunctionId;
@@ -5,20 +6,30 @@ use cairo_lang_sierra::program::Program;
 use colored::*;
 
 use crate::mutator::argument_type::{map_argument_type, ArgumentType};
+use crate::utils::get_cairo_native_version;
 use crate::utils::get_function_by_id;
 
 // Initialization message printed at fuzzer launch
 const INIT_MESSAGE_FORMAT: &str = "
 =============================================================================================================================================================
 ╔═╗ ┌─┐ ┬ ┬─┐ ┌───┐   ╔═╗ ┬ ┬ ┌─┐ ┌─┐ ┌─┐ ┬─┐      | Seed -- {}
-║   ├─┤ │ ├┬┘ │2.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      |
+║   ├─┤ │ ├┬┘ │2.0│───╠╣  │ │ ┌─┘ ┌─┘ ├┤  ├┬┘      | cairo-native version -- {}
 ╚═╝ ┴ ┴ ┴ ┴└─ └───┘   ╚   └─┘ └─┘ └─┘ └─┘ ┴└─      |
 =============================================================================================================================================================
 ";
 
 /// Print the initialization message
 pub fn print_init_message(seed: u64) {
-    println!("{}", INIT_MESSAGE_FORMAT.replace("{}", &seed.to_string()));
+    let version = get_cairo_native_version();
+
+    // Replace the first occurrence of {} with the seed value
+    let re = Regex::new(r"\{\}").unwrap();
+    let message = re.replace(INIT_MESSAGE_FORMAT, |_: &regex::Captures| seed.to_string());
+
+    // Replace the next occurrence of {} with the version string
+    let message = re.replace(&message, |_: &regex::Captures| version.to_string());
+
+    println!("{}", message);
 }
 
 /// Returns a vector of the function parameter types
