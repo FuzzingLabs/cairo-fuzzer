@@ -50,6 +50,12 @@ fn main() {
         }
     };
 
+    // Check if --entry-point parameter is required
+    if !(args.proptesting || args.analyze) && args.entry_point.is_none() {
+        eprintln!("Error: --entry-point is required if --proptesting is not set");
+        return;
+    }
+
     // Init the fuzzer
     let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
 
