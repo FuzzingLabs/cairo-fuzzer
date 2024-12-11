@@ -27,8 +27,8 @@ struct Args {
     analyze: bool,
 
     /// Number of iterations to use for fuzzing
-    #[arg(short, long, default_value_t = -1)]
-    iter: i32,
+    #[arg(short, long)]
+    iter: Option<i32>,
 
     /// Enable property-based testing
     #[arg(long)]
@@ -50,6 +50,13 @@ fn main() {
         }
     };
 
+    // Set the default value for iter based on proptesting flag
+    let iter = if args.proptesting {
+        args.iter.unwrap_or(10000)
+    } else {
+        args.iter.unwrap_or(-1)
+    };
+
     // Check if --entry-point parameter is required
     if !(args.proptesting || args.analyze) && args.entry_point.is_none() {
         eprintln!("Error: --entry-point is required if --proptesting is not set");
@@ -68,12 +75,12 @@ fn main() {
             // Run the fuzzer
             else {
                 if args.proptesting {
-                    match fuzzer.fuzz_proptesting(args.iter) {
+                    match fuzzer.fuzz_proptesting(iter) {
                         Ok(()) => println!("Property-based testing completed successfully."),
                         Err(e) => eprintln!("Error during property-based testing: {}", e),
                     }
                 } else {
-                    match fuzzer.fuzz(args.iter) {
+                    match fuzzer.fuzz(iter) {
                         Ok(()) => println!("Fuzzing completed successfully."),
                         Err(e) => eprintln!("Error during fuzzing: {}", e),
                     }

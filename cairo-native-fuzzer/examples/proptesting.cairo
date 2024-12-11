@@ -54,6 +54,12 @@ mod Echo {
     }
 
     #[external(v0)]
+    fn fuzz_u256(ref self: ContractState, value: u256) -> u256 {
+        assert(value != 2, 'fail');
+        value
+    }
+
+    #[external(v0)]
     fn fuzz_u128(ref self: ContractState, value: u128) -> u128 {
         assert(value != 2, 'fail');
         value

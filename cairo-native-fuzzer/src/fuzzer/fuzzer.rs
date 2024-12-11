@@ -150,17 +150,23 @@ impl Fuzzer {
             Ok(result) => {
                 // Crash detected
                 if result.failure_flag
-                    // Ignore this error 
+                    // Ignore this error
                     && result.error_msg != Some("Failed to deserialize param #1".to_string())
                 {
                     // Print the parameters
                     println!("Parameters at crash: {:?}", *params_guard);
-                    // Print the result
-                    println!("Results : {:?}\n", result);
+                    // Print the beautified result in a single line
+                    println!(
+                        "Results: Remaining Gas = {}, Failure Flag = {}, Return Values = {:?}, Error Message = {:?}\n",
+                        result.remaining_gas,
+                        result.failure_flag,
+                        result.return_values,
+                        result.error_msg
+                    );
                     return Ok(true);
                 }
             }
-            Err(e) => error!("Error during execution: {}", e),
+            Err(e) => error!("Error during execution: {}\n", e),
         }
         Ok(false)
     }
@@ -240,7 +246,8 @@ impl Fuzzer {
         // Main fuzz loop
         loop {
             if current_iter >= max_iter {
-                warn!("Maximum iterations reached. Exiting fuzzer.");
+                warn!("Maximum iterations reached.");
+                println!();
                 break;
             }
 
