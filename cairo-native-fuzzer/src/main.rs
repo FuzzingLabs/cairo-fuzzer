@@ -33,6 +33,10 @@ struct Args {
     /// Enable property-based testing
     #[arg(long)]
     proptesting: bool,
+
+    /// Seed for the random number generator
+    #[arg(short, long)]
+    seed: Option<u64>,
 }
 
 fn main() {
@@ -41,14 +45,15 @@ fn main() {
     // Initialize the logger
     colog::init();
 
-    // Get the current time as a Unix timestamp
-    let start = SystemTime::now();
-    let seed = match start.duration_since(UNIX_EPOCH) {
-        Ok(since_the_epoch) => since_the_epoch.as_secs(),
-        Err(_) => {
-            return;
-        }
-    };
+    // Determine the seed value
+    let seed = args.seed.unwrap_or_else(|| {
+        // Use the current time as default seed if the --seed parameter is not specified
+        let start = SystemTime::now();
+        start
+            .duration_since(UNIX_EPOCH)
+            .expect("Failed to get the current time")
+            .as_secs()
+    });
 
     // Set the default value for iter based on proptesting flag
     let iter = if args.proptesting {
