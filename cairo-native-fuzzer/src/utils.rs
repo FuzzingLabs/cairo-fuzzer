@@ -6,7 +6,7 @@ use cairo_lang_sierra::program::StatementIdx;
 /// Return the current cairo-native package version
 pub fn get_cairo_native_version() -> String {
     // TODO : Automatically parse Cargo.toml
-    "2.4.0".to_string()
+    "0.2.5-rc1".to_string()
 }
 
 /// Find and return the function with the given `FunctionId` in the `Program`

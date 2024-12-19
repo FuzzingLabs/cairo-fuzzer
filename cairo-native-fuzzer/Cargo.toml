@@ -7,8 +7,8 @@ edition = "2021"
 cairo-lang-compiler = "=2.9.2"
 cairo-lang-sierra = "=2.9.2"
 cairo-lang-starknet = "=2.9.2"
-cairo-native = { version = "=0.2.4", features = ["with-runtime"] }
-cairo-native-runtime = { version = "=0.2.4", optional = true }
+cairo-native = { version = "=0.2.5-rc1", features = ["with-runtime"] }
+cairo-native-runtime = { version = "=0.2.5-rc1", optional = true }
 clap = "4.5.20"
 colog = "1.3.0"
 colored = "2.1.0"
