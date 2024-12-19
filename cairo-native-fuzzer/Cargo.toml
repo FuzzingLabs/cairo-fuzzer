@@ -1,0 +1,50 @@
+[package]
+name = "cairo-native-fuzzer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cairo-lang-compiler = "=2.9.2"
+cairo-lang-sierra = "=2.9.2"
+cairo-lang-starknet = "=2.9.2"
+cairo-native = { version = "=0.2.5-rc1", features = ["with-runtime"] }
+cairo-native-runtime = { version = "=0.2.5-rc1", optional = true }
+clap = "4.5.20"
+colog = "1.3.0"
+colored = "2.1.0"
+env_logger = "0.11.5"
+log = "0.4.22"
+rand = "0.8.5"
+regex = "1.11.1"
+starknet-types-core = "0.1.7"
+
+[dependencies.felt]
+git = 'https://github.com/FuzzingLabs/cairo-rs'
+rev = '48af153240392992f18a09e969bae6518eec9639'
+package = 'cairo-felt'
+
+[features]
+default = ["with-runtime"]
+with-runtime = ["dep:cairo-native-runtime"]
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+codegen-units = 256
+rpath = false
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'unwind'
+incremental = false
+codegen-units = 1
+rpath = false
