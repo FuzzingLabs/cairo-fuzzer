@@ -1,3 +1,4 @@
+use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
@@ -6,6 +7,7 @@ use cairo_lang_compiler::CompilerConfig;
 use cairo_lang_sierra::ids::FunctionId;
 use cairo_lang_sierra::program::Program;
 use cairo_lang_starknet::compile::compile_path;
+use cairo_lang_starknet_classes::contract_class::ContractClass;
 use cairo_native::context::NativeContext;
 use cairo_native::executor::JitNativeExecutor;
 use starknet_types_core::felt::Felt;
@@ -23,7 +25,7 @@ use log::{error, info, warn};
 /// Struct representing the fuzzer
 pub struct Fuzzer {
     // Path to the Cairo program
-    program_path: PathBuf,
+    program_path: Option<PathBuf>,
     // Entry point of the Sierra program
     entry_point: Option<String>,
     // Sierra program
@@ -46,12 +48,12 @@ pub struct Fuzzer {
 }
 
 impl Fuzzer {
-    /// Creates a new Fuzzer.
+    /// Creates a new Fuzzer for a Cairo program
     pub fn new(program_path: PathBuf, entry_point: Option<String>) -> Self {
         let native_context = NativeContext::new();
 
         Self {
-            program_path,
+            program_path: Some(program_path),
             entry_point,
             sierra_program: None,
             params: Arc::new(Mutex::new(Vec::new())),
@@ -64,17 +66,55 @@ impl Fuzzer {
         }
     }
 
+    /// Creates a new Fuzzer for a Sierra program
+    pub fn new_sierra(sierra_program_path: PathBuf, entry_point: Option<String>) -> Self {
+        let native_context = NativeContext::new();
+
+        // Read the Sierra program file content
+        let sierra_program_content = match fs::read_to_string(&sierra_program_path) {
+            Ok(content) => content,
+            Err(e) => {
+                eprintln!("Error reading Sierra program file: {}", e);
+                panic!("Failed to read Sierra program file");
+            }
+        };
+
+        // Deserialize the JSON content into a ContractClass
+        let contract_class: ContractClass = serde_json::from_str(&sierra_program_content)
+            .expect("Error deserializing JSON contract class");
+
+        // Extract Sierra program from contract class
+        let sierra_program = contract_class.extract_sierra_program().unwrap();
+
+        Self {
+            program_path: None,
+            entry_point,
+            sierra_program: Some(Arc::new(sierra_program)),
+            params: Arc::new(Mutex::new(Vec::new())),
+            entry_point_id: None,
+            mutator: None,
+            argument_types: Vec::new(),
+            stats: Arc::new(Mutex::new(FuzzerStats::default())),
+            native_context,
+            is_mlir_compiled: false,
+        }
+    }
+
     /// Initialize the fuzzer with a given seed
     /// - Initializes the mutator with the given seed
-    /// - Compiles Cairo code to Sierra
+    /// - Compiles Cairo code to Sierra if needed
     /// - Finds the entry point ID
     pub fn init(&mut self, seed: u64) -> Result<(), String> {
         print_init_message(seed);
 
         self.mutator = Some(Mutex::new(Mutator::new(seed)));
 
-        info!("Compiling Cairo contract to Sierra");
-        self.convert_and_store_cairo_to_sierra()?;
+        // Only compile if the input program is a Sierra file
+        if self.sierra_program.is_none() {
+            info!("Compiling Cairo contract to Sierra");
+            self.convert_and_store_cairo_to_sierra()?;
+        }
+
         if let Some(ref entry_point) = self.entry_point {
             self.entry_point_id = Some(find_entry_point_id(&self.sierra_program, entry_point));
         }
@@ -91,7 +131,7 @@ impl Fuzzer {
     /// Compile the Cairo program to Sierra
     fn convert_and_store_cairo_to_sierra(&mut self) -> Result<(), String> {
         let contract = compile_path(
-            &self.program_path,
+            &self.program_path.clone().unwrap(),
             None,
             CompilerConfig {
                 replace_ids: true,
