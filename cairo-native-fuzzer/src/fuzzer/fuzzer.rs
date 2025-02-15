@@ -45,6 +45,9 @@ pub struct Fuzzer {
     // true if Sierra has already been compiled to MLIR
     // Used to avoid recompiling to MLIR each time a new function is fuzzed
     is_mlir_compiled: bool,
+    // If the entry point arguments are in an array, e.g. core::array::Span::<core::felt252>
+    // We will need to determine the exact number of elements inside the array
+    unknown_arguments_count: bool,
 }
 
 impl Fuzzer {
@@ -63,6 +66,7 @@ impl Fuzzer {
             stats: Arc::new(Mutex::new(FuzzerStats::default())),
             native_context,
             is_mlir_compiled: false,
+            unknown_arguments_count: false,
         }
     }
 
@@ -97,6 +101,7 @@ impl Fuzzer {
             stats: Arc::new(Mutex::new(FuzzerStats::default())),
             native_context,
             is_mlir_compiled: false,
+            unknown_arguments_count: false,
         }
     }
 
@@ -155,9 +160,63 @@ impl Fuzzer {
             .iter()
             .map(|arg_type| match arg_type {
                 ArgumentType::Felt => Felt::from(0),
-                // TODO: Add support for other types
+                ArgumentType::FeltArray => {
+                    self.unknown_arguments_count = true;
+                    Felt::from(0)
+                } // TODO: Add support for other types
             })
             .collect();
+
+        // Release the lock before calling determine_argument_count
+        drop(params);
+
+        if self.unknown_arguments_count {
+            self.determine_argument_count();
+        }
+    }
+
+    /// Determines the correct number of arguments by iteratively adding parameters
+    /// and checking for deserialization errors.
+    fn determine_argument_count(&mut self) {
+        loop {
+            let executor = match self.setup_execution_environment() {
+                Ok(executor) => executor,
+                Err(e) => {
+                    error!("Error setting up execution environment: {}", e);
+                    return;
+                }
+            };
+
+            let params_guard = self.params.lock().unwrap();
+            match run_program(
+                &executor,
+                self.entry_point_id.as_ref().unwrap(),
+                &params_guard,
+            ) {
+                Ok(result) => {
+                    // Release the lock before modifying params
+                    drop(params_guard);
+
+                    // If there's a crash and it's due to deserialization, add a new parameter
+                    if result.failure_flag && result.error_msg.is_some() {
+                        if let Some(error_msg) = result.error_msg {
+                            if error_msg.starts_with("Failed to deserialize param") {
+                                let mut params = self.params.lock().unwrap();
+                                params.push(Felt::from(0));
+                                continue;
+                            }
+                        }
+                    }
+
+                    // If no deserialization error, we found the right number of arguments
+                    // Break the loop
+                    break;
+                }
+                Err(_e) => {
+                    return;
+                }
+            }
+        }
     }
 
     /// Initializes parameters based on the function argument types.
