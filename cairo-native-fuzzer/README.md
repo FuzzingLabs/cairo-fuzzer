@@ -20,10 +20,10 @@ cargo run -- --program-path examples/fuzzinglabs.cairo --analyze
 #### Run the fuzzer
 
 ```sh
-cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo
+cargo run -- --program-path examples/cairo/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo
 
 ## Use a seed
-cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo --seed 42
+cargo run -- --program-path examples/cairo/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo --seed 42
 ```
 
 #### Property testing 
@@ -60,7 +60,7 @@ mod Echo {
 Then run the `cairo-fuzzer` with the `--proptesting` flag : 
 
 ```sh
-cargo run -- --program-path examples/proptesting.cairo --proptesting
+cargo run -- --program-path examples/cairo/proptesting.cairo --proptesting
 ```
 
 <p align="center">

@@ -79,12 +79,12 @@ pub fn print_contract_functions(sierra_program: &Option<Arc<Program>>) {
 
     if let Some(program) = sierra_program {
         for function in &program.funcs {
+            // Use function.id.debug_name if available, otherwise use function.id.id
             let function_name = function
                 .id
                 .debug_name
-                .as_ref()
-                .expect("Function name not found")
-                .to_string();
+                .clone()
+                .unwrap_or_else(|| function.id.id.to_string().into());
 
             let signature = &function.signature;
 
