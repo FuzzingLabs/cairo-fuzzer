@@ -16,14 +16,18 @@ use crate::fuzzer::fuzzer::Fuzzer;
 struct Args {
     /// Path to the Cairo program
     #[arg(short, long)]
-    program_path: PathBuf,
+    program_path: Option<PathBuf>,
+
+    /// Path to the Sierra program
+    #[arg(long)]
+    sierra_program: Option<PathBuf>,
 
     /// Entry point of the Sierra program
     #[arg(short, long)]
     entry_point: Option<String>,
 
     /// Analyze the program and print function prototypes
-    #[arg(short, long, requires = "program_path")]
+    #[arg(short, long)]
     analyze: bool,
 
     /// Number of iterations to use for fuzzing
@@ -68,8 +72,21 @@ fn main() {
         return;
     }
 
-    // Init the fuzzer
-    let mut fuzzer = Fuzzer::new(args.program_path, args.entry_point);
+    // Check if --analyze requires either --program-path or --sierra-program
+    if args.analyze && args.program_path.is_none() && args.sierra_program.is_none() {
+        eprintln!("Error: --analyze requires either --program-path or --sierra-program");
+        return;
+    }
+
+    // Initialize the fuzzer based on the provided program path
+    let mut fuzzer = if let Some(sierra_program) = args.sierra_program {
+        Fuzzer::new_sierra(sierra_program, args.entry_point)
+    } else if let Some(program_path) = args.program_path {
+        Fuzzer::new(program_path, args.entry_point)
+    } else {
+        eprintln!("Error: Either --program-path or --sierra-program must be specified");
+        return;
+    };
 
     match fuzzer.init(seed) {
         Ok(()) => {

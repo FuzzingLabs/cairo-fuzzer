@@ -14,16 +14,23 @@ Cairo Native Fuzzer is a rewrite of the Cairo Fuzzer based on [Cairo native from
 #### Print the functions prototypes
 
 ```sh
+## With a cairo program
 cargo run -- --program-path examples/fuzzinglabs.cairo --analyze
+
+# With a Sierra program
+cargo run -- --sierra-program ./examples/sierra/zklend_fuzzing.json --analyze
 ```
 
 #### Run the fuzzer
 
 ```sh
-cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo
+cargo run -- --program-path ./examples/cairo/echo.cairo --entry-point echo::echo::Echo::__wrapper__echo_felt 
 
 ## Use a seed
-cargo run -- --program-path examples/hello_starknet.cairo --entry-point hello_starknet::hello_starknet::Echo::__wrapper__echo --seed 42
+cargo run -- --program-path ./examples/cairo/echo.cairo --entry-point echo::echo::Echo::__wrapper__echo_felt  --seed 42
+
+## With a sierra input file
+cargo run -- --sierra-program ./examples/sierra/zklend_fuzzing.json --entry-point zklend::fuzzing::Fuzzing::__wrapper__fuzz_scaled_down_amount --seed 1739662178
 ```
 
 #### Property testing 
@@ -60,7 +67,7 @@ mod Echo {
 Then run the `cairo-fuzzer` with the `--proptesting` flag : 
 
 ```sh
-cargo run -- --program-path examples/proptesting.cairo --proptesting
+cargo run -- --program-path examples/cairo/proptesting.cairo --proptesting
 ```
 
 <p align="center">

@@ -4,9 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cairo-lang-compiler = "=2.9.2"
-cairo-lang-sierra = "=2.9.2"
-cairo-lang-starknet = "=2.9.2"
+cairo-lang-compiler = "=2.9.3"
+cairo-lang-sierra = "=2.9.3"
+cairo-lang-starknet = "=2.9.3"
+cairo-lang-starknet-classes = "=2.9.3"
 cairo-native = { version = "=0.2.5-rc1", features = ["with-runtime"] }
 cairo-native-runtime = { version = "=0.2.5-rc1", optional = true }
 clap = "4.5.20"
@@ -16,6 +17,7 @@ env_logger = "0.11.5"
 log = "0.4.22"
 rand = "0.8.5"
 regex = "1.11.1"
+serde_json = "1.0.138"
 starknet-types-core = "0.1.7"
 
 [dependencies.felt]
