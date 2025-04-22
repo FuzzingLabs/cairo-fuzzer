@@ -1,5 +1,8 @@
 # Cairo-Fuzzer -- Cairo Smart Contract Fuzzer
 
+> [!IMPORTANT]  
+> This repository is no longer maintained. If you have any questions or need further assistance, please contact [FuzzingLabs](https://fuzzinglabs.com/).
+
 Release version 1.2
 Developped and maintained by [@FuzzingLabs](https://github.com/FuzzingLabs)
 
